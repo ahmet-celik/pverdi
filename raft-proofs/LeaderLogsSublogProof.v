@@ -37,7 +37,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_init :
     refined_raft_net_invariant_init leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_init, leaderLogs_sublog.
     simpl. intuition.
   Qed.
@@ -74,7 +74,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_client_request :
     refined_raft_net_invariant_client_request leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_client_request, leaderLogs_sublog.
     intuition.
     simpl in *.
@@ -92,7 +92,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_timeout :
     refined_raft_net_invariant_timeout leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_timeout, leaderLogs_sublog.
     simpl. intuition.
     repeat find_higher_order_rewrite.
@@ -114,7 +114,7 @@ Section LeaderLogsSublog.
       handleAppendEntries h st t n pli plt es ci = (st', m) ->
       type st' = Leader ->
       log st' = log st.
-  Proof.
+  Proof using. 
     unfold handleAppendEntries.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; auto; discriminate.
@@ -122,7 +122,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_append_entries :
     refined_raft_net_invariant_append_entries leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_append_entries, leaderLogs_sublog.
     simpl. intuition.
     repeat find_higher_order_rewrite.
@@ -142,7 +142,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_append_entries_reply, leaderLogs_sublog.
     simpl. intuition.
     repeat find_higher_order_rewrite.
@@ -158,7 +158,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_request_vote :
     refined_raft_net_invariant_request_vote leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_request_vote, leaderLogs_sublog.
     simpl. intuition.
     repeat find_higher_order_rewrite.
@@ -183,7 +183,7 @@ Section LeaderLogsSublog.
       In e (log (snd (nwState net h))) ->
       eTerm e = currentTerm (snd (nwState net leader)) ->
       In e (log (snd (nwState net leader))).
-  Proof.
+  Proof using lsi rri. 
     intros.
     pose proof (lift_prop _ leader_sublog_invariant_invariant).
     find_apply_hyp_hyp.
@@ -206,7 +206,7 @@ Section LeaderLogsSublog.
        log st' = log st /\
        ((type st = Candidate /\ type st' = Leader /\ r = true /\ currentTerm st = t /\
          wonElection (dedup name_eq_dec (h' :: votesReceived st)) = true) \/ type st' = type st)).
-  Proof.
+  Proof using. 
     intros.
     unfold handleRequestVoteReply, advanceCurrentTerm in *.
     repeat break_match; try find_inversion; subst; simpl in *; intuition;
@@ -220,7 +220,7 @@ Section LeaderLogsSublog.
       In e ll ->
       eTerm e = currentTerm (snd (nwState net h)) ->
       False.
-  Proof.
+  Proof using lltsi. 
     intros.
     find_copy_eapply_lem_hyp leaderLogs_term_sanity_invariant; eauto.
     find_eapply_lem_hyp leaderLogs_currentTerm_invariant; eauto.
@@ -242,7 +242,7 @@ Section LeaderLogsSublog.
         currentTerm (snd (nwState net (pDst p))) = eTerm e ->
         wonElection (dedup name_eq_dec (pSrc p :: votesReceived (snd (nwState net (pDst p))))) = true ->
         type (snd (nwState net (pDst p))) <> Candidate.
-  Proof.
+  Proof using. 
     intros.
     eapply_prop_hyp leaderLogs_candidateEntries In; eauto.
     eapply wonElection_candidateEntries_rvr; auto. eauto. auto.  auto.
@@ -250,7 +250,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply leaderLogs_sublog.
-  Proof.
+  Proof using vci cci llcei lltsi lsi rri. 
     unfold refined_raft_net_invariant_request_vote_reply, leaderLogs_sublog.
     simpl. intuition.
     repeat find_higher_order_rewrite.
@@ -294,7 +294,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_do_leader :
     refined_raft_net_invariant_do_leader leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_do_leader, leaderLogs_sublog.
     simpl. intuition.
     repeat find_higher_order_rewrite.
@@ -330,7 +330,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_do_generic_server :
     refined_raft_net_invariant_do_generic_server leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_do_generic_server, leaderLogs_sublog.
     simpl. intuition.
     repeat find_higher_order_rewrite.
@@ -366,7 +366,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_state_same_packet_subset, leaderLogs_sublog.
     intuition.
     repeat find_reverse_higher_order_rewrite.
@@ -375,7 +375,7 @@ Section LeaderLogsSublog.
 
   Theorem leaderLogs_sublog_reboot :
     refined_raft_net_invariant_reboot leaderLogs_sublog.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_reboot, leaderLogs_sublog.
     unfold reboot.
     simpl. intuition.
@@ -391,7 +391,7 @@ Section LeaderLogsSublog.
     forall net,
       refined_raft_intermediate_reachable net ->
       leaderLogs_sublog net.
-  Proof.
+  Proof using vci cci llcei lltsi lsi rri. 
     intros.
     eapply refined_raft_net_invariant; eauto.
     - apply leaderLogs_sublog_init.

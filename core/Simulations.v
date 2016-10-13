@@ -68,7 +68,7 @@ Hypothesis tot_map_output_injective :
 
 Lemma tot_map_name_injective : 
 forall n n', tot_map_name n = tot_map_name n' -> n = n'.
-Proof.
+Proof using tot_map_name_inv_inverse. 
 move => n n'.
 case (name_eq_dec n n') => H_dec //.
 move => H_eq.
@@ -96,7 +96,7 @@ Lemma tot_map_update_eq :
   forall f d h,
     (fun n : name => tot_map_data (update f h d (tot_map_name_inv n))) =
     update (fun n : name => tot_map_data (f (tot_map_name_inv n))) (tot_map_name h) (tot_map_data d).
-Proof.
+Proof using tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => net d h.
 apply functional_extensionality => n.
 rewrite /update /=.
@@ -111,7 +111,7 @@ Corollary tot_map_update_packet_eq :
 forall f p d,
   (fun n : name => tot_map_data (update f (pDst p) d (tot_map_name_inv n))) =
   (update (fun n : name => tot_map_data (f (tot_map_name_inv n))) (pDst (tot_map_packet p)) (tot_map_data d)).
-Proof.
+Proof using tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => f. 
 case => src dst m d.
 exact: tot_map_update_eq.
@@ -121,7 +121,7 @@ Lemma tot_map_packet_app_eq :
   forall l p ms ms',
     map tot_map_packet (map (fun m : name * msg => {| pSrc := pDst p; pDst := fst m; pBody := snd m |}) l ++ ms ++ ms') = 
     map (fun m : name * msg => {| pSrc := pDst (tot_map_packet p); pDst := fst m; pBody := snd m |}) (tot_map_name_msgs l) ++ map tot_map_packet ms ++ map tot_map_packet ms'.
-Proof.
+Proof using. 
 move => l; case => src dst m ms ms'.
 rewrite 2!map_app.
 elim: l => //=.
@@ -133,7 +133,7 @@ Lemma tot_map_packet_eq :
   forall l l' h,
     map tot_map_packet (map (fun m : name * msg => {| pSrc := h; pDst := fst m; pBody := snd m |}) l ++ l') =
     map (fun m : name * msg => {| pSrc := tot_map_name h; pDst := fst m; pBody := snd m |}) (tot_map_name_msgs l) ++ map tot_map_packet l'.
-Proof.
+Proof using. 
 elim => //=.
 case => n m l IH l' h.
 by rewrite IH.
@@ -141,7 +141,7 @@ Qed.
 
 Lemma tot_init_handlers_fun_eq : 
     init_handlers = fun n : name => tot_map_data (init_handlers (tot_map_name_inv n)).
-Proof.
+Proof using tot_init_handlers_eq tot_map_name_inverse_inv. 
 apply functional_extensionality => n.
 rewrite tot_init_handlers_eq.
 by rewrite tot_map_name_inverse_inv.
@@ -151,7 +151,7 @@ Lemma tot_map_trace_occ_inv :
   forall tr n ol,
     map tot_map_trace_occ tr = [(n, inr ol)] -> 
     exists n', exists lo, tr = [(n', inr lo)] /\ tot_map_name n' = n /\ map tot_map_output lo = ol.
-Proof.
+Proof using. 
 case => //=.
 case.
 move => n ol tr n' lo H_eq.
@@ -168,7 +168,7 @@ Lemma tot_map_trace_occ_in_inv :
     map tot_map_trace_occ tr = [(h, inl inp); (h, inr out)] -> 
     exists h', exists inp', exists out', tr = [(h', inl inp'); (h', inr out')] /\ 
       tot_map_name h' = h /\ map tot_map_output out' = out /\ tot_map_input inp' = inp.
-Proof.
+Proof using tot_map_name_inv_inverse. 
 case => //=.
 case.
 move => h.
@@ -192,7 +192,7 @@ Theorem step_m_tot_mapped_simulation_1 :
   forall net net' tr,
     @step_m _ multi_fst net net' tr ->
     @step_m _ multi_snd (tot_map_net net) (tot_map_net net') (map tot_map_trace_occ tr).
-Proof.
+Proof using tot_input_handlers_eq tot_net_handlers_eq tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => net net' tr.
 case => {net net' tr}.
 - move => net net' p ms ms' out d l H_eq H_hnd H_eq'.
@@ -227,7 +227,7 @@ Corollary step_m_tot_mapped_simulation_star_1 :
   forall net tr,
     @step_m_star _ multi_fst step_m_init net tr ->
     @step_m_star _ multi_snd step_m_init (tot_map_net net) (map tot_map_trace_occ tr).
-Proof.
+Proof using tot_input_handlers_eq tot_net_handlers_eq tot_init_handlers_eq tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => net tr H_step.
 remember step_m_init as y in *.
 move: Heqy.
@@ -255,7 +255,7 @@ Theorem step_m_tot_mapped_simulation_2 :
       exists mnet',
         @step_m _ multi_fst mnet mnet' mout /\
         tot_map_net mnet' = net'.
-Proof.
+Proof using tot_map_output_injective tot_input_handlers_eq tot_net_handlers_eq tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => net net' out mnet mout H_step H_eq H_eq'.
 invcs H_step.
 - case: p H4 H H0 => /= src dst m H4 H H0.
@@ -411,7 +411,7 @@ Lemma not_in_failed_not_in :
   forall n failed,
     ~ In n failed ->
     ~ In (tot_map_name n) (map tot_map_name failed).
-Proof.
+Proof using tot_map_name_inv_inverse. 
 move => n.
 elim => //=.
 move => n' failed IH H_in H_in'.
@@ -432,7 +432,7 @@ Lemma in_failed_in :
   forall n failed,
     In n failed ->
     In (tot_map_name n) (map tot_map_name failed).
-Proof.
+Proof using. 
 move => n.
 elim => //.
 move => n' l IH H_in.
@@ -447,7 +447,7 @@ Lemma remove_tot_map_eq :
   forall h failed,
     map tot_map_name (remove name_eq_dec h failed) =
     remove name_eq_dec (tot_map_name h) (map tot_map_name failed).
-Proof.
+Proof using tot_map_name_inv_inverse. 
 move => h.
 elim => //=.
 move => n failed IH.
@@ -472,7 +472,7 @@ forall h net,
        | left _ => reboot (tot_map_data (nwState net (tot_map_name_inv nm)))
        | right _ => tot_map_data (nwState net (tot_map_name_inv nm))
        end).
-Proof.
+Proof using tot_reboot_eq tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => h net.
 apply: functional_extensionality => n.
 case (name_eq_dec _ _) => H_dec; case (name_eq_dec _ _) => H_dec' //.
@@ -486,7 +486,7 @@ Theorem step_f_tot_mapped_simulation_1 :
   forall net net' failed failed' tr,
     @step_f _ _ fail_fst (failed, net) (failed', net') tr ->
     @step_f _ _ fail_snd (map tot_map_name failed, tot_map_net net) (map tot_map_name failed', tot_map_net net') (map tot_map_trace_occ tr).
-Proof.
+Proof using tot_reboot_eq tot_input_handlers_eq tot_net_handlers_eq tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => net net' failed failed' tr H_step.
 invcs H_step.
 - have ->: tot_map_name (pDst p) = pDst (tot_map_packet p) by case: p H3 H4 H6 => src dst m.
@@ -532,7 +532,7 @@ Corollary step_f_tot_mapped_simulation_star_1 :
   forall net failed tr,
     @step_f_star _ _ fail_fst step_f_init (failed, net) tr ->
     @step_f_star _ _ fail_snd step_f_init (map tot_map_name failed, tot_map_net net) (map tot_map_trace_occ tr).
-Proof.
+Proof using tot_reboot_eq tot_input_handlers_eq tot_net_handlers_eq tot_init_handlers_eq tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => net failed tr H_step.
 remember step_f_init as y in *.
 have H_eq_f: failed = fst (failed, net) by [].
@@ -562,7 +562,7 @@ Qed.
 
 Lemma map_eq_name_eq_eq :
   forall l l', map tot_map_name l = map tot_map_name l' -> l = l'.
-Proof.
+Proof using tot_map_name_inv_inverse. 
 elim.
 case => //=.
 move => n l IH.
@@ -583,7 +583,7 @@ Theorem step_f_tot_mapped_simulation_2 :
       exists mnet',
         @step_f _ _ fail_fst (mfailed, mnet) (mfailed', mnet') mout /\
         tot_map_net mnet' = net'.
-Proof.
+Proof using tot_reboot_eq tot_map_output_injective tot_input_handlers_eq tot_net_handlers_eq tot_map_name_inverse_inv tot_map_name_inv_inverse. 
 move => net net' failed failed' out mnet mfailed mfailed' mout H_step H_eq_net H_eq_f H_eq_f' H_eq_out.
 invcs H_step.
 - case: p H4 H5 H3 H6 => /= src dst m H4 H5 H3 H6.

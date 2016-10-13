@@ -70,7 +70,7 @@ Section GhostLogLogMatching.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_contiguous net.
-  Proof.
+  Proof using rlmli rmri. 
     intros.
     enough (entries_contiguous (mgv_deghost net)) by
         (unfold entries_contiguous, lifted_entries_contiguous, mgv_deghost in *;
@@ -83,7 +83,7 @@ Section GhostLogLogMatching.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_sorted net.
-  Proof.
+  Proof using rlmli rmri. 
     intros.
     enough (entries_sorted (mgv_deghost net)) by
         (unfold entries_sorted, lifted_entries_sorted, mgv_deghost in *;
@@ -102,7 +102,7 @@ Section GhostLogLogMatching.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_contiguous_nw net.
-  Proof.
+  Proof using rlmli rmri. 
     intros.
     assert (entries_contiguous_nw (mgv_deghost net)) by
         (apply msg_lift_prop; eauto using entries_contiguous_nw_invariant).
@@ -126,7 +126,7 @@ Section GhostLogLogMatching.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_match net.
-  Proof.
+  Proof using rlmli rmri. 
     intros.
     unfold lifted_entries_match; intros.
     find_eapply_lem_hyp msg_lift_prop;
@@ -144,7 +144,7 @@ Section GhostLogLogMatching.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_no_entries_past_current_term_host net.
-  Proof.
+  Proof using tsi rmri. 
     intros.
     enough (no_entries_past_current_term_host (deghost (mgv_deghost net))) by
         (unfold no_entries_past_current_term_host, lifted_no_entries_past_current_term_host, deghost, mgv_deghost in *;
@@ -160,7 +160,7 @@ Section GhostLogLogMatching.
       msg_refined_raft_intermediate_reachable net ->
       In p (nwPackets net) ->
       sorted (fst (pBody p)).
-  Proof.
+  Proof using lphogli rlmli rmri. 
     assert (msg_log_property sorted) by
         (unfold msg_log_property; intros; eapply lifted_entries_sorted_invariant; eauto).
     intros.
@@ -172,7 +172,7 @@ Section GhostLogLogMatching.
       msg_refined_raft_intermediate_reachable net ->
       In p (nwPackets net) ->
       contiguous_range_exact_lo (fst (pBody p)) 0.
-  Proof.
+  Proof using lphogli rlmli rmri. 
     assert (msg_log_property (fun x => contiguous_range_exact_lo x 0)) by
         (unfold msg_log_property; intros; eapply lifted_entries_contiguous_invariant; eauto).
     intros.
@@ -191,7 +191,7 @@ Section GhostLogLogMatching.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_allEntries_leader_sublog net.
-  Proof.
+  Proof using aelsi rmri. 
     intros.
     unfold lifted_allEntries_leader_sublog; intros.
     find_eapply_lem_hyp msg_lift_prop;
@@ -205,7 +205,7 @@ Section GhostLogLogMatching.
   
   Lemma ghost_log_entries_match_init :
     msg_refined_raft_net_invariant_init ghost_log_entries_match.
-  Proof.
+  Proof using. 
     red. split;
       red; intros; simpl in *; intuition.
   Qed.
@@ -220,7 +220,7 @@ Section GhostLogLogMatching.
       handleAppendEntries h (snd (nwState net h)) t n pli plt es ci = (d, m) ->
       snd (pBody p) = AppendEntries t n pli plt es ci ->
       In p (nwPackets net) -> log d = log (snd (nwState net h)) \/ log d = fst (pBody p).
-  Proof.
+  Proof using lphogli glci rlmli rmri. 
     intros.
     find_copy_eapply_lem_hyp ghost_log_correct_invariant; eauto;
     repeat conclude_using eauto.
@@ -248,7 +248,7 @@ Section GhostLogLogMatching.
     
   Lemma ghost_log_entries_match_append_entries :
     msg_refined_raft_net_invariant_append_entries' ghost_log_entries_match.
-  Proof.
+  Proof using lphogli glci rlmli rmri. 
     red.
     split; red; intros; simpl in *; intuition;
     unfold ghost_log_entries_match in *; break_and.
@@ -305,7 +305,7 @@ Section GhostLogLogMatching.
   
   Lemma ghost_log_entries_match_append_entries_reply :
     msg_refined_raft_net_invariant_append_entries_reply ghost_log_entries_match.
-  Proof.
+  Proof using rlmli rmri. 
     red.
     split; red; intros; simpl in *; intuition;
     unfold ghost_log_entries_match in *; break_and.
@@ -340,7 +340,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_request_vote :
     msg_refined_raft_net_invariant_request_vote' ghost_log_entries_match.
-  Proof.
+  Proof using rlmli rmri. 
     red.
     split; red; intros; simpl in *; intuition;
     unfold ghost_log_entries_match in *; break_and.
@@ -364,7 +364,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_request_vote_reply :
     msg_refined_raft_net_invariant_request_vote_reply ghost_log_entries_match.
-  Proof.
+  Proof using. 
     red.
     split; red; intros; simpl in *; intuition;
     unfold ghost_log_entries_match in *; break_and.
@@ -380,7 +380,7 @@ Section GhostLogLogMatching.
       entries_match l l' ->
       (~ exists e', eIndex e' = eIndex e /\ eTerm e' = eTerm e /\ In e'  l') ->
       entries_match (e :: l) l'.
-  Proof.
+  Proof using. 
     intros. simpl in *.
     intuition.
     unfold entries_match in *.
@@ -393,7 +393,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_client_request :
     msg_refined_raft_net_invariant_client_request ghost_log_entries_match.
-  Proof.
+  Proof using glaei aelsi tsi rlmli rmri. 
     red.
     split; red; intros; simpl in *; intuition;
     unfold ghost_log_entries_match in *; break_and.
@@ -433,7 +433,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_timeout :
     msg_refined_raft_net_invariant_timeout ghost_log_entries_match.
-  Proof.
+  Proof using rlmli rmri. 
     red.
     split; red; intros; simpl in *; intuition;
     unfold ghost_log_entries_match in *; break_and.
@@ -460,7 +460,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_do_leader :
     msg_refined_raft_net_invariant_do_leader ghost_log_entries_match.
-  Proof.
+  Proof using rlmli rmri. 
     red. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -493,7 +493,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_do_generic_server :
     msg_refined_raft_net_invariant_do_generic_server ghost_log_entries_match.
-  Proof.
+  Proof using rlmli rmri. 
     red. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -526,7 +526,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_reboot :
     msg_refined_raft_net_invariant_reboot ghost_log_entries_match.
-  Proof.
+  Proof using. 
     red. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -543,7 +543,7 @@ Section GhostLogLogMatching.
 
   Lemma ghost_log_entries_match_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset ghost_log_entries_match.
-  Proof.
+  Proof using. 
     red. intros.
     split; red; intros; simpl in *; intuition;
     unfold ghost_log_entries_match in *; break_and.
@@ -555,7 +555,7 @@ Section GhostLogLogMatching.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       ghost_log_entries_match net.
-  Proof.
+  Proof using glaei aelsi tsi lphogli glci rlmli rmri. 
     intros.
     apply msg_refined_raft_net_invariant'; auto.
     - apply ghost_log_entries_match_init.

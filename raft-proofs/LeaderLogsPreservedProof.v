@@ -32,7 +32,7 @@ Section LeaderLogsPreserved.
     forall h st client id c,
       leaderLogs (update_elections_data_client_request h st client id c) =
       leaderLogs (fst st).
-  Proof.
+  Proof using. 
     unfold update_elections_data_client_request in *.
     intros. repeat break_match; repeat find_inversion; auto.
   Qed.
@@ -41,7 +41,7 @@ Section LeaderLogsPreserved.
     forall h st,
       leaderLogs (update_elections_data_timeout h st) =
       leaderLogs (fst st).
-  Proof.
+  Proof using. 
     unfold update_elections_data_timeout.
     intros.
     repeat break_match; simpl in *; auto.
@@ -51,7 +51,7 @@ Section LeaderLogsPreserved.
     forall h st t h' pli plt es ci,
       leaderLogs (update_elections_data_appendEntries h st t h' pli plt es ci) =
       leaderLogs (fst st).
-  Proof.
+  Proof using. 
     intros.
     unfold update_elections_data_appendEntries.
     repeat break_match; subst; simpl in *; auto.
@@ -61,7 +61,7 @@ Section LeaderLogsPreserved.
     forall h h' t lli llt st,
       leaderLogs (update_elections_data_requestVote h h' t h' lli llt st) =
       leaderLogs (fst st).
-  Proof.
+  Proof using. 
     unfold update_elections_data_requestVote.
     intros.
     repeat break_match; auto.
@@ -71,7 +71,7 @@ Section LeaderLogsPreserved.
     forall h h' t  st t' ll' r,
       In (t', ll') (leaderLogs (fst st)) ->
       In (t', ll') (leaderLogs (update_elections_data_requestVoteReply h h' t r st)).
-  Proof.
+  Proof using. 
     unfold update_elections_data_requestVoteReply.
     intros.
     repeat break_match; auto.
@@ -88,7 +88,7 @@ Section LeaderLogsPreserved.
           /\ t' = currentTerm (snd st)
           /\ type (snd st) = Candidate
           /\ wonElection (dedup name_eq_dec (h' :: votesReceived (snd st))) = true).
-  Proof.
+  Proof using. 
     unfold update_elections_data_requestVoteReply.
     intros.
     repeat break_match; auto.
@@ -115,7 +115,7 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply leaderLogs_preserved.
-  Proof.
+  Proof using cci vci ollpti llcei lltsi llli. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -151,7 +151,7 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_append_entries :
     refined_raft_net_invariant_append_entries leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -161,7 +161,7 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -171,7 +171,7 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_request_vote :
     refined_raft_net_invariant_request_vote leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -181,7 +181,7 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_client_request :
     refined_raft_net_invariant_client_request leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -191,7 +191,7 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_timeout :
     refined_raft_net_invariant_timeout leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -201,13 +201,13 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_init :
     refined_raft_net_invariant_init leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *. intuition.
   Qed.
 
   Lemma leaderLogs_preserved_reboot :
     refined_raft_net_invariant_reboot leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -221,14 +221,14 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     repeat find_reverse_higher_order_rewrite. eauto.
   Qed.
 
   Lemma leaderLogs_preserved_do_generic_server :
     refined_raft_net_invariant_do_generic_server leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -243,7 +243,7 @@ Section LeaderLogsPreserved.
 
   Lemma leaderLogs_preserved_do_leader :
     refined_raft_net_invariant_do_leader leaderLogs_preserved.
-  Proof.
+  Proof using. 
     red. unfold leaderLogs_preserved. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -259,7 +259,7 @@ Section LeaderLogsPreserved.
     forall net,
       refined_raft_intermediate_reachable net ->
       leaderLogs_preserved net.
-  Proof.
+  Proof using cci vci ollpti llcei lltsi llli rri. 
     intros. apply refined_raft_net_invariant; auto.
     - apply leaderLogs_preserved_init.
     - apply leaderLogs_preserved_client_request.

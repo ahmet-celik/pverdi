@@ -41,7 +41,7 @@ Section AppliedEntriesMonotonicProof.
       1 <= i ->
       exists e',
         findAtIndex (log (nwState net h)) i = Some e'.
-  Proof.
+  Proof using lmi si. 
     intros.
     find_copy_apply_lem_hyp logs_sorted_invariant.
     pose proof log_matching_invariant.
@@ -63,7 +63,7 @@ Section AppliedEntriesMonotonicProof.
       mEntries (pBody p) = Some es ->
       es <> nil ->
       1 <= maxIndex es.
-  Proof.
+  Proof using lmi. 
     intros.
     find_apply_lem_hyp maxIndex_non_empty.
     break_exists; intuition; find_rewrite.
@@ -77,7 +77,7 @@ Section AppliedEntriesMonotonicProof.
   Lemma deghost_snd :
     forall net h,
       snd (nwState net h) = nwState (deghost net) h.
-  Proof.
+  Proof using. 
     intros. unfold deghost in *. simpl.
     repeat break_match; subst; simpl.
     repeat find_rewrite. reflexivity.
@@ -91,7 +91,7 @@ Section AppliedEntriesMonotonicProof.
       In e (log (snd (nwState net h))) ->
       In e' (log (snd (nwState net h))) ->
       committed net e' t.
-  Proof.
+  Proof using. 
     intros.
     unfold committed in *.
     break_exists_exists. intuition.
@@ -108,7 +108,7 @@ Section AppliedEntriesMonotonicProof.
     forall net h,
       raft_intermediate_reachable net ->
       contiguous_range_exact_lo (log (nwState net h)) 0.
-  Proof.
+  Proof using lmi. 
     intros.
     find_apply_lem_hyp log_matching_invariant.
     unfold log_matching, log_matching_hosts in *.
@@ -125,7 +125,7 @@ Section AppliedEntriesMonotonicProof.
       mEntries (pBody p) = Some es ->
       In e es ->
       0 < eIndex e.
-  Proof.
+  Proof using lmi. 
     intros.
     find_apply_lem_hyp log_matching_invariant.
     unfold log_matching, log_matching_nw in *.
@@ -142,7 +142,7 @@ Section AppliedEntriesMonotonicProof.
       pBody p = AppendEntries t n pli plt es ci ->
       In e es ->
       pli < eIndex e.
-  Proof.
+  Proof using lmi. 
     intros.
     find_apply_lem_hyp log_matching_invariant.
     unfold log_matching, log_matching_nw in *.
@@ -155,7 +155,7 @@ Section AppliedEntriesMonotonicProof.
     forall l l',
       sorted (l ++ l') ->
       sorted l.
-  Proof.
+  Proof using. 
     induction l; simpl in *; intros; intuition eauto.
     - apply H0. intuition.
     - apply H0. intuition.
@@ -167,7 +167,7 @@ Section AppliedEntriesMonotonicProof.
       In {| pBody := m; pDst := h; pSrc := h' |} (nwPackets net) ->
       handleMessage h' h m (nwState net h) = (st', ms) ->
       applied_entries (nwState net) = applied_entries (update (nwState net) h st').
-  Proof.
+  Proof using misi smsi uii lmi si. 
     intros. symmetry.
     unfold handleMessage in *. break_match; repeat break_let; repeat find_inversion.
     - apply applied_entries_log_lastApplied_update_same;
@@ -320,7 +320,7 @@ Section AppliedEntriesMonotonicProof.
     forall h st out st' ps,
       handleTimeout h st = (out, st', ps) ->
       log st' = log st.
-  Proof.
+  Proof using. 
     intros. unfold handleTimeout, tryToBecomeLeader in *.
     break_match; find_inversion; subst; auto.
   Qed.
@@ -330,7 +330,7 @@ Section AppliedEntriesMonotonicProof.
       raft_intermediate_reachable net ->
       handleInput h inp (nwState net h) = (os, st', ms) ->
       applied_entries (nwState net) = applied_entries (update (nwState net) h st').
-  Proof.
+  Proof using misi. 
     intros. symmetry.
     unfold handleInput in *. break_match; repeat break_let; repeat find_inversion.
     - apply applied_entries_log_lastApplied_update_same;
@@ -360,7 +360,7 @@ Section AppliedEntriesMonotonicProof.
       raft_intermediate_reachable (mkNetwork ps sigma) ->
       doGenericServer h (sigma h) = (os, st', ms) ->
       exists es, applied_entries (update sigma h st') = (applied_entries sigma) ++ es.
-  Proof.
+  Proof using lacimi si. 
     intros.
     unfold doGenericServer in *. break_let. find_inversion.
     use_applyEntries_spec. subst. simpl in *. unfold raft_data in *.
@@ -408,7 +408,7 @@ Section AppliedEntriesMonotonicProof.
       (@step_f _ _ failure_params (failed, net) (failed', net') os) ->
       exists es,
         applied_entries (nwState net') = applied_entries (nwState net) ++ es.
-  Proof.
+  Proof using lacimi misi smsi uii lmi si. 
     intros. match goal with H : step_f _ _ _ |- _ => invcs H end.
     - unfold RaftNetHandler in *. repeat break_let. subst.
       find_inversion.
@@ -473,7 +473,7 @@ Section AppliedEntriesMonotonicProof.
       (@step_f _ _ failure_params (failed, net) (failed', net') os) ->
       In e (applied_entries (nwState net)) ->
       In e (applied_entries (nwState net')).
-  Proof.
+  Proof using lacimi misi smsi uii lmi si. 
     intros. find_eapply_lem_hyp applied_entries_monotonic'; eauto.
     break_exists. find_rewrite. in_crush.
   Qed.

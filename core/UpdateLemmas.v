@@ -10,7 +10,7 @@ Section OU.
     forall A sigma x (v : A) y,
       x <> y ->
       update sigma x v y = sigma y.
-  Proof.
+  Proof using. 
     unfold update.
     intros.
     break_if; congruence.
@@ -19,7 +19,7 @@ Section OU.
   Lemma update_nop :
     forall A sigma x y,
       update (A:=A) sigma x (sigma x) y = sigma y.
-  Proof.
+  Proof using. 
     unfold update.
     intros. break_if; congruence.
   Qed.
@@ -28,7 +28,7 @@ Section OU.
     forall A sigma x y (v : A),
       x = y ->
       update sigma x v y = v.
-  Proof.
+  Proof using. 
     intros. subst.
     unfold update.
     break_if; congruence.
@@ -37,7 +37,7 @@ Section OU.
   Lemma update_same :
     forall A sigma x (v : A),
       update sigma x v x = v.
-  Proof.
+  Proof using. 
     intros.
     rewrite update_eq; auto.
   Qed.
@@ -45,7 +45,7 @@ Section OU.
   Lemma update_nop_ext :
     forall A sigma h,
       update (A:=A) sigma h (sigma h) = sigma.
-  Proof.
+  Proof using. 
     intros.
     apply functional_extensionality.
     intros.
@@ -55,7 +55,7 @@ Section OU.
   Lemma update_fun_comm :
     forall A B (f : A -> B) st y v x,
       f (update st y v x) = update (fun x => f (st x)) y (f v) x.
-  Proof.
+  Proof using. 
     intros.
     destruct (name_eq_dec x y); subst;
     repeat first [rewrite update_diff by congruence |
@@ -66,7 +66,7 @@ Section OU.
     forall A (sigma : name -> A) y v,
       sigma y = v ->
       update sigma y v = sigma.
-  Proof.
+  Proof using. 
     intros.
     subst.
     apply update_nop_ext.
@@ -75,7 +75,7 @@ Section OU.
   Lemma update_overwrite :
     forall A (sigma : name -> A) h st st',
       update (update sigma h st) h st' = update sigma h st'.
-  Proof.
+  Proof using. 
     intros.
     apply functional_extensionality.
     intros. destruct (name_eq_dec h x).
@@ -100,4 +100,3 @@ Ltac rewrite_update :=
            | [ |- _ ] => repeat (try rewrite update_diff by congruence;
                                  try rewrite update_eq by auto)
          end.
-

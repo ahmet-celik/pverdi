@@ -14,7 +14,7 @@ Theorem lifting_applied :
   forall (net : @network _ PB_multi_params) tr,
     step_m_star step_m_init net tr ->
     trace_correct (revert_trace (base_params := vard_base_params) tr).
-Proof.
+Proof using. 
   apply transformer.
   eauto using step_1_star_trace_correct.
 Qed.
@@ -27,7 +27,7 @@ Example revert_trace_eg :
     inputs_m tr = [Put "james" "awesome"] ->
     outputs_m tr = [o] ->
     o = Response "james" (Some "awesome") None.
-Proof.
+Proof using. 
   intros.
   find_copy_apply_lem_hyp simulation.
   find_copy_apply_lem_hyp pbj_NOABT.
@@ -56,7 +56,7 @@ Example get_set_eg1 :
     outputs_m tr = [a; b] ->
     outputs_m tr = [Response "james" (Some "awesome") None;
                      Response "james" (Some "awesome") (Some "awesome")].
-Proof.
+Proof using. 
   intros.
   find_copy_apply_lem_hyp simulation.
   find_copy_apply_lem_hyp pbj_NOABT.

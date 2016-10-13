@@ -39,7 +39,7 @@ Section VotesWithLogTermSanity.
         (t' = currentTerm d /\ l' = log d)) ->
       currentTerm d >= currentTerm (snd (nwState net h)) ->
       votesWithLog_term_sanity {| nwPackets := ps'; nwState := st' |}.
-  Proof.
+  Proof using. 
     unfold votesWithLog_term_sanity. intros.
     find_higher_order_rewrite. update_destruct; subst; rewrite_update; [|eauto].
     simpl in *. find_apply_hyp_hyp. break_or_hyp.
@@ -63,7 +63,7 @@ Section VotesWithLogTermSanity.
     forall net,
       refined_raft_intermediate_reachable net ->
       votesWithLog_term_sanity net.
-  Proof.
+  Proof using rri. 
     intros.
     apply refined_raft_net_invariant; auto.
     - start. contradiction.

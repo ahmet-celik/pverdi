@@ -20,20 +20,20 @@ Module ITree(X: INDEXED_TYPE) <: TREE.
 
   Theorem gempty :
     forall (A: Type) (k: elt), get k (empty A) = None.
-  Proof.
+  Proof using. 
     intros. unfold get. apply PTree.gempty.
   Qed.
 
   Theorem gss :
     forall (A: Type) (i: elt) (x: A) (m: t A), get i (set i x m) = Some x.
-  Proof.
+  Proof using. 
     intros. unfold get, set. apply PTree.gss.
   Qed.
 
   Theorem gso:
     forall (A: Type) (i j: elt) (x: A) (m: t A),
     i <> j -> get i (set j x m) = get i m.
-  Proof.
+  Proof using. 
     intros. unfold get, set. apply PTree.gso.
     unfold not in *. intros. find_apply_lem_hyp X.index_inj. contradiction.
   Qed.
@@ -41,7 +41,7 @@ Module ITree(X: INDEXED_TYPE) <: TREE.
   Theorem gsspec:
     forall (A: Type) (i j: elt) (x: A) (m: t A),
     get i (set j x m) = if elt_eq i j then Some x else get i m.
-  Proof.
+  Proof using. 
     intros. unfold get, set.
     rewrite PTree.gsspec.
     repeat break_if; try find_apply_lem_hyp X.index_inj; congruence.
@@ -49,14 +49,14 @@ Module ITree(X: INDEXED_TYPE) <: TREE.
 
   Theorem grs:
     forall (A: Type) (i: elt) (m: t A), get i (remove i m) = None.
-  Proof.
+  Proof using. 
     intros. unfold get. apply PTree.grs.
   Qed.
 
   Theorem gro:
     forall (A: Type) (i j: elt) (m: t A),
     i <> j -> get i (remove j m) = get i m.
-  Proof.
+  Proof using. 
     intros. unfold get. apply PTree.gro.
     unfold not in *. intros. find_apply_lem_hyp X.index_inj. contradiction.
   Qed.
@@ -64,7 +64,7 @@ Module ITree(X: INDEXED_TYPE) <: TREE.
   Theorem grspec:
     forall (A: Type) (i j: elt) (m: t A),
     get i (remove j m) = if elt_eq i j then None else get i m.
-  Proof.
+  Proof using. 
     intros. unfold get, remove. rewrite PTree.grspec.
     repeat break_if; try find_apply_lem_hyp X.index_inj; congruence.
   Qed.
@@ -91,7 +91,7 @@ Module IndexedString <: INDEXED_TYPE.
       List.length l = List.length l' ->
       encode_bools l p = encode_bools l' p' ->
       l = l' /\ p = p'.
-  Proof.
+  Proof using. 
     induction l; destruct l'; intros; try discriminate; auto.
     simpl in *. do 2 break_match; try discriminate;
       solve [ find_inversion; find_apply_hyp_hyp; break_and; subst; auto ].
@@ -101,7 +101,7 @@ Module IndexedString <: INDEXED_TYPE.
     forall (x y : t),
       index x = index y ->
       x = y.
-  Proof.
+  Proof using. 
     induction x; destruct y; intros.
     - reflexivity.
     - simpl in *. repeat break_match; congruence.

@@ -24,14 +24,14 @@ Section CroniesTermProof.
     forall h st client id c out st' l,
       handleClientRequest h st client id c = (out, st', l) ->
       currentTerm st' = currentTerm st.
-  Proof.
+  Proof using. 
     intros. unfold handleClientRequest in *.
     break_match; find_inversion; intuition.
   Qed.
 
   Lemma cronies_term_client_request :
     refined_raft_net_invariant_client_request cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_client_request, cronies_term,
     update_elections_data_client_request in *.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
@@ -51,7 +51,7 @@ Section CroniesTermProof.
       (currentTerm (snd st) <= currentTerm st' /\
        (In h' (cronies (fst st) t) \/
         t = currentTerm st')).
-  Proof.
+  Proof using. 
     intros.
     unfold handleTimeout, tryToBecomeLeader, update_elections_data_timeout in *.
     repeat (break_match; repeat find_inversion; simpl in *; auto);
@@ -63,7 +63,7 @@ Section CroniesTermProof.
 
   Lemma cronies_term_timeout :
     refined_raft_net_invariant_timeout cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_timeout, cronies_term.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -76,14 +76,14 @@ Section CroniesTermProof.
     forall st h os st' ms,
       doLeader st h = (os, st', ms) ->
       currentTerm st' = currentTerm st.
-  Proof.
+  Proof using. 
     intros. unfold doLeader in *.
     repeat break_match; repeat find_inversion; auto.
   Qed.
 
   Lemma cronies_term_do_leader :
     refined_raft_net_invariant_do_leader cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_do_leader, cronies_term.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -101,7 +101,7 @@ Section CroniesTermProof.
     forall st h os st' ms,
       doGenericServer h st = (os, st', ms) ->
       currentTerm st' = currentTerm st.
-  Proof.
+  Proof using. 
     intros. unfold doGenericServer in *.
     repeat break_match; repeat find_inversion;
     use_applyEntries_spec; subst; simpl in *;
@@ -110,7 +110,7 @@ Section CroniesTermProof.
 
   Lemma cronies_term_do_generic_server :
     refined_raft_net_invariant_do_generic_server cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_do_generic_server, cronies_term.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -128,7 +128,7 @@ Section CroniesTermProof.
     forall h st t n pli plt es ci st' m,
       handleAppendEntries h st t n pli plt es ci = (st', m) ->
       currentTerm st <= currentTerm st'.
-  Proof.
+  Proof using. 
     intros.
     unfold handleAppendEntries, advanceCurrentTerm in *.
     repeat break_match; find_inversion; simpl in *;
@@ -140,7 +140,7 @@ Section CroniesTermProof.
       update_elections_data_appendEntries h st t n pli plt es ci = st' ->
       In e (cronies st' t') ->
       In e (cronies (fst st) t').
-  Proof.
+  Proof using. 
     intros.
     unfold update_elections_data_appendEntries in *.
     repeat break_match; repeat find_rewrite; subst; simpl in *; auto.
@@ -148,7 +148,7 @@ Section CroniesTermProof.
 
   Lemma cronies_term_append_entries :
     refined_raft_net_invariant_append_entries cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_append_entries, cronies_term.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -162,7 +162,7 @@ Section CroniesTermProof.
     forall h st h' t es r st' ms,
       handleAppendEntriesReply h st h' t es r = (st', ms) ->
       currentTerm st <= currentTerm st'.
-  Proof.
+  Proof using. 
     intros.
     unfold handleAppendEntriesReply, advanceCurrentTerm in *.
     repeat break_match; try find_inversion; subst; simpl in *;
@@ -172,7 +172,7 @@ Section CroniesTermProof.
 
   Lemma cronies_term_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_append_entries_reply, cronies_term.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -185,7 +185,7 @@ Section CroniesTermProof.
     forall h st t h' pli plt st' m,
       handleRequestVote h st t h' pli plt = (st', m) ->
       currentTerm st <= currentTerm st'.
-  Proof.
+  Proof using. 
     intros.
     unfold handleRequestVote, advanceCurrentTerm in *.
     repeat break_match; try find_inversion; subst; simpl in *;
@@ -197,7 +197,7 @@ Section CroniesTermProof.
       update_elections_data_requestVote h h' t pli plt s st = st' ->
       In e (cronies st' t') ->
       In e (cronies (fst st) t').
-  Proof.
+  Proof using. 
     intros.
     unfold update_elections_data_requestVote in *.
     repeat break_match; repeat find_rewrite; subst; simpl in *; auto.
@@ -205,7 +205,7 @@ Section CroniesTermProof.
 
   Lemma cronies_term_request_vote :
     refined_raft_net_invariant_request_vote cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_request_vote, cronies_term.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -222,7 +222,7 @@ Section CroniesTermProof.
       currentTerm st' = currentTerm st \/
       (currentTerm st <= currentTerm st' /\
        type st' = Follower).
-  Proof.
+  Proof using. 
     intros.
     unfold handleRequestVoteReply, advanceCurrentTerm in *.
     repeat break_match; try find_inversion; subst; simpl in *; intuition;
@@ -232,7 +232,7 @@ Section CroniesTermProof.
 
   Lemma cronies_term_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_request_vote_reply, cronies_term.
     intros. subst. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -259,14 +259,14 @@ Section CroniesTermProof.
 
   Lemma cronies_term_init :
     refined_raft_net_invariant_init cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_init, cronies_term.
     intros. simpl in *. intuition.
   Qed.
 
   Lemma cronies_term_reboot :
     refined_raft_net_invariant_reboot cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_reboot, cronies_term, reboot.
     intros. simpl in *. repeat find_higher_order_rewrite.
     update_destruct; subst; rewrite_update; eauto.
@@ -280,7 +280,7 @@ Section CroniesTermProof.
 
   Lemma cronies_term_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset cronies_term.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_state_same_packet_subset, cronies_term.
     intros.
     repeat find_reverse_higher_order_rewrite. eauto.
@@ -290,7 +290,7 @@ Section CroniesTermProof.
     forall net,
       refined_raft_intermediate_reachable net ->
       cronies_term net.
-  Proof.
+  Proof using rri. 
     intros. apply refined_raft_net_invariant; auto.
     - apply cronies_term_init.
     - apply cronies_term_client_request.

@@ -46,13 +46,13 @@ Section AllEntriesCandidateEntries.
   
   Lemma allEntries_candidateEntries_init :
     refined_raft_net_invariant_init allEntries_candidateEntries.
-  Proof.
+  Proof using. 
     start. contradiction.
   Qed.
 
   Lemma allEntries_candidateEntries_client_request :
     refined_raft_net_invariant_client_request allEntries_candidateEntries.
-  Proof.
+  Proof using cci. 
     start.
     eapply candidateEntries_ext; eauto.
     repeat find_higher_order_rewrite.
@@ -98,7 +98,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_timeout :
     refined_raft_net_invariant_timeout allEntries_candidateEntries.
-  Proof.
+  Proof using cti. 
     start.
     eapply candidateEntries_ext; eauto.
     repeat find_higher_order_rewrite.
@@ -138,7 +138,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_append_entries :
     refined_raft_net_invariant_append_entries allEntries_candidateEntries.
-  Proof.
+  Proof using cei. 
     start.
     eapply candidateEntries_ext; eauto.
     repeat find_higher_order_rewrite.
@@ -170,7 +170,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply allEntries_candidateEntries.
-  Proof.
+  Proof using. 
     start.
     eapply candidateEntries_ext; eauto.
     repeat find_higher_order_rewrite.
@@ -189,7 +189,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_request_vote :
     refined_raft_net_invariant_request_vote allEntries_candidateEntries.
-  Proof.
+  Proof using. 
     start.
     eapply candidateEntries_ext; eauto.
     repeat find_higher_order_rewrite.
@@ -211,7 +211,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply allEntries_candidateEntries.
-  Proof.
+  Proof using cei cci. 
     start.
     intro_refined_invariant candidate_entries_invariant.
     eapply candidateEntries_ext; eauto.
@@ -227,7 +227,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_do_leader :
     refined_raft_net_invariant_do_leader allEntries_candidateEntries.
-  Proof.
+  Proof using. 
     start.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -248,7 +248,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_do_generic_server :
     refined_raft_net_invariant_do_generic_server allEntries_candidateEntries.
-  Proof.
+  Proof using. 
     start.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -271,7 +271,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset allEntries_candidateEntries.
-  Proof.
+  Proof using. 
     start.
     eapply candidateEntries_ext; eauto.
     repeat find_reverse_higher_order_rewrite.
@@ -284,7 +284,7 @@ Section AllEntriesCandidateEntries.
 
   Lemma allEntries_candidateEntries_reboot :
     refined_raft_net_invariant_reboot allEntries_candidateEntries.
-  Proof.
+  Proof using. 
     start.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -305,7 +305,7 @@ Section AllEntriesCandidateEntries.
     forall net,
       refined_raft_intermediate_reachable net ->
       allEntries_candidateEntries net.
-  Proof.
+  Proof using cei cti cci rri. 
     intros.
     apply refined_raft_net_invariant; auto.
     - apply allEntries_candidateEntries_init.

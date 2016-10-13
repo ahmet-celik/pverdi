@@ -69,7 +69,7 @@ Section StateMachineSafetyProof.
       In p (nwPackets (deghost net)) ->
       exists (q : packet (params := raft_refined_multi_params)),
         In q (nwPackets net) /\ p = deghost_packet q.
-  Proof.
+  Proof using. 
     intros.
     unfold deghost in *. simpl in *. do_in_map.
     subst. eexists; eauto.
@@ -80,7 +80,7 @@ Section StateMachineSafetyProof.
       commit_recorded_committed net ->
       state_machine_safety' net ->
       state_machine_safety (deghost net).
-  Proof.
+  Proof using. 
     intros. unfold state_machine_safety in *. intuition.
     - unfold state_machine_safety_host. intros.
       do 2 eapply_prop_hyp commit_recorded_committed commit_recorded.
@@ -103,7 +103,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_init :
     msg_refined_raft_net_invariant_init lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_init, lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition.
   Qed.
@@ -120,7 +120,7 @@ Section StateMachineSafetyProof.
     forall h st client id c out st' l,
       handleClientRequest h st client id c = (out, st', l) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     unfold handleClientRequest.
     intros.
     repeat break_match; find_inversion; auto.
@@ -131,7 +131,7 @@ Section StateMachineSafetyProof.
       handleClientRequest h st client id c = (out, st', l) ->
       sorted (log st') ->
       maxIndex (log st) <= maxIndex (log st').
-  Proof.
+  Proof using. 
     intros.
     destruct (log st') using (handleClientRequest_log_ind ltac:(eauto)).
     - auto.
@@ -145,7 +145,7 @@ Section StateMachineSafetyProof.
     forall net h,
       refined_raft_intermediate_reachable net ->
       sorted (log (snd (nwState net h))).
-  Proof.
+  Proof using si rri. 
     intros.
     pose proof (lift_prop _ logs_sorted_invariant).
     find_insterU. conclude_using eauto.
@@ -157,7 +157,7 @@ Section StateMachineSafetyProof.
     forall net h,
       msg_refined_raft_intermediate_reachable net ->
       sorted (log (snd (nwState net h))).
-  Proof.
+  Proof using rmri si rri. 
     intros.
     rewrite <- msg_deghost_spec with (net0 := net).
     eapply msg_lift_prop.
@@ -171,7 +171,7 @@ Section StateMachineSafetyProof.
       In p (nwPackets net) ->
       pBody p = AppendEntries t n pli plt es ci ->
       sorted es.
-  Proof.
+  Proof using rlmli. 
     intros. eapply entries_sorted_nw_invariant; eauto.
   Qed.
 
@@ -184,7 +184,7 @@ Section StateMachineSafetyProof.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_no_entries_past_current_term_host net.
-  Proof.
+  Proof using rmri tsi. 
     intros.
     enough (no_entries_past_current_term_host (deghost (mgv_deghost net))) by
         (unfold no_entries_past_current_term_host, lifted_no_entries_past_current_term_host, deghost, mgv_deghost in *;
@@ -198,7 +198,7 @@ Section StateMachineSafetyProof.
   Lemma all_the_way_deghost_spec :
     forall (net : ghost_log_network) h,
       snd (nwState net h) = nwState (deghost (mgv_deghost net)) h.
-  Proof.
+  Proof using rmri rri. 
     intros.
     rewrite deghost_spec.
     rewrite msg_deghost_spec with (net0 := net).
@@ -209,13 +209,13 @@ Section StateMachineSafetyProof.
     forall (net : ghost_log_network),
       msg_refined_raft_intermediate_reachable net ->
       raft_intermediate_reachable (deghost (mgv_deghost net)).
-  Proof.
+  Proof using rmri rri. 
     auto using simulation_1, msg_simulation_1.
   Qed.
 
   Lemma lifted_maxIndex_sanity_client_request :
     msg_refined_raft_net_invariant_client_request lifted_maxIndex_sanity.
-  Proof.
+  Proof using rmri si rri. 
     unfold msg_refined_raft_net_invariant_client_request, lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     simpl. intros.
     find_copy_apply_lem_hyp handleClientRequest_maxIndex.
@@ -230,7 +230,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_timeout :
     msg_refined_raft_net_invariant_timeout lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_timeout, lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; simpl in *; repeat find_higher_order_rewrite; update_destruct; auto;
     erewrite handleTimeout_log_same by eauto.
@@ -242,7 +242,7 @@ Section StateMachineSafetyProof.
     forall h st t n pli plt es ci st' m,
       handleAppendEntries h st t n pli plt es ci = (st', m) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     unfold handleAppendEntries, advanceCurrentTerm;
     intros; repeat break_match; repeat find_inversion; simpl; auto.
   Qed.
@@ -251,7 +251,7 @@ Section StateMachineSafetyProof.
     forall l1 l2,
       sorted (l1 ++ l2) ->
       maxIndex l2 <= maxIndex (l1 ++ l2).
-  Proof.
+  Proof using. 
     induction l1; intros; simpl in *; intuition.
     destruct l2; intuition. simpl in *.
     specialize (H0 e). conclude H0 intuition. intuition.
@@ -261,7 +261,7 @@ Section StateMachineSafetyProof.
     forall a b c,
       a <= c ->
       max a (min b c) <= c.
-  Proof.
+  Proof using. 
     intros.
     destruct (max a (min b c)) using (Max.max_case _ _); intuition.
   Qed.
@@ -270,7 +270,7 @@ Section StateMachineSafetyProof.
     forall (net : network (params := raft_refined_multi_params)) p,
       In p (nwPackets net) ->
       In (deghost_packet p) (nwPackets (deghost net)).
-  Proof.
+  Proof using. 
     unfold deghost.
     simpl. intuition.
     apply in_map_iff.
@@ -281,7 +281,7 @@ Section StateMachineSafetyProof.
     forall (net : ghost_log_network) p,
       In p (nwPackets net) ->
       In (mgv_deghost_packet p) (nwPackets (mgv_deghost net)).
-  Proof.
+  Proof using. 
     unfold mgv_deghost.
     simpl. intuition.
     apply in_map_iff.
@@ -291,7 +291,7 @@ Section StateMachineSafetyProof.
   Lemma pBody_deghost_packet :
     forall (p : packet (params := raft_refined_multi_params)),
       pBody (deghost_packet p) = pBody p.
-  Proof.
+  Proof using. 
     unfold deghost_packet.
     simpl. auto.
   Qed.
@@ -299,7 +299,7 @@ Section StateMachineSafetyProof.
   Lemma pDst_deghost_packet :
     forall (p : packet (params := raft_refined_multi_params)),
       pDst (deghost_packet p) = pDst p.
-  Proof.
+  Proof using. 
     unfold deghost_packet.
     simpl. auto.
   Qed.
@@ -307,7 +307,7 @@ Section StateMachineSafetyProof.
   Lemma pDst_mgv_deghost_packet :
     forall (p : ghost_log_packet),
       pDst (mgv_deghost_packet p) = pDst p.
-  Proof.
+  Proof using. 
     unfold mgv_deghost_packet.
     simpl. auto.
   Qed.
@@ -315,7 +315,7 @@ Section StateMachineSafetyProof.
   Lemma pBody_mgv_deghost_packet :
     forall (p : ghost_log_packet),
       pBody (mgv_deghost_packet p) = snd (pBody p).
-  Proof.
+  Proof using. 
     unfold mgv_deghost_packet.
     simpl. auto.
   Qed.
@@ -327,7 +327,7 @@ Section StateMachineSafetyProof.
       snd (pBody p) = AppendEntries t n pli plt es ci ->
       In p (nwPackets net) ->
       sorted (log st').
-  Proof.
+  Proof using rmri si rri. 
     intros.
     eapply handleAppendEntries_logs_sorted with (p0 := deghost_packet (mgv_deghost_packet p)).
     - eauto using all_the_way_simulation_1.
@@ -348,7 +348,7 @@ Section StateMachineSafetyProof.
     forall es lo i,
       contiguous_range_exact_lo es lo ->
       lo < i <= maxIndex es -> exists e, eIndex e = i /\ In e es.
-  Proof.
+  Proof using. 
     unfold contiguous_range_exact_lo.
     intuition.
   Qed.
@@ -358,7 +358,7 @@ Section StateMachineSafetyProof.
       contiguous_range_exact_lo es lo ->
       In e es ->
       lo < eIndex e.
-  Proof.
+  Proof using. 
     unfold contiguous_range_exact_lo.
     intuition.
   Qed.
@@ -375,7 +375,7 @@ Section StateMachineSafetyProof.
        (prevLogIndex = eIndex e /\ prevLogTerm = eTerm e) \/
        eIndex e > maxIndex entries \/
        In e entries).
-  Proof.
+  Proof using rri. 
     unfold state_machine_safety, state_machine_safety_nw.
     intuition.
     match goal with
@@ -400,7 +400,7 @@ Section StateMachineSafetyProof.
        (prevLogIndex = eIndex e /\ prevLogTerm = eTerm e) \/
        eIndex e > maxIndex entries \/
        In e entries).
-  Proof.
+  Proof using rmri rri. 
     intros.
     eapply lifted_sms_nw.
     - eauto.
@@ -416,7 +416,7 @@ Section StateMachineSafetyProof.
       (eIndex e <= lastApplied (snd (nwState net h)) \/
        eIndex e <= commitIndex (snd (nwState net h))) ->
       commit_recorded (deghost net) h e.
-  Proof.
+  Proof using rri. 
     unfold commit_recorded.
     intros.
     rewrite deghost_spec.
@@ -429,7 +429,7 @@ Section StateMachineSafetyProof.
       (eIndex e <= lastApplied (snd (nwState net h)) \/
        eIndex e <= commitIndex (snd (nwState net h))) ->
       commit_recorded (deghost (mgv_deghost net)) h e.
-  Proof.
+  Proof using rmri rri. 
     unfold commit_recorded.
     intros.
     rewrite deghost_spec.
@@ -443,7 +443,7 @@ Section StateMachineSafetyProof.
   Lemma lifted_entries_contiguous_invariant :
     forall net, msg_refined_raft_intermediate_reachable net ->
            lifted_entries_contiguous net.
-  Proof.
+  Proof using rmri rlmli. 
     unfold lifted_entries_contiguous.
     intros.
     pose proof (msg_lift_prop _ entries_contiguous_invariant _ ltac:(eauto) h).
@@ -461,7 +461,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_contiguous_nw net.
-  Proof.
+  Proof using rmri rlmli. 
     unfold lifted_entries_contiguous_nw.
     intros.
     pose proof msg_lift_prop _ entries_contiguous_nw_invariant _ ltac:(eauto) (mgv_deghost_packet p).
@@ -480,7 +480,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_gt_0 net.
-  Proof.
+  Proof using rmri rlmli. 
     unfold lifted_entries_gt_0.
     intros.
     pose proof msg_lift_prop _ entries_gt_0_invariant _ ltac:(eauto).
@@ -506,7 +506,7 @@ Section StateMachineSafetyProof.
                          mgv_deghost_packet p' = mkPacket (params := raft_refined_multi_params)
                                                           (pDst p) (pSrc p) m) ->
       lifted_maxIndex_sanity (mkNetwork ps' st').
-  Proof.
+  Proof using rmri rlmli si rri. 
     unfold lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intros.
     intuition; simpl in *; repeat find_higher_order_rewrite; update_destruct; auto.
@@ -745,7 +745,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_append_entries_reply :
     msg_refined_raft_net_invariant_append_entries_reply lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_append_entries_reply,
            lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; repeat find_higher_order_rewrite; update_destruct; auto.
@@ -759,7 +759,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_request_vote :
     msg_refined_raft_net_invariant_request_vote lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_request_vote,
            lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; repeat find_higher_order_rewrite; update_destruct; auto.
@@ -773,7 +773,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_request_vote_reply :
     msg_refined_raft_net_invariant_request_vote_reply lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_request_vote_reply,
            lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; repeat find_higher_order_rewrite; update_destruct; auto.
@@ -789,7 +789,7 @@ Section StateMachineSafetyProof.
     forall st n os st' ms,
       doLeader st n = (os, st', ms) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     unfold doLeader.
     intros.
     repeat break_match; repeat find_inversion; auto.
@@ -799,7 +799,7 @@ Section StateMachineSafetyProof.
     forall l x y,
       x <= y ->
       x <= fold_left max l y.
-  Proof.
+  Proof using. 
     induction l; intros.
     - auto.
     - simpl. apply IHl. apply Max.max_case_strong; omega.
@@ -808,7 +808,7 @@ Section StateMachineSafetyProof.
   Lemma fold_left_maximum_le :
     forall l x,
       x <= fold_left max l x.
-  Proof.
+  Proof using. 
     intros. apply fold_left_maximum_le'.
     auto.
   Qed.
@@ -818,7 +818,7 @@ Section StateMachineSafetyProof.
       fold_left max l x = x ->
       x <= y ->
       fold_left max l y = y.
-  Proof.
+  Proof using. 
     induction l; intros.
     - auto.
     - simpl in *. revert H.
@@ -840,7 +840,7 @@ Section StateMachineSafetyProof.
       fold_left max l x = x \/
       exists y,
         In y l /\ fold_left max l x = y.
-  Proof.
+  Proof using. 
     induction l; simpl.
     - auto.
     - intros.
@@ -857,7 +857,7 @@ Section StateMachineSafetyProof.
       P x ->
       (forall y, In y l -> P y) ->
       P (fold_left max l x).
-  Proof.
+  Proof using. 
     intros.
     destruct (fold_left_maximum_cases l x).
     - find_rewrite. auto.
@@ -870,7 +870,7 @@ Section StateMachineSafetyProof.
       sorted (log st) ->
       commitIndex st <= maxIndex (log st) ->
       commitIndex st' <= maxIndex (log st').
-  Proof.
+  Proof using. 
     unfold doLeader.
     intros.
     repeat break_match; repeat find_inversion; simpl; auto;
@@ -885,7 +885,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_do_leader :
     msg_refined_raft_net_invariant_do_leader lifted_maxIndex_sanity.
-  Proof.
+  Proof using rmri si rri. 
     unfold msg_refined_raft_net_invariant_do_leader,
            lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; repeat find_higher_order_rewrite; update_destruct; auto.
@@ -916,7 +916,7 @@ Section StateMachineSafetyProof.
       lastApplied st' = lastApplied st \/
       (lastApplied st < commitIndex st  /\
        lastApplied st' = commitIndex st).
-  Proof.
+  Proof using. 
     unfold doGenericServer.
     intros.
     repeat break_match; repeat find_inversion; simpl.
@@ -931,7 +931,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_do_generic_server :
     msg_refined_raft_net_invariant_do_generic_server lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_do_generic_server,
            lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; find_higher_order_rewrite; update_destruct; auto;
@@ -956,7 +956,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_state_same_packet_subset,
            lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; find_reverse_higher_order_rewrite; auto.
@@ -964,7 +964,7 @@ Section StateMachineSafetyProof.
 
   Lemma lifted_maxIndex_sanity_reboot :
     msg_refined_raft_net_invariant_reboot lifted_maxIndex_sanity.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_reboot,
            lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     unfold reboot.
@@ -1011,7 +1011,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_init :
     msg_refined_raft_net_invariant_init commit_invariant.
-  Proof.
+  Proof using. 
     unfold msg_refined_raft_net_invariant_init, commit_invariant.
     split.
     - unfold commit_invariant_host, commit_recorded_committed, commit_recorded, committed. simpl.
@@ -1023,7 +1023,7 @@ Section StateMachineSafetyProof.
     forall net h,
       msg_refined_raft_intermediate_reachable net ->
       lastApplied (snd (nwState net h)) <= commitIndex (snd (nwState net h)).
-  Proof.
+  Proof using rmri lalcii rri. 
     intros.
     pose proof (lift_prop _ (lastApplied_le_commitIndex_invariant)).
     find_apply_lem_hyp msg_simulation_1.
@@ -1041,7 +1041,7 @@ Section StateMachineSafetyProof.
     forall net e,
       lifted_directly_committed net e ->
       directly_committed (mgv_deghost net) e.
-  Proof.
+  Proof using rmri. 
     unfold lifted_directly_committed, directly_committed.
     intuition.
     break_exists_exists.
@@ -1053,7 +1053,7 @@ Section StateMachineSafetyProof.
     forall net e,
       directly_committed (mgv_deghost net) e ->
       lifted_directly_committed net e.
-  Proof.
+  Proof using rmri. 
     unfold lifted_directly_committed, directly_committed.
     intuition.
     break_exists_exists.
@@ -1066,7 +1066,7 @@ Section StateMachineSafetyProof.
     forall net e t,
       lifted_committed net e t ->
       committed (mgv_deghost net) e t.
-  Proof.
+  Proof using rmri. 
     unfold lifted_committed, committed.
     intros.
     break_exists_exists.
@@ -1078,7 +1078,7 @@ Section StateMachineSafetyProof.
     forall net e t,
       committed (mgv_deghost net) e t ->
       lifted_committed net e t.
-  Proof.
+  Proof using rmri. 
     unfold lifted_committed, committed.
     intros.
     break_exists_exists.
@@ -1091,7 +1091,7 @@ Section StateMachineSafetyProof.
       (net : @network (@mgv_refined_base_params base)
                       (@mgv_refined_multi_params base multi failure ghost)) h,
       nwState (mgv_deghost net) h = nwState net h.
-  Proof.
+  Proof using. 
     unfold mgv_deghost.
     intros.
     simpl.
@@ -1103,7 +1103,7 @@ Section StateMachineSafetyProof.
       msg_refined_raft_intermediate_reachable net ->
       commit_invariant net ->
       commit_recorded_committed (mgv_deghost net).
-  Proof.
+  Proof using rmri lalcii rri. 
     unfold commit_invariant, commit_recorded_committed, commit_recorded, commit_invariant_host.
     intuition;
     repeat find_rewrite_lem deghost_spec;
@@ -1117,7 +1117,7 @@ Section StateMachineSafetyProof.
     forall h st client id c out st' ms,
       handleClientRequest h st client id c = (out, st', ms) ->
       currentTerm st' = currentTerm st.
-  Proof.
+  Proof using. 
     unfold handleClientRequest.
     intros.
     repeat break_match; repeat find_inversion; auto.
@@ -1127,7 +1127,7 @@ Section StateMachineSafetyProof.
     forall h st client id c out st' ms,
       handleClientRequest h st client id c = (out, st', ms) ->
       commitIndex st' = commitIndex st.
-  Proof.
+  Proof using. 
     unfold handleClientRequest.
     intros.
     repeat break_match; repeat find_inversion; auto.
@@ -1139,7 +1139,7 @@ Section StateMachineSafetyProof.
       (forall h, In (eTerm e, e) (allEntries (fst (nwState net h))) ->
                  In (eTerm e, e) (allEntries (fst (nwState net' h)))) ->
       directly_committed net' e.
-  Proof.
+  Proof using. 
     unfold directly_committed.
     intuition.
     break_exists_exists.
@@ -1157,7 +1157,7 @@ Section StateMachineSafetyProof.
          eClient e = client /\ eInput e = c /\ eId e = id /\ type (snd st) = Leader /\
          allEntries (update_elections_data_client_request h st client id c) =
          (currentTerm st', e) :: allEntries (fst st)).
-  Proof.
+  Proof using. 
     intros.
     unfold update_elections_data_client_request.
     repeat break_match; repeat find_inversion; auto.
@@ -1180,7 +1180,7 @@ Section StateMachineSafetyProof.
          eClient e = client -> eInput e = c -> eId e = id -> type (snd st) = Leader ->
          P ((currentTerm st', e) :: allEntries (fst st))) ->
         P (allEntries (update_elections_data_client_request h st client id c)).
-  Proof.
+  Proof using. 
     intros.
     find_apply_lem_hyp update_elections_data_client_request_allEntries.
     intuition.
@@ -1194,7 +1194,7 @@ Section StateMachineSafetyProof.
       handleClientRequest h (snd st) client id c = (out, st', ms) ->
       In (t, e) (allEntries (fst st)) ->
       In (t, e) (allEntries (update_elections_data_client_request h st client id c)).
-  Proof.
+  Proof using. 
     intros.
     match goal with
       | [ |- context [ allEntries ?x ] ] =>
@@ -1208,7 +1208,7 @@ Section StateMachineSafetyProof.
       handleClientRequest h st client id c = (out, st', ms) ->
       In e (log st) ->
       In e (log st').
-  Proof.
+  Proof using. 
     intros.
     destruct (log st') using (handleClientRequest_log_ind ltac:(eauto)); intuition.
   Qed.
@@ -1223,7 +1223,7 @@ Section StateMachineSafetyProof.
          In (t', e') (allEntries (fst (nwState net h))) ->
          In (t', e') (allEntries (fst (nwState net' h)))) ->
       committed net' e t.
-  Proof.
+  Proof using. 
     unfold committed.
     intros.
     break_exists_exists.
@@ -1241,7 +1241,7 @@ Section StateMachineSafetyProof.
           In (t', e') (allEntries (fst (nwState net h))) ->
           In (t', e') (allEntries (fst (nwState net' h)))) ->
       lifted_committed net' e t.
-  Proof.
+  Proof using rmri. 
     intros.
     find_apply_lem_hyp lifted_committed_committed.
     find_eapply_lem_hyp committed_log_allEntries_preserved; eauto.
@@ -1258,7 +1258,7 @@ Section StateMachineSafetyProof.
       maxIndex_sanity (deghost (mgv_deghost net)) ->
       lastApplied (snd (nwState net h)) <= maxIndex (log (snd (nwState net h))) /\
       commitIndex (snd (nwState net h)) <= maxIndex (log (snd (nwState net h))).
-  Proof.
+  Proof using rmri rri. 
     intros.
     match goal with
       | [ H : _, H' : _ |- _ ] => apply H in H'; clear H
@@ -1278,7 +1278,7 @@ Section StateMachineSafetyProof.
       log st = log st' ->
       haveNewEntries st es = true ->
       haveNewEntries st' es = true.
-  Proof.
+  Proof using. 
     unfold haveNewEntries.
     intros.
     find_rewrite. auto.
@@ -1290,7 +1290,7 @@ Section StateMachineSafetyProof.
       (forall h', nwState net' h' = update (nwState net) h (update_elections_data_client_request h (nwState net h) client id c, d) h') ->
       lifted_committed net e t ->
       lifted_committed net' e t.
-  Proof.
+  Proof using rmri. 
     intros.
     eapply lifted_committed_log_allEntries_preserved; simpl; eauto.
     - intros. find_higher_order_rewrite.
@@ -1302,7 +1302,7 @@ Section StateMachineSafetyProof.
   Lemma not_empty_intro :
     forall A (l : list A),
       l <> [] -> not_empty l = true.
-  Proof.
+  Proof using. 
     unfold not_empty.
     intros.
     break_match; congruence.
@@ -1314,7 +1314,7 @@ Section StateMachineSafetyProof.
       (forall e, findAtIndex (log st) (maxIndex es) = Some e ->
             eTerm e <> maxTerm es) ->
       haveNewEntries st es = true.
-  Proof.
+  Proof using. 
     unfold haveNewEntries.
     intros.
     do_bool. split.
@@ -1340,7 +1340,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_prevLog_leader_sublog net.
-  Proof.
+  Proof using rmri pllsi rri. 
     intros.
     pose proof (msg_lift_prop _ (lift_prop _ prevLog_leader_sublog_invariant)).
     find_insterU. conclude_using eauto.
@@ -1365,7 +1365,7 @@ Section StateMachineSafetyProof.
       (forall p', In p' ps' -> In p' (nwPackets net) \/
                          In p' (send_packets h (add_ghost_msg (params := ghost_log_params) h (gd, d) l))) ->
       commit_invariant (mkNetwork ps' st').
-  Proof.
+  Proof using rmri rri. 
     unfold msg_refined_raft_net_invariant_client_request, commit_invariant.
     intros. split.
     - { unfold commit_invariant_host in *. break_and.
@@ -1433,7 +1433,7 @@ Section StateMachineSafetyProof.
       (forall h', nwState net' h' = update (nwState net) h (update_elections_data_timeout h (nwState net h), d') h') ->
       lifted_committed net e t ->
       lifted_committed net' e t.
-  Proof.
+  Proof using rmri. 
     intros.
     eapply lifted_committed_log_allEntries_preserved; eauto.
     - intros. repeat find_higher_order_rewrite. update_destruct.
@@ -1449,7 +1449,7 @@ Section StateMachineSafetyProof.
       lifted_committed net e t ->
       t <= t' ->
       lifted_committed net e t'.
-  Proof.
+  Proof using. 
     unfold lifted_committed.
     intros.
     break_exists_exists.
@@ -1459,7 +1459,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_timeout :
     msg_refined_raft_net_invariant_timeout commit_invariant.
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_timeout, commit_invariant.
     simpl. intuition.
     - unfold commit_invariant_host in *.
@@ -1497,7 +1497,7 @@ Section StateMachineSafetyProof.
       (forall h, st' h = st h) ->
       committed (mkNetwork ps st) e t ->
       committed (mkNetwork ps st') e t.
-  Proof.
+  Proof using. 
     unfold committed, directly_committed.
     simpl. intros.
     break_exists_exists.
@@ -1512,7 +1512,7 @@ Section StateMachineSafetyProof.
       (forall h, st' h = st h) ->
       lifted_committed (mkNetwork ps st) e t ->
       lifted_committed (mkNetwork ps st') e t.
-  Proof.
+  Proof using rmri. 
     intros.
     apply committed_lifted_committed.
     find_apply_lem_hyp lifted_committed_committed.
@@ -1536,7 +1536,7 @@ Section StateMachineSafetyProof.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_state_machine_safety_nw' net.
-  Proof.
+  Proof using rmri smspi. 
     intros.
     unfold lifted_state_machine_safety_nw'.
     intros.
@@ -1557,7 +1557,7 @@ Section StateMachineSafetyProof.
       In p (nwPackets net) ->
       snd (pBody p) = AppendEntries t n pli plt es ci ->
       sorted es.
-  Proof.
+  Proof using rmri rlmli. 
     intros.
     find_apply_lem_hyp in_mgv_ghost_packet.
     match goal with
@@ -1573,7 +1573,7 @@ Section StateMachineSafetyProof.
     forall st h t n pli plt es ci x,
       In x (allEntries (fst st)) ->
       In x (allEntries (update_elections_data_appendEntries h st t n pli plt es ci)).
-  Proof.
+  Proof using. 
     unfold update_elections_data_appendEntries.
     intros. break_let. break_match; auto.
     break_if; auto.
@@ -1588,7 +1588,7 @@ Section StateMachineSafetyProof.
       eIndex e <= eIndex e' ->
       lifted_committed net e' t ->
       lifted_committed net e t.
-  Proof.
+  Proof using rmri tci. 
     intros.
     apply committed_lifted_committed.
     find_apply_lem_hyp lifted_committed_committed.
@@ -1611,7 +1611,7 @@ Section StateMachineSafetyProof.
                                          h (nwState net h) t n pli plt es ci, d) h') ->
       lifted_committed net e t' ->
       lifted_committed net' e t'.
-  Proof.
+  Proof using rmri tsi rlmli smspi si rri. 
     intros.
     unfold lifted_committed in *.
     break_exists_name host. break_exists_name e'.
@@ -1819,7 +1819,7 @@ Section StateMachineSafetyProof.
     forall h st t n pli plt es ci st' m,
       handleAppendEntries h st t n pli plt es ci = (st', m) ->
       currentTerm st <= currentTerm st'.
-  Proof.
+  Proof using. 
     intros.
     unfold handleAppendEntries, advanceCurrentTerm in *.
     repeat break_match; find_inversion; simpl in *;
@@ -1848,7 +1848,7 @@ Section StateMachineSafetyProof.
       t >= currentTerm st /\
       log st' = es ++ (removeAfterIndex (log st) pli) /\
       haveNewEntries st es = true.
-  Proof.
+  Proof using. 
     intros. unfold handleAppendEntries in *.
     break_if; [find_inversion; subst; eauto|].
     break_if;
@@ -1877,7 +1877,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_gt_0_nw net.
-  Proof.
+  Proof using rmri rlmli. 
     unfold lifted_entries_gt_0_nw.
     intros.
     pose proof msg_lift_prop _ entries_gt_0_nw_invariant _ ltac:(eauto).
@@ -1898,7 +1898,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_sorted_nw' net.
-  Proof.
+  Proof using rmri rlmli. 
     intros.
     pose proof msg_lift_prop _ entries_sorted_nw_invariant.
     find_copy_apply_hyp_hyp.
@@ -1922,7 +1922,7 @@ Section StateMachineSafetyProof.
              In p' (xs ++ ys) \/ p' = mkPacket (pDst p) (pSrc p)
                                              (write_ghost_log (pDst p) (gd, d), m)) ->
       commit_invariant (mkNetwork ps' st').
-  Proof.
+  Proof using rmri tsi glemi lphogli glci rlmli smspi si rri. 
     unfold commit_invariant.
     intros.
 
@@ -2183,7 +2183,7 @@ Section StateMachineSafetyProof.
       (forall h', nwState net' h' = update (nwState net) h (fst (nwState net h), st') h') ->
       lifted_committed net e t' ->
       lifted_committed net' e t'.
-  Proof.
+  Proof using rmri. 
     intros.
     eapply lifted_committed_log_allEntries_preserved; eauto.
     - intros. repeat find_higher_order_rewrite. update_destruct.
@@ -2194,7 +2194,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_append_entries_reply :
     msg_refined_raft_net_invariant_append_entries_reply commit_invariant.
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_append_entries_reply, commit_invariant.
     simpl. intros.
     split.
@@ -2231,7 +2231,7 @@ Section StateMachineSafetyProof.
       (forall h', nwState net' h' = update (nwState net) h (update_elections_data_requestVote h c t c li lt (nwState net h), st') h') ->
       lifted_committed net e t' ->
       lifted_committed net' e t'.
-  Proof.
+  Proof using rmri. 
     intros.
     eapply lifted_committed_log_allEntries_preserved; eauto.
     - intros. find_higher_order_rewrite. update_destruct.
@@ -2244,7 +2244,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_request_vote :
     msg_refined_raft_net_invariant_request_vote commit_invariant.
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_request_vote, commit_invariant.
     simpl. intuition.
     - unfold commit_invariant_host in *.
@@ -2284,7 +2284,7 @@ Section StateMachineSafetyProof.
                                                                               src t v (nwState net h), st') h') ->
       lifted_committed net e t' ->
       lifted_committed net' e t'.
-  Proof.
+  Proof using rmri. 
     intros.
     eapply lifted_committed_log_allEntries_preserved; eauto.
     - intros. repeat find_higher_order_rewrite. update_destruct.
@@ -2297,7 +2297,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_request_vote_reply :
     msg_refined_raft_net_invariant_request_vote_reply commit_invariant.
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_request_vote_reply, commit_invariant.
     simpl. intuition.
     - unfold commit_invariant_host in *. simpl. intuition.
@@ -2331,7 +2331,7 @@ Section StateMachineSafetyProof.
       (forall h, st' h = st h) ->
       committed (mkNetwork ps st) e t ->
       committed (mkNetwork ps' st') e t.
-  Proof.
+  Proof using. 
     unfold committed, directly_committed.
     simpl. intros.
     break_exists_exists.
@@ -2346,7 +2346,7 @@ Section StateMachineSafetyProof.
       (forall h, st' h = st h) ->
       lifted_committed (mkNetwork ps st) e t ->
       lifted_committed (mkNetwork ps' st') e t.
-  Proof.
+  Proof using rmri. 
     intros.
     apply committed_lifted_committed.
     find_apply_lem_hyp lifted_committed_committed.
@@ -2366,7 +2366,7 @@ Section StateMachineSafetyProof.
        commitIndex st' = commitIndex (advanceCommitIndex st n) /\
        forall m, In m ms ->
             exists h, h <> n /\ m = replicaMessage (advanceCommitIndex st n) n h).
-  Proof.
+  Proof using. 
     unfold doLeader.
     intros.
     destruct st. simpl in *.
@@ -2388,7 +2388,7 @@ Section StateMachineSafetyProof.
       haveQuorum (snd (nwState net h)) h (eIndex e) = true ->
       eTerm e = currentTerm (snd (nwState net h)) ->
       directly_committed net e.
-  Proof.
+  Proof using miaei. 
     unfold haveQuorum, directly_committed.
     intros. do_bool.
     eexists. intuition eauto.
@@ -2407,7 +2407,7 @@ Section StateMachineSafetyProof.
       (forall e, In e (log (snd (nwState net h))) ->
             eIndex e <= commitIndex (advanceCommitIndex (snd (nwState net h)) h) ->
             committed net e (currentTerm (snd (nwState net h)))).
-  Proof.
+  Proof using miaei. 
     unfold advanceCommitIndex.
     intros. simpl in *.
     match goal with
@@ -2435,7 +2435,7 @@ Section StateMachineSafetyProof.
       (forall e, In e (log (snd (nwState net h))) ->
             eIndex e <= commitIndex (advanceCommitIndex (snd (nwState net h)) h) ->
             lifted_committed net e (currentTerm (snd (nwState net h)))).
-  Proof.
+  Proof using rmri miaei. 
     intros.
     find_apply_lem_hyp msg_simulation_1.
     match goal with
@@ -2449,7 +2449,7 @@ Section StateMachineSafetyProof.
   Lemma and_imp_2 :
     forall P Q : Prop,
       P /\ (P -> Q) -> P /\ Q.
-  Proof.
+  Proof using. 
     tauto.
   Qed.
 
@@ -2465,7 +2465,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_leaders_have_leaderLogs_strong net.
-  Proof.
+  Proof using rmri lhllsi. 
     unfold lifted_leaders_have_leaderLogs_strong.
     intros.
     pose proof msg_lift_prop _ leaders_have_leaderLogs_strong_invariant _ ltac:(eauto) h.
@@ -2482,7 +2482,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_one_leaderLog_per_term net.
-  Proof.
+  Proof using rmri ollpti. 
     unfold lifted_one_leaderLog_per_term.
     intros.
     pose proof msg_lift_prop _ one_leaderLog_per_term_invariant _ ltac:(eauto) h h' t ll ll'.
@@ -2496,7 +2496,7 @@ Section StateMachineSafetyProof.
       In (currentTerm (snd (nwState net leader)), ll) (leaderLogs (fst (nwState net leader))) ->
       In e ll ->
       In e (log (snd (nwState net leader))).
-  Proof.
+  Proof using rmri ollpti lhllsi. 
     intros.
 
     find_copy_apply_lem_hyp lifted_leaders_have_leaderLogs_strong_invariant; auto.
@@ -2520,7 +2520,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_leaders_have_leaderLogs net.
-  Proof.
+  Proof using rmri lhlli. 
     intros.
     pose proof msg_lift_prop _ leaders_have_leaderLogs_invariant _ ltac:(eauto).
     unfold leaders_have_leaderLogs, lifted_leaders_have_leaderLogs in *.
@@ -2551,7 +2551,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       lifted_leader_completeness net.
-  Proof.
+  Proof using rmri lci. 
     intros.
     pose proof msg_lift_prop _ leader_completeness_invariant _ ltac:(eauto).
     unfold lifted_leader_completeness, leader_completeness in *.
@@ -2579,7 +2579,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       msg_lifted_leader_sublog_host net.
-  Proof.
+  Proof using rmri lsi rri. 
     intros.
     pose proof msg_lift_prop _ (lift_prop _ leader_sublog_invariant_invariant) _ ltac:(eauto).
     simpl in *.
@@ -2598,7 +2598,7 @@ Section StateMachineSafetyProof.
     forall net h h',
       msg_refined_raft_intermediate_reachable net ->
       entries_match (log (snd (nwState net h))) (log (snd (nwState net h'))).
-  Proof.
+  Proof using rmri rlmli. 
     intros.
     find_apply_lem_hyp msg_simulation_1.
     find_eapply_lem_hyp entries_match_invariant.
@@ -2609,7 +2609,7 @@ Section StateMachineSafetyProof.
   Lemma lifted_terms_and_indices_from_one_log : forall net h,
     refined_raft_intermediate_reachable net ->
     terms_and_indices_from_one (log (snd (nwState net h))).
-  Proof.
+  Proof using taifoli rri. 
     intros.
     pose proof (lift_prop _ terms_and_indices_from_one_log_invariant).
     unfold terms_and_indices_from_one_log in *.
@@ -2624,7 +2624,7 @@ Section StateMachineSafetyProof.
       (forall h', nwState net' h' = update (nwState net) h (gd, d') h') ->
       lifted_committed net e t ->
       lifted_committed net' e t.
-  Proof.
+  Proof using rmri. 
     intros.
     eapply lifted_committed_log_allEntries_preserved; eauto;
     intros; find_higher_order_rewrite; update_destruct.
@@ -2641,7 +2641,7 @@ Section StateMachineSafetyProof.
       In m ms ->
       snd m = AppendEntries t n pli plt es ci ->
       ci = commitIndex st'.
-  Proof.
+  Proof using. 
     unfold doLeader.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; intuition.
@@ -2658,7 +2658,7 @@ Section StateMachineSafetyProof.
       In m ms ->
       snd m = AppendEntries t n pli plt es ci ->
       t = currentTerm st'.
-  Proof.
+  Proof using. 
     unfold doLeader.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; intuition.
@@ -2681,7 +2681,7 @@ Section StateMachineSafetyProof.
       (forall p,
           In p ps' -> In p (nwPackets net) \/ In p (send_packets h (add_ghost_msg (params := ghost_log_params) h (gd, d') ms))) ->
       commit_invariant {| nwPackets := ps'; nwState := st' |}.
-  Proof.
+  Proof using rmri miaei. 
     unfold commit_invariant.
     simpl. intros. break_and.
     apply and_imp_2.
@@ -2763,7 +2763,7 @@ Section StateMachineSafetyProof.
       (forall h', nwState net' h' = update (nwState net) h (fst (nwState net h), st') h') ->
       lifted_committed net e t ->
       lifted_committed net' e t.
-  Proof.
+  Proof using rmri. 
     intros.
     eapply lifted_committed_log_allEntries_preserved; eauto;
     intros; repeat find_higher_order_rewrite; update_destruct; auto.
@@ -2772,7 +2772,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_do_generic_server :
     msg_refined_raft_net_invariant_do_generic_server commit_invariant.
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_do_generic_server, commit_invariant.
     simpl. intros.
     match goal with
@@ -2809,7 +2809,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset commit_invariant.
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_state_same_packet_subset, commit_invariant.
     intuition.
     - unfold commit_invariant_host in *. intros.
@@ -2827,7 +2827,7 @@ Section StateMachineSafetyProof.
       (forall h', nwState net' h' = update (nwState net) h (fst (nwState net h), reboot (snd (nwState net h))) h') ->
       lifted_committed net e t ->
       lifted_committed net' e t.
-  Proof.
+  Proof using rmri. 
     unfold reboot.
     intros.
     eapply lifted_committed_log_allEntries_preserved; eauto;
@@ -2836,7 +2836,7 @@ Section StateMachineSafetyProof.
 
   Lemma commit_invariant_reboot :
     msg_refined_raft_net_invariant_reboot commit_invariant.
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_reboot, commit_invariant.
     intros.
     match goal with
@@ -2861,7 +2861,7 @@ Section StateMachineSafetyProof.
     forall net,
       maxIndex_sanity (deghost (mgv_deghost net)) ->
       lifted_maxIndex_sanity net.
-  Proof.
+  Proof using rmri rri. 
     unfold maxIndex_sanity, lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intros. intuition;
     repeat match goal with
@@ -2876,7 +2876,7 @@ Section StateMachineSafetyProof.
     forall net,
       lifted_maxIndex_sanity net ->
       maxIndex_sanity (deghost (mgv_deghost net)).
-  Proof.
+  Proof using rri. 
     unfold maxIndex_sanity, lifted_maxIndex_sanity, maxIndex_lastApplied, maxIndex_commitIndex.
     intuition; rewrite deghost_spec; rewrite msg_deghost_spec';
     repeat match goal with
@@ -2891,7 +2891,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_init :
     msg_refined_raft_net_invariant_init everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_init, everything.
     intuition.
     - apply lifted_maxIndex_sanity_init.
@@ -2905,7 +2905,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_client_request :
     msg_refined_raft_net_invariant_client_request' everything.
-  Proof.
+  Proof using rmri lalcii smspi si rri. 
     unfold msg_refined_raft_net_invariant_client_request', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_client_request; eauto.
@@ -2920,7 +2920,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_timeout :
     msg_refined_raft_net_invariant_timeout' everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_timeout', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_timeout; eauto.
@@ -2933,7 +2933,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_append_entries :
     msg_refined_raft_net_invariant_append_entries' everything.
-  Proof.
+  Proof using rmri tsi glemi lphogli glci lalcii rlmli smspi si rri. 
     unfold msg_refined_raft_net_invariant_append_entries', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_append_entries; eauto.
@@ -2952,7 +2952,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_append_entries_reply :
     msg_refined_raft_net_invariant_append_entries_reply' everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_append_entries_reply', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_append_entries_reply; eauto.
@@ -2965,7 +2965,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_request_vote :
     msg_refined_raft_net_invariant_request_vote' everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_request_vote', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_request_vote; eauto.
@@ -2978,7 +2978,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_request_vote_reply :
     msg_refined_raft_net_invariant_request_vote_reply' everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_request_vote_reply', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_request_vote_reply; eauto.
@@ -2991,7 +2991,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_do_leader :
     msg_refined_raft_net_invariant_do_leader' everything.
-  Proof.
+  Proof using rmri miaei lalcii smspi si rri. 
     unfold msg_refined_raft_net_invariant_do_leader', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_do_leader; eauto.
@@ -3004,7 +3004,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_do_generic_server :
     msg_refined_raft_net_invariant_do_generic_server' everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_do_generic_server', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_do_generic_server; eauto.
@@ -3020,7 +3020,7 @@ Section StateMachineSafetyProof.
       (forall h, nwState net' h = nwState net h) ->
       directly_committed net e ->
       directly_committed net' e.
-  Proof.
+  Proof using. 
     unfold directly_committed.
     intuition.
     break_exists_exists.
@@ -3033,7 +3033,7 @@ Section StateMachineSafetyProof.
       (forall h, nwState net' h = nwState net h) ->
       lifted_committed net e t ->
       lifted_committed net' e t.
-  Proof.
+  Proof using rmri. 
     intuition.
     destruct net, net'.
     simpl in *.
@@ -3048,7 +3048,7 @@ Section StateMachineSafetyProof.
         pDst q = pDst p /\
         pSrc q = pSrc p /\
         snd (pBody q) = pBody p.
-  Proof.
+  Proof using. 
     unfold mgv_deghost.
     simpl.
     intros.
@@ -3060,7 +3060,7 @@ Section StateMachineSafetyProof.
   Lemma state_machine_safety'_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset
       (fun net : ghost_log_network =>  state_machine_safety' (mgv_deghost net)).
-  Proof.
+  Proof using rmri. 
     unfold msg_refined_raft_net_invariant_state_same_packet_subset, state_machine_safety'.
     intuition.
     - unfold state_machine_safety_host' in *. intuition.
@@ -3083,7 +3083,7 @@ Section StateMachineSafetyProof.
   Lemma CRC_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset
       (fun net : ghost_log_network => commit_recorded_committed (mgv_deghost net)).
-  Proof.
+  Proof using rri. 
     unfold msg_refined_raft_net_invariant_state_same_packet_subset, commit_recorded_committed,
            commit_recorded, committed, directly_committed.
     intros.
@@ -3108,7 +3108,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset' everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_state_same_packet_subset', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_state_same_packet_subset; eauto.
@@ -3123,7 +3123,7 @@ Section StateMachineSafetyProof.
 
   Lemma everything_reboot :
     msg_refined_raft_net_invariant_reboot' everything.
-  Proof.
+  Proof using rmri lalcii smspi rri. 
     unfold msg_refined_raft_net_invariant_reboot', everything.
     intuition.
     - eapply lifted_maxIndex_sanity_reboot; eauto.
@@ -3138,7 +3138,7 @@ Section StateMachineSafetyProof.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       everything net.
-  Proof.
+  Proof using rmri tsi glemi lphogli glci miaei lalcii rlmli smspi si rri. 
     intros.
     apply msg_refined_raft_net_invariant'; auto.
     - apply everything_init.
@@ -3158,7 +3158,7 @@ Section StateMachineSafetyProof.
     forall net,
       raft_intermediate_reachable net ->
       state_machine_safety net.
-  Proof.
+  Proof using rmri tsi glemi lphogli glci miaei lalcii rlmli smspi si rri. 
     intros.
     apply lower_prop; intros; auto.
     apply msg_lower_prop with (P := fun net => _ (deghost net)); intros; auto.
@@ -3170,7 +3170,7 @@ Section StateMachineSafetyProof.
     forall net,
       raft_intermediate_reachable net ->
       maxIndex_sanity net.
-  Proof.
+  Proof using rmri tsi glemi lphogli glci miaei lalcii rlmli smspi si rri. 
     intros.
     apply lower_prop; intros; eauto.
     apply msg_lower_prop with (P := fun net => _ (deghost net)); intros; auto.
@@ -3183,7 +3183,7 @@ Section StateMachineSafetyProof.
     forall net,
       refined_raft_intermediate_reachable net ->
       commit_recorded_committed net.
-  Proof.
+  Proof using rmri tsi glemi lphogli glci miaei lalcii rlmli smspi si rri. 
     intros.
     apply msg_lower_prop; intros; auto.
     find_copy_apply_lem_hyp everything_invariant.

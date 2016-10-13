@@ -28,14 +28,14 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_init :
     msg_refined_raft_net_invariant_init log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs.
     intros. simpl in *. intuition.
   Qed.
     
   Lemma log_properties_hold_on_ghost_logs_request_vote_reply :
     msg_refined_raft_net_invariant_request_vote_reply log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -45,7 +45,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_append_entries :
     msg_refined_raft_net_invariant_append_entries' log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -60,7 +60,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_request_vote :
     msg_refined_raft_net_invariant_request_vote' log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -75,7 +75,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_append_entries_reply :
     msg_refined_raft_net_invariant_append_entries_reply' log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -95,7 +95,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_client_request :
     msg_refined_raft_net_invariant_client_request' log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -114,7 +114,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_timeout :
     msg_refined_raft_net_invariant_timeout' log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -133,7 +133,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_do_leader :
     msg_refined_raft_net_invariant_do_leader' log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -152,7 +152,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_do_generic_server :
     msg_refined_raft_net_invariant_do_generic_server' log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst.
@@ -171,7 +171,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_reboot :
     msg_refined_raft_net_invariant_reboot log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst. repeat find_reverse_rewrite.
@@ -180,7 +180,7 @@ Section GhostLogsLogProperties.
 
   Lemma log_properties_hold_on_ghost_logs_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset log_properties_hold_on_ghost_logs.
-  Proof.
+  Proof using. 
     red. unfold log_properties_hold_on_ghost_logs. intros.
     simpl in *.
     subst. repeat find_reverse_rewrite.
@@ -191,7 +191,7 @@ Section GhostLogsLogProperties.
     forall net,
       msg_refined_raft_intermediate_reachable net ->
       log_properties_hold_on_ghost_logs net.
-  Proof.
+  Proof using rmri. 
     intros. apply msg_refined_raft_net_invariant'; auto.
     - apply log_properties_hold_on_ghost_logs_init.
     - apply log_properties_hold_on_ghost_logs_client_request.

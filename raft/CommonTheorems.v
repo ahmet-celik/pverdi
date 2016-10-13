@@ -20,7 +20,7 @@ Section CommonTheorems.
       In y xs ->
       eIndex x = eIndex y ->
       x = y.
-  Proof.
+  Proof using. 
     unfold uniqueIndices.
     eauto using NoDup_map_elim.
   Qed.
@@ -30,7 +30,7 @@ Section CommonTheorems.
       sorted xs ->
       (forall a', In a' xs -> eIndex a > eIndex a' /\ eTerm a >= eTerm a') ->
       sorted (a :: xs).
-  Proof.
+  Proof using. 
     intros.
     simpl in *. intuition;
       find_apply_hyp_hyp; intuition.
@@ -41,7 +41,7 @@ Section CommonTheorems.
       subseq xs ys ->
       sorted ys ->
       sorted xs.
-  Proof.
+  Proof using. 
     induction ys; intros; simpl in *.
     - break_match; intuition.
     - break_match; intuition.
@@ -54,7 +54,7 @@ Section CommonTheorems.
       sorted l ->
       In e l ->
       maxTerm l >= eTerm e.
-  Proof.
+  Proof using. 
     induction l; intros.
     - simpl in *. intuition.
     - simpl in *. intuition.
@@ -67,7 +67,7 @@ Section CommonTheorems.
       sorted l ->
       In e l ->
       maxIndex l >= eIndex e.
-  Proof.
+  Proof using. 
     induction l; intros.
     - simpl in *. intuition.
     - simpl in *. intuition.
@@ -80,7 +80,7 @@ Section CommonTheorems.
       sorted l ->
       eIndex e = S (maxIndex l) ->
       ~ In e l.
-  Proof.
+  Proof using. 
     intros. intro.
     find_apply_lem_hyp maxIndex_is_max; auto.
     subst. omega.
@@ -91,14 +91,14 @@ Section CommonTheorems.
       l <> nil ->
       exists e,
         In e l /\ maxIndex l = eIndex e /\ maxTerm l = eTerm e.
-  Proof.
+  Proof using. 
     destruct l; intros; simpl in *; eauto; congruence.
   Qed.
 
   Lemma removeAfterIndex_subseq :
     forall l i,
       subseq (removeAfterIndex l i) l.
-  Proof.
+  Proof using. 
     induction l; intros; simpl; auto.
     repeat break_match; intuition.
     - find_inversion. eauto using subseq_refl.
@@ -109,7 +109,7 @@ Section CommonTheorems.
     forall l i,
       sorted l ->
       sorted (removeAfterIndex l i).
-  Proof.
+  Proof using. 
     intros. eauto using removeAfterIndex_subseq, sorted_subseq.
   Qed.
 
@@ -117,7 +117,7 @@ Section CommonTheorems.
     forall l i a,
       In a (removeAfterIndex l i) ->
       In a l.
-  Proof.
+  Proof using. 
     eauto using removeAfterIndex_subseq, subseq_In.
   Qed.
 
@@ -127,7 +127,7 @@ Section CommonTheorems.
       sorted l ->
       findAtIndex l (eIndex e) = None ->
       ~ In e l.
-  Proof.
+  Proof using. 
     induction l; intros; intro.
     - intuition.
     - simpl in *. break_match; try discriminate. intuition.
@@ -139,7 +139,7 @@ Section CommonTheorems.
     forall l i e',
       findAtIndex l i = Some e' ->
       In e' l.
-  Proof.
+  Proof using. 
     induction l; intros.
     - discriminate.
     - simpl in *. break_match.
@@ -151,7 +151,7 @@ Section CommonTheorems.
     forall l i e',
       findAtIndex l i = Some e' ->
       i = eIndex e'.
-  Proof.
+  Proof using. 
     induction l; intros.
     - discriminate.
     - simpl in *. break_match.
@@ -163,7 +163,7 @@ Section CommonTheorems.
     forall l i,
       NoDup l ->
       NoDup (removeAfterIndex l i).
-  Proof.
+  Proof using. 
     eauto using subseq_NoDup, removeAfterIndex_subseq.
   Qed.
 
@@ -174,7 +174,7 @@ Section CommonTheorems.
       eIndex x <= i ->
       In x xs ->
       In x (removeAfterIndex xs i).
-  Proof.
+  Proof using. 
     induction xs; intros.
     - intuition.
     - simpl in *. break_if; simpl in *; intuition.
@@ -186,7 +186,7 @@ Section CommonTheorems.
       sorted xs ->
       In x (removeAfterIndex xs i) ->
       eIndex x <= i.
-  Proof.
+  Proof using. 
     induction xs; intros.
     - simpl in *. intuition.
     - simpl in *.
@@ -201,7 +201,7 @@ Section CommonTheorems.
       In x (removeAfterIndex xs i) ->
       (forall x, In x xs -> In x ys) ->
       In x (removeAfterIndex ys i).
-  Proof.
+  Proof using. 
     induction xs; intros.
     - simpl in *. intuition.
     - simpl in *.
@@ -225,7 +225,7 @@ Section CommonTheorems.
     forall xs i j,
       i <= j ->
       removeAfterIndex xs i = removeAfterIndex (removeAfterIndex xs j) i.
-  Proof.
+  Proof using. 
     induction xs; intros.
     - reflexivity.
     - simpl.
@@ -237,7 +237,7 @@ Section CommonTheorems.
   Lemma removeAfterIndex_2_subseq :
     forall xs i j,
       subseq (removeAfterIndex (removeAfterIndex xs i) j) (removeAfterIndex (removeAfterIndex xs j) i).
-  Proof.
+  Proof using. 
     induction xs; intros; simpl.
     - auto.
     - repeat (break_match; simpl); intuition; try discriminate.
@@ -252,7 +252,7 @@ Section CommonTheorems.
     forall xs i j,
       removeAfterIndex (removeAfterIndex xs i) j =
       removeAfterIndex (removeAfterIndex xs j) i.
-  Proof.
+  Proof using. 
     auto using subseq_subseq_eq, removeAfterIndex_2_subseq.
   Qed.
 
@@ -260,7 +260,7 @@ Section CommonTheorems.
     forall xs i j,
       removeAfterIndex (removeAfterIndex xs i) j =
       removeAfterIndex xs (min i j).
-  Proof.
+  Proof using. 
     intros.
     pose proof Min.min_spec i j. intuition.
     - find_rewrite. rewrite removeAfterIndex_le with (i := i) (j := j) at 2;
@@ -276,7 +276,7 @@ Section CommonTheorems.
       findAtIndex xs i = None ->
       In x xs ->
       eIndex x <> i.
-  Proof.
+  Proof using. 
     induction xs; intros; simpl in *; intuition; break_match; try discriminate.
     - subst. do_bool. congruence.
     - do_bool. break_if; eauto.
@@ -289,7 +289,7 @@ Section CommonTheorems.
       findAtIndex xs i = Some e ->
       findAtIndex (removeAfterIndex xs j) i = Some e' ->
       e = e'.
-  Proof.
+  Proof using. 
     intros.
     eapply NoDup_map_elim with (f := eIndex); eauto using findAtIndex_in, removeAfterIndex_in.
     apply findAtIndex_index in H0.
@@ -302,7 +302,7 @@ Section CommonTheorems.
       subseq xs ys ->
       uniqueIndices ys ->
       uniqueIndices xs.
-  Proof.
+  Proof using. 
     unfold uniqueIndices.
     induction ys; intros.
     - simpl in *. break_match; intuition.
@@ -318,7 +318,7 @@ Section CommonTheorems.
   Lemma subseq_findGtIndex :
     forall xs i,
       subseq (findGtIndex xs i) xs.
-  Proof.
+  Proof using. 
     induction xs; intros.
     - simpl. auto.
     - simpl. repeat break_match; auto.
@@ -330,7 +330,7 @@ Section CommonTheorems.
     forall xs i x,
       In x (findGtIndex xs i) ->
       In x xs.
-  Proof.
+  Proof using. 
     eauto using subseq_In, subseq_findGtIndex.
   Qed.
 
@@ -340,7 +340,7 @@ Section CommonTheorems.
       In e entries ->
       eIndex e > x ->
       In e (findGtIndex entries x).
-  Proof.
+  Proof using. 
     induction entries; intros.
     - simpl in *. intuition.
     - simpl in *. break_if; intuition.
@@ -372,7 +372,7 @@ Section CommonTheorems.
       sorted xs -> sorted ys ->
       (forall x, In x xs -> In x ys) ->
       maxIndex xs <= maxIndex (orig_base_params:=orig_base_params) ys.
-  Proof.
+  Proof using. 
     destruct xs; intros.
     - simpl. omega.
     - destruct ys; simpl in *.
@@ -393,7 +393,7 @@ Section CommonTheorems.
       exists x,
         eIndex x = maxIndex xs /\
         In x xs.
-  Proof.
+  Proof using. 
     destruct xs; intros.
     - simpl in *. omega.
     - simpl in *. eauto.
@@ -403,7 +403,7 @@ Section CommonTheorems.
     forall l l',
       maxIndex (l ++ l') = maxIndex l \/
       maxIndex (l ++ l') = maxIndex l' /\ l = [].
-  Proof.
+  Proof using. 
     induction l; intuition.
   Qed.
 
@@ -411,7 +411,7 @@ Section CommonTheorems.
     forall l i,
       sorted l ->
       maxIndex (removeAfterIndex l i) <= maxIndex l.
-  Proof.
+  Proof using. 
     intros.
     apply maxIndex_subset; eauto using removeAfterIndex_sorted.
     intros. eauto using removeAfterIndex_in.
@@ -423,7 +423,7 @@ Section CommonTheorems.
       In e l ->
       eIndex e = i ->
       maxIndex (removeAfterIndex l i) = i.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     - subst. break_if; do_bool; try omega.
       reflexivity.
@@ -440,7 +440,7 @@ Section CommonTheorems.
     forall es,
       0 < maxIndex es ->
       es <> nil.
-  Proof.
+  Proof using. 
     intros.
     destruct es; simpl in *.
     - omega.
@@ -463,7 +463,7 @@ Section CommonTheorems.
       eIndex e = prev ->
       contiguous_range_exact_lo (new ++ removeAfterIndex current prev)
                                 0.
-  Proof.
+  Proof using one_node_params. 
     intros new current prev e Hsorted Huniq Hinv. intros. red. intros.
     intuition.
     - destruct (le_lt_dec i prev).
@@ -500,7 +500,7 @@ Section CommonTheorems.
         eIndex x = eIndex y /\
         eTerm x = eTerm y /\
         In y (es ++ (removeAfterIndex log i)).
-  Proof.
+  Proof using. 
     intros.
     exists x. intuition.
   Qed.
@@ -510,7 +510,7 @@ Section CommonTheorems.
       In e (findGtIndex entries x) ->
       In e entries /\
       eIndex e > x.
-  Proof.
+  Proof using. 
     induction entries; intros; simpl in *; intuition.
     - break_if; simpl in *; intuition; right; eapply IHentries; eauto.
     - break_if;
@@ -525,7 +525,7 @@ Section CommonTheorems.
       (forall i, 0 < i <= maxIndex entries -> (exists e, In e entries /\ eIndex e = i)) ->
       forall i, x < i <= maxIndex entries ->
            exists e, In e (findGtIndex entries x) /\ eIndex e = i.
-  Proof.
+  Proof using. 
     intros entries x Hsorted; intros. specialize (H i).
     conclude H ltac:(omega).
     break_exists. exists x0. intuition.
@@ -535,7 +535,7 @@ Section CommonTheorems.
   Lemma findGtIndex_max :
     forall entries x,
       maxIndex (findGtIndex entries x) <= maxIndex entries.
-  Proof.
+  Proof using. 
     intros. destruct entries; simpl; auto.
     break_if; simpl; intuition.
   Qed.
@@ -546,7 +546,7 @@ Section CommonTheorems.
       In e es ->
       uniqueIndices es ->
       e = e'.
-  Proof.
+  Proof using. 
     intros.
     pose proof findAtIndex_in _ _ _ H.
     pose proof findAtIndex_index _ _ _ H.
@@ -567,7 +567,7 @@ Section CommonTheorems.
       entries_match xs ys ->
       entries_match' xs ys /\
       entries_match' ys xs.
-  Proof.
+  Proof using. 
     unfold entries_match, entries_match'.
     intros. intuition.
     - eapply H; eauto.
@@ -596,7 +596,7 @@ Section CommonTheorems.
   Lemma entries_match_refl :
     forall l,
       entries_match l l.
-  Proof.
+  Proof using. 
     unfold entries_match. intuition.
   Qed.
 
@@ -604,7 +604,7 @@ Section CommonTheorems.
     forall xs ys,
       entries_match xs ys ->
       entries_match ys xs.
-  Proof.
+  Proof using. 
     intros.
     unfold entries_match in *.
     intros. intuition.
@@ -617,7 +617,7 @@ Section CommonTheorems.
   Lemma advanceCurrentTerm_same_log :
     forall st t,
       log (advanceCurrentTerm st t) = log st.
-  Proof.
+  Proof using. 
     unfold advanceCurrentTerm. intros.
     break_if; auto.
   Qed.
@@ -626,7 +626,7 @@ Section CommonTheorems.
     forall n st out st' ms,
       tryToBecomeLeader n st = (out, st', ms) ->
       log st' = log st.
-  Proof.
+  Proof using. 
     unfold tryToBecomeLeader.
     intros. find_inversion. auto.
   Qed.
@@ -635,7 +635,7 @@ Section CommonTheorems.
     forall n st t c li lt st' ms,
       handleRequestVote n st t c li lt = (st', ms) ->
       log st' = log st.
-  Proof.
+  Proof using. 
     unfold handleRequestVote.
     intros.
     repeat (break_match; try discriminate; repeat (find_inversion; simpl in *));
@@ -645,7 +645,7 @@ Section CommonTheorems.
   Lemma handleRequestVoteReply_same_log :
     forall n st src t v,
       log (handleRequestVoteReply n st src t v) = log st.
-  Proof.
+  Proof using. 
     unfold handleRequestVoteReply.
     intros. repeat break_match; simpl; auto using advanceCurrentTerm_same_log.
   Qed.
@@ -654,7 +654,7 @@ Section CommonTheorems.
   Lemma advanceCurrentTerm_same_lastApplied :
     forall st t,
       lastApplied (advanceCurrentTerm st t) = lastApplied st.
-  Proof.
+  Proof using. 
     unfold advanceCurrentTerm. intros.
     break_if; auto.
   Qed.
@@ -663,7 +663,7 @@ Section CommonTheorems.
     forall h st out st' ps,
       handleTimeout h st = (out, st', ps) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     intros. unfold handleTimeout, tryToBecomeLeader in *.
     break_match; find_inversion; subst; auto.
   Qed.
@@ -672,7 +672,7 @@ Section CommonTheorems.
   forall h st client id c out st' ps,
     handleClientRequest h st client id c = (out, st', ps) ->
     lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     intros. unfold handleClientRequest in *.
     break_match; find_inversion; subst; auto.
   Qed.
@@ -681,7 +681,7 @@ Section CommonTheorems.
     forall n st out st' ms,
       tryToBecomeLeader n st = (out, st', ms) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     unfold tryToBecomeLeader.
     intros. find_inversion. auto.
   Qed.
@@ -690,7 +690,7 @@ Section CommonTheorems.
     forall n st t c li lt st' ms,
       handleRequestVote n st t c li lt = (st', ms) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     unfold handleRequestVote.
     intros.
     repeat (break_match; try discriminate; repeat (find_inversion; simpl in *));
@@ -700,7 +700,7 @@ Section CommonTheorems.
   Lemma handleRequestVoteReply_same_lastApplied :
     forall n st src t v,
       lastApplied (handleRequestVoteReply n st src t v) = lastApplied st.
-  Proof.
+  Proof using. 
     unfold handleRequestVoteReply.
     intros. repeat break_match; simpl; auto using advanceCurrentTerm_same_lastApplied.
   Qed.
@@ -709,7 +709,7 @@ Section CommonTheorems.
     forall l i e,
       findAtIndex l i = Some e ->
       i = eIndex e /\ In e l.
-  Proof.
+  Proof using. 
     eauto using findAtIndex_in, findAtIndex_index.
   Qed.
 
@@ -720,7 +720,7 @@ Section CommonTheorems.
       i <> 0 ->
       i <= eIndex e ->
       1 <= i <= maxIndex es.
-  Proof.
+  Proof using. 
     intros. split.
     - omega.
     - etransitivity; eauto. apply maxIndex_is_max; auto.
@@ -734,7 +734,7 @@ Section CommonTheorems.
       In x' xs ->
       uniqueIndices xs ->
       In x ys.
-  Proof.
+  Proof using. 
     intros.
     assert (x = x').
     - eapply uniqueIndices_elim_eq; eauto.
@@ -748,7 +748,7 @@ Section CommonTheorems.
       eIndex e = i ->
       uniqueIndices l ->
       findAtIndex l i = Some e.
-  Proof.
+  Proof using. 
     induction l; intros.
     - simpl in *. intuition.
     - simpl in *. intuition; break_if; subst; do_bool.
@@ -764,7 +764,7 @@ Section CommonTheorems.
   Theorem sorted_uniqueIndices :
     forall l,
       sorted l -> uniqueIndices l.
-  Proof.
+  Proof using. 
     intros; induction l; simpl; auto.
     - unfold uniqueIndices. simpl. constructor.
     - unfold uniqueIndices in *. simpl in *. intuition. constructor; eauto.
@@ -777,7 +777,7 @@ Section CommonTheorems.
       In e l ->
       eIndex e = i ->
       findAtIndex l i = Some e.
-  Proof.
+  Proof using. 
     intros.
     apply findAtIndex_intro; auto using sorted_uniqueIndices.
   Qed.
@@ -786,7 +786,7 @@ Section CommonTheorems.
     forall st n os st' ms,
       doLeader st n = (os, st', ms) ->
       log st' = log st.
-  Proof.
+  Proof using. 
     unfold doLeader.
     intros.
     repeat break_match; repeat find_inversion; auto.
@@ -796,7 +796,7 @@ Section CommonTheorems.
     forall n st src t es b st' l,
       handleAppendEntriesReply n st src t es b = (st', l) ->
       log st' = log st.
-  Proof.
+  Proof using. 
     intros.
     unfold handleAppendEntriesReply in *.
     repeat (break_match; repeat (find_inversion; simpl in *)); auto using advanceCurrentTerm_same_log.
@@ -806,7 +806,7 @@ Section CommonTheorems.
     forall n st src t es b st' l,
       handleAppendEntriesReply n st src t es b = (st', l) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     intros.
     unfold handleAppendEntriesReply in *.
     repeat (break_match; repeat (find_inversion; simpl in *)); auto using advanceCurrentTerm_same_lastApplied.
@@ -816,7 +816,7 @@ Section CommonTheorems.
     forall h st t n pli plt es ci st' ps,
       handleAppendEntries h st t n pli plt es ci = (st', ps) ->
       lastApplied st' = lastApplied st.
-  Proof.
+  Proof using. 
     intros.
     unfold handleAppendEntries in *.
     repeat (break_match; repeat (find_inversion; simpl in *)); auto using advanceCurrentTerm_same_lastApplied.
@@ -835,7 +835,7 @@ Section CommonTheorems.
       wonElection l1 = true ->
       length l1 <= length l2 ->
       wonElection l2 = true.
-  Proof.
+  Proof using. 
     intros.
     unfold wonElection in *. do_bool.
     omega.
@@ -847,7 +847,7 @@ Section CommonTheorems.
       NoDup l1 ->
       (forall x, In x l1 -> In x l2) ->
       wonElection l2 = true.
-  Proof.
+  Proof using. 
     intros.
     find_eapply_lem_hyp subset_length;
       eauto using name_eq_dec, wonElection_length.
@@ -858,7 +858,7 @@ Section CommonTheorems.
       wonElection l = true ->
       exists x,
         In x l.
-  Proof.
+  Proof using. 
     unfold wonElection.
     intros.
     destruct l; try discriminate.
@@ -870,7 +870,7 @@ Section CommonTheorems.
     forall A (f : A -> nat) g l,
       (forall a, f a = g a) ->
       argmax f l = argmax g l.
-  Proof.
+  Proof using. 
     intros. induction l; simpl in *; intuition.
     find_rewrite. break_match; intuition.
     repeat find_higher_order_rewrite. auto.
@@ -880,7 +880,7 @@ Section CommonTheorems.
     forall A (f : A -> nat) l,
       argmax f l = None ->
       l = [].
-  Proof.
+  Proof using. 
     intros. destruct l; simpl in *; intuition.
     repeat break_match; congruence.
   Qed.
@@ -890,7 +890,7 @@ Section CommonTheorems.
       argmax f l = Some a ->
       (In a l /\
        forall x, In x l -> f a >= f x).
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; [congruence|].
     repeat break_match; find_inversion.
     - do_bool.
@@ -914,7 +914,7 @@ Section CommonTheorems.
     forall A (f : A -> nat) l a,
       argmax f l = Some a ->
       In a l.
-  Proof.
+  Proof using. 
     intros. find_apply_lem_hyp argmax_elim. intuition.
   Qed.
 
@@ -924,7 +924,7 @@ Section CommonTheorems.
       (forall x, In x l -> f x <= g x) ->
       (argmax g l = argmax f l \/
        argmax g l = Some a).
-  Proof.
+  Proof using. 
     intros. induction l; simpl in *; intuition.
     conclude IHl intuition.
     conclude IHl intuition. intuition.
@@ -952,7 +952,7 @@ Section CommonTheorems.
     forall A (f : A -> nat) g l,
       (forall a, f a = g a) ->
       argmin f l = argmin g l.
-  Proof.
+  Proof using. 
     intros. induction l; simpl in *; intuition.
     find_rewrite. break_match; intuition.
     repeat find_higher_order_rewrite. auto.
@@ -962,7 +962,7 @@ Section CommonTheorems.
     forall A (f : A -> nat) l,
       argmin f l = None ->
       l = [].
-  Proof.
+  Proof using. 
     intros. destruct l; simpl in *; intuition.
     repeat break_match; congruence.
   Qed.
@@ -972,7 +972,7 @@ Section CommonTheorems.
       argmin f l = Some a ->
       (In a l /\
        forall x, In x l -> f a <= f x).
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; [congruence|].
     repeat break_match; find_inversion.
     - do_bool.
@@ -996,7 +996,7 @@ Section CommonTheorems.
     forall A (f : A -> nat) l a,
       argmin f l = Some a ->
       In a l.
-  Proof.
+  Proof using. 
     intros. find_apply_lem_hyp argmin_elim. intuition.
   Qed.
 
@@ -1006,7 +1006,7 @@ Section CommonTheorems.
       (forall x, In x l -> g x <= f x) ->
       (argmin g l = argmin f l \/
        argmin g l = Some a).
-  Proof.
+  Proof using. 
     intros. induction l; simpl in *; intuition.
     conclude IHl intuition.
     conclude IHl intuition. intuition.
@@ -1051,7 +1051,7 @@ Section CommonTheorems.
       \/
       (argmax (fun h' => lastApplied (update sigma h st h')) (all_fin N) = Some h /\
        applied_entries (update sigma h st) = (rev (removeAfterIndex (log st) (lastApplied st)))).
-  Proof.
+  Proof using. 
     intros.
     unfold applied_entries in *.
     repeat break_match; intuition;
@@ -1081,7 +1081,7 @@ Section CommonTheorems.
       removeAfterIndex (log st) (lastApplied (sigma h))
       = removeAfterIndex (log (sigma h)) (lastApplied (sigma h)) ->
       applied_entries (update sigma h st) = applied_entries sigma.
-  Proof.
+  Proof using. 
     intros. unfold applied_entries in *.
     repeat break_match; repeat find_rewrite; intuition;
     match goal with
@@ -1100,7 +1100,7 @@ Section CommonTheorems.
       (forall h, log (sigma' h) = log (sigma h)) ->
       (forall h, lastApplied (sigma' h) = lastApplied (sigma h)) ->
       applied_entries sigma' = applied_entries sigma.
-  Proof.
+  Proof using. 
     intros.
     unfold applied_entries in *.
     rewrite argmax_fun_ext with (g := fun h : name => lastApplied (sigma h)); intuition.
@@ -1113,7 +1113,7 @@ Section CommonTheorems.
       log st = log (sigma h) ->
       lastApplied st = lastApplied (sigma h) ->
       applied_entries (update sigma h st) = applied_entries sigma.
-  Proof.
+  Proof using. 
     intros.
     apply applied_entries_log_lastApplied_same;
       intros; update_destruct; subst; rewrite_update; auto.
@@ -1124,7 +1124,7 @@ Section CommonTheorems.
       applied_entries sigma = [] \/
       exists h,
         applied_entries sigma = rev (removeAfterIndex (log (sigma h)) (lastApplied (sigma h))).
-  Proof.
+  Proof using. 
     intros.
     unfold applied_entries in *.
     break_match; simpl in *; intuition eauto.
@@ -1134,7 +1134,7 @@ Section CommonTheorems.
     forall l x,
       exists l',
         l = l' ++ removeAfterIndex l x.
-  Proof.
+  Proof using. 
     intros; induction l; simpl in *; intuition eauto using app_nil_r.
     break_exists. break_if; [exists nil; eauto|].
     do_bool.
@@ -1168,7 +1168,7 @@ Section CommonTheorems.
          0 < eIndex e) ->
       (forall y, In y ys -> 0 < eIndex y) ->
       entries_match es ys.
-  Proof.
+  Proof using. 
     intros.
     unfold entries_match. intuition.
     - match goal with
@@ -1237,7 +1237,7 @@ Section CommonTheorems.
       eTerm ple = plt ->
       pli <> 0 ->
       entries_match (es ++ removeAfterIndex xs pli) ys.
-  Proof.
+  Proof using. 
     intros.
     unfold entries_match. intros. split; intros.
     - in_crush_start.
@@ -1293,7 +1293,7 @@ Section CommonTheorems.
   forall sigma h os st' ms,
     doLeader (sigma h) h = (os, st', ms) ->
     applied_entries (update sigma h st') = applied_entries sigma.
-  Proof.
+  Proof using. 
     intros.
     apply applied_entries_log_lastApplied_same.
     - intros. update_destruct; subst; rewrite_update; auto.
@@ -1307,7 +1307,7 @@ Section CommonTheorems.
       applyEntries h st es = (os, st') ->
       exists d cc,
         st' = {[ {[ st with stateMachine := d ]} with clientCache := cc ]}.
-  Proof.
+  Proof using. 
     induction es; intros; simpl in *; intuition.
     - find_inversion. destruct st'; repeat eexists; eauto.
     - unfold cacheApplyEntry, applyEntry in *.
@@ -1322,7 +1322,7 @@ Section CommonTheorems.
         (forall d cc,
            P {[ {[ st with stateMachine := d ]} with clientCache := cc ]}) ->
         P st'.
-  Proof.
+  Proof using. 
     intros.
     find_apply_lem_hyp applyEntries_spec.
     break_exists. subst. eauto.
@@ -1332,7 +1332,7 @@ Section CommonTheorems.
     forall h st client id c out st' l,
       handleClientRequest h st client id c = (out, st', l) ->
       commitIndex st' = commitIndex st.
-  Proof.
+  Proof using. 
     unfold handleClientRequest.
     intros.
     repeat break_match; find_inversion; auto.
@@ -1342,7 +1342,7 @@ Section CommonTheorems.
     forall h st out st' l,
       handleTimeout h st = (out, st', l) ->
       commitIndex st' = commitIndex st.
-  Proof.
+  Proof using. 
     unfold handleTimeout, tryToBecomeLeader; intros; repeat break_match; repeat find_inversion; auto.
   Qed.
 
@@ -1350,7 +1350,7 @@ Section CommonTheorems.
     forall n st src t es b st' l,
       handleAppendEntriesReply n st src t es b = (st', l) ->
       commitIndex st' = commitIndex st.
-  Proof.
+  Proof using. 
     unfold handleAppendEntriesReply, advanceCurrentTerm.
     intros.
     repeat break_match; repeat find_inversion; auto.
@@ -1360,7 +1360,7 @@ Section CommonTheorems.
     forall n st t c li lt st' ms,
       handleRequestVote n st t c li lt = (st', ms) ->
       commitIndex st' = commitIndex st.
-  Proof.
+  Proof using. 
     unfold handleRequestVote, advanceCurrentTerm.
     intros.
     repeat break_match; repeat find_inversion; auto.
@@ -1369,7 +1369,7 @@ Section CommonTheorems.
   Lemma handleRequestVoteReply_same_commitIndex :
     forall n st src t v,
       commitIndex (handleRequestVoteReply n st src t v) = commitIndex st.
-  Proof.
+  Proof using. 
     unfold handleRequestVoteReply, advanceCurrentTerm.
     intros. repeat break_match; simpl; auto.
   Qed.
@@ -1378,7 +1378,7 @@ Section CommonTheorems.
     forall h st out st' ms,
       doGenericServer h st = (out, st', ms) ->
       commitIndex st' = commitIndex st.
-  Proof.
+  Proof using. 
     unfold doGenericServer.
     intros.
     repeat break_match; repeat find_inversion; simpl;
@@ -1390,7 +1390,7 @@ Section CommonTheorems.
   Theorem div2_correct' :
     forall n,
       n <= div2 n + S (div2 n).
-  Proof.
+  Proof using. 
     intro n. functional induction (div2 n); omega.
   Qed.
 
@@ -1399,7 +1399,7 @@ Section CommonTheorems.
       a > div2 c ->
       b > div2 c ->
       a + b > c.
-  Proof.
+  Proof using. 
     intros n. functional induction (div2 n); intros; try omega.
     specialize (IHn0 (pred a) (pred b)). omega.
   Qed.
@@ -1409,7 +1409,7 @@ Section CommonTheorems.
       wonElection (dedup name_eq_dec l) = true ->
       wonElection (dedup name_eq_dec l') = true ->
       exists h, In h l /\ In h l'.
-  Proof.
+  Proof using. 
     intros. unfold wonElection in *. do_bool.
     cut (exists h, In h (dedup name_eq_dec l) /\ In h (dedup name_eq_dec l'));
       [intros; break_exists; exists x; intuition eauto using in_dedup_was_in|].
@@ -1421,7 +1421,7 @@ Section CommonTheorems.
       execute_log' (xs ++ ys) st tr =
       let (tr', st') := execute_log' xs st tr in
       execute_log' ys st' tr'.
-  Proof.
+  Proof using. 
     induction xs; intros.
     - auto.
     - simpl in *. repeat break_let.
@@ -1431,7 +1431,7 @@ Section CommonTheorems.
   Lemma fst_execute_log' :
     forall log st tr,
       fst (execute_log' log st tr) = tr ++ fst (execute_log' log st []).
-  Proof.
+  Proof using. 
     induction log; intros.
     - simpl. rewrite app_nil_r. auto.
     - simpl. break_let. rewrite IHlog. rewrite app_ass. simpl.
@@ -1442,7 +1442,7 @@ Section CommonTheorems.
   Lemma snd_execute_log' :
     forall log st tr,
       snd (execute_log' log st tr) = snd (execute_log' log st []).
-  Proof.
+  Proof using. 
     induction log; intros.
     - auto.
     - simpl. break_let. rewrite IHlog.
@@ -1454,7 +1454,7 @@ Section CommonTheorems.
     forall log st,
       step_1_star st (snd (execute_log' log st []))
                   (fst (execute_log' log st [])).
-  Proof.
+  Proof using. 
     induction log; intros.
     - simpl. constructor.
     - simpl. break_let.
@@ -1470,14 +1470,14 @@ Section CommonTheorems.
     forall log,
       step_1_star init (snd (execute_log log))
                   (fst (execute_log log)).
-  Proof.
+  Proof using. 
     intros. apply execute_log_correct'.
   Qed.
 
   Lemma contiguous_nil :
     forall i,
       contiguous_range_exact_lo [] i.
-  Proof.
+  Proof using. 
     unfold contiguous_range_exact_lo. intuition.
     - simpl in *. omega.
     - contradiction.
@@ -1487,7 +1487,7 @@ Section CommonTheorems.
     forall i a,
       contiguous_range_exact_lo [a] i ->
       eIndex a = S i.
-  Proof.
+  Proof using. 
     intros. unfold contiguous_range_exact_lo in *. intuition.
     find_insterU. concludes. find_insterU. concludes. break_exists.
     simpl in *. intuition. subst. auto.
@@ -1498,7 +1498,7 @@ Section CommonTheorems.
       sorted (a :: b :: l) ->
       contiguous_range_exact_lo (a :: b :: l) i ->
       eIndex a = S (eIndex b) /\ eIndex a > i.
-  Proof.
+  Proof using. 
     intros. unfold contiguous_range_exact_lo in *. intuition.
     assert (i < S (eIndex b) <= eIndex a).
       simpl in *. intuition. specialize (H0 b). concludes. intuition.
@@ -1514,7 +1514,7 @@ Section CommonTheorems.
       sorted (a :: l) ->
       contiguous_range_exact_lo (a :: l) i ->
       contiguous_range_exact_lo l i.
-  Proof.
+  Proof using. 
     induction l; intros.
     - apply contiguous_nil.
     - eapply contiguous_index_adjacent in H; eauto.
@@ -1532,7 +1532,7 @@ Section CommonTheorems.
       sorted (l1 ++ l2) ->
       contiguous_range_exact_lo (l1 ++ l2) i ->
       contiguous_range_exact_lo l2 i.
-  Proof.
+  Proof using. 
     induction l1; intros.
     - auto.
     - simpl ((a :: l1) ++ l2) in *.
@@ -1545,7 +1545,7 @@ Section CommonTheorems.
       sorted l ->
       Prefix l' l ->
       sorted l'.
-  Proof.
+  Proof using. 
     induction l; intros.
     - find_apply_lem_hyp Prefix_nil. subst. auto.
     - destruct l'.
@@ -1565,7 +1565,7 @@ Section CommonTheorems.
       eIndex e > i ->
       contiguous_range_exact_lo l' i ->
       In e l'.
-  Proof.
+  Proof using. 
     induction l; intros.
     - contradiction.
     - destruct l'; try congruence.
@@ -1583,7 +1583,7 @@ Section CommonTheorems.
       sorted l ->
       contiguous_range_exact_lo l i ->
       contiguous_range_exact_lo (removeAfterIndex l i') i.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     break_if; auto.
     do_bool.
@@ -1597,7 +1597,7 @@ Section CommonTheorems.
   Lemma sorted_NoDup :
     forall l,
       sorted l -> NoDup l.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; auto.
     - constructor.
     - constructor; intuition.
@@ -1612,7 +1612,7 @@ Section CommonTheorems.
       sorted l' ->
       Permutation l l' ->
       l = l'.
-  Proof.
+  Proof using. 
     induction l; intros.
     - symmetry. apply Permutation_nil. assumption.
     - destruct l'.
@@ -1638,7 +1638,7 @@ Section CommonTheorems.
             In e l' ->
             In e l) ->
       removeAfterIndex l' x = removeAfterIndex l x.
-  Proof.
+  Proof using. 
     intros. apply sorted_Permutation_eq;
       try (apply removeAfterIndex_sorted; assumption).
     apply NoDup_Permutation;
@@ -1658,7 +1658,7 @@ Section CommonTheorems.
             In e l ->
             In e l') ->
       removeAfterIndex l' x = removeAfterIndex l x.
-  Proof.
+  Proof using. 
     intros.
     eapply removeAfterIndex_same_sufficient; eauto.
     intros.
@@ -1679,7 +1679,7 @@ Section CommonTheorems.
       contiguous_range_exact_lo l i ->
       contiguous_range_exact_lo l' 0 ->
       l ++ (removeAfterIndex l' i) = l'.
-  Proof.
+  Proof using one_node_params. 
     induction l; try congruence; intros.
     destruct l'; simpl.
     - contradiction.
@@ -1717,7 +1717,7 @@ Section CommonTheorems.
       eIndex e = eIndex e' ->
       eTerm e = eTerm e' ->
       es ++ (removeAfterIndex l (eIndex e)) = l'.
-  Proof.
+  Proof using one_node_params. 
     intros.
     rewrite removeAfterIndex_same_sufficient with (l := l'); auto.
     - apply thing2; auto.
@@ -1730,7 +1730,7 @@ Section CommonTheorems.
       (forall e, In e l -> eIndex e > 0) ->
       sorted l ->
       findGtIndex l 0 = l.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     break_if; intuition.
     - f_equal. auto.
@@ -1740,7 +1740,7 @@ Section CommonTheorems.
   Lemma Prefix_refl :
     forall A (l : list A),
       Prefix l l.
-  Proof.
+  Proof using. 
     intros. induction l; simpl in *; auto.
   Qed.
 
@@ -1753,7 +1753,7 @@ Section CommonTheorems.
         findGtIndex (l1 ++ l2) (eIndex e) = l' /\
         forall x,
           In x l' -> In x l1.
-  Proof.
+  Proof using. 
     induction l1; intros; simpl in *; intuition.
     - subst. break_if; do_bool; try omega.
       eexists; repeat (simpl in *; intuition).
@@ -1770,7 +1770,7 @@ Section CommonTheorems.
       eIndex e > 0 ->
       In e l1 ->
       eIndex e > maxIndex l2.
-  Proof.
+  Proof using. 
     induction l1; intros; simpl in *; intuition.
     subst. destruct l2; simpl in *; auto.
     specialize (H2 e0); concludes; intuition.
@@ -1779,7 +1779,7 @@ Section CommonTheorems.
   Lemma findGtIndex_Prefix :
     forall l i,
       Prefix (findGtIndex l i) l.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     break_if; simpl in *; intuition.
   Qed.
@@ -1791,7 +1791,7 @@ Section CommonTheorems.
       exists l',
         findGtIndex (l1 ++ l2) (eIndex e) = l1 ++ l' /\
         Prefix l' l2.
-  Proof.
+  Proof using. 
     induction l1; intros; simpl in *; intuition.
     - eexists; intuition eauto using findGtIndex_Prefix.
     - break_if; simpl in *; intuition.
@@ -1805,7 +1805,7 @@ Section CommonTheorems.
     forall l i,
       (forall e', In e' l -> eIndex e' <= i) ->
       findGtIndex l i = [].
-  Proof.
+  Proof using. 
     intros; induction l; simpl in *; intuition.
     break_if; do_bool; intuition.
     specialize (H a); intuition. omega.
@@ -1816,7 +1816,7 @@ Section CommonTheorems.
       sorted l ->
       removeAfterIndex (findGtIndex l i) i' =
       findGtIndex (removeAfterIndex l i') i.
-  Proof.
+  Proof using. 
     intros. induction l; simpl in *; auto.
     repeat (break_if; simpl; intuition); do_bool;
     try congruence.
@@ -1829,7 +1829,7 @@ Section CommonTheorems.
     forall l l' i,
       maxIndex l' <= i ->
       findGtIndex (l ++ l') i = findGtIndex l i.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     - destruct l'; simpl in *; intuition.
       break_if; do_bool; auto; omega.
@@ -1842,7 +1842,7 @@ Section CommonTheorems.
       sorted (l ++ l') ->
       i < maxIndex l' ->
       findGtIndex (l ++ l') i = l ++ findGtIndex l' i.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     break_if; do_bool; auto.
     - f_equal. eauto.
@@ -1858,7 +1858,7 @@ Section CommonTheorems.
       In e (l ++ l') ->
       eIndex e <= maxIndex l' ->
       In e l'.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     subst. destruct l'; simpl in *; intuition.
     - exfalso. specialize (H0 e). intuition.
@@ -1870,7 +1870,7 @@ Section CommonTheorems.
     forall l i,
       i < maxIndex l ->
       findGtIndex l i <> [].
-  Proof.
+  Proof using. 
     intros. induction l; simpl in *; intuition.
     break_if; do_bool; simpl in *; intuition.
     congruence.
@@ -1882,7 +1882,7 @@ Section CommonTheorems.
       Prefix l' l ->
       (forall e, In e l -> In e l') ->
       l' = l.
-  Proof.
+  Proof using. 
     induction l'; intros; simpl in *; intuition.
     - destruct l; simpl in *; auto.
       specialize (H1 e); intuition.
@@ -1898,7 +1898,7 @@ Section CommonTheorems.
     forall l i,
       (forall e, In e l -> eIndex e <= i) ->
       removeAfterIndex l i = l.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     break_if; intuition.
     do_bool. specialize (H a). intuition. omega.
@@ -1909,7 +1909,7 @@ Section CommonTheorems.
       In e l ->
       removeAfterIndex (l ++ l') (eIndex e) =
       (removeAfterIndex l (eIndex e)) ++ l'.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition;
     subst; break_if; do_bool; eauto using app_ass.
     omega.
@@ -1921,7 +1921,7 @@ Section CommonTheorems.
       In e l' ->
       removeAfterIndex (l ++ l') (eIndex e) =
       removeAfterIndex l' (eIndex e).
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition;
     subst; break_if; do_bool; eauto using app_ass.
     specialize (H a). intuition. omega.
@@ -1931,7 +1931,7 @@ Section CommonTheorems.
     forall l,
       sorted l ->
       l = removeAfterIndex l (maxIndex l).
-  Proof.
+  Proof using. 
     intros; induction l; simpl in *; intuition.
     break_if; auto. do_bool. omega.
   Qed.
@@ -1940,7 +1940,7 @@ Section CommonTheorems.
     forall x n,
       S n = eIndex x ->
       contiguous_range_exact_lo [x] n.
-  Proof.
+  Proof using. 
     red. intuition.
     - exists x. intuition. simpl in *. inv H2; [reflexivity | omega].
     - simpl in *. intuition. subst. omega.
@@ -1951,7 +1951,7 @@ Section CommonTheorems.
       eIndex x = S (eIndex y) ->
       contiguous_range_exact_lo (y :: l) i ->
       contiguous_range_exact_lo (x :: y :: l) i.
-  Proof.
+  Proof using. 
     intros. unfold contiguous_range_exact_lo in *. intuition.
     - invc H4.
       + eexists; intuition.
@@ -1967,7 +1967,7 @@ Section CommonTheorems.
       sorted (l1 ++ x :: l2) ->
       contiguous_range_exact_lo (l1 ++ x :: l2) i ->
       contiguous_range_exact_lo l1 (eIndex x).
-  Proof.
+  Proof using. 
     Opaque sorted.
     induction l1; intros.
     - apply contiguous_nil.
@@ -1987,7 +1987,7 @@ Section CommonTheorems.
        l = l'' ++ l') ->
     exists l'',
       rev l = rev l' ++ l''.
-  Proof.
+  Proof using. 
     intros.
     break_exists.
     exists (rev x). subst. eauto using rev_app_distr.
@@ -1998,7 +1998,7 @@ Section CommonTheorems.
       l = l1 ++ l2 ->
       In x l2 ->
       In x l.
-  Proof.
+  Proof using. 
     intros. subst. intuition.
   Qed.
 
@@ -2009,7 +2009,7 @@ Section CommonTheorems.
       contiguous_range_exact_lo l i ->
       maxIndex l2' <= i ->
       l = l1.
-  Proof.
+  Proof using. 
     intros. subst.
     destruct l2; eauto using app_nil_r.
     simpl in *.
@@ -2023,7 +2023,7 @@ Section CommonTheorems.
     forall A l,
       Prefix (A := A) l [] ->
       l = [].
-  Proof.
+  Proof using. 
     intros. destruct l; simpl in *; intuition.
   Qed.
 
@@ -2031,7 +2031,7 @@ Section CommonTheorems.
     forall l1 l2,
       sorted (l1 ++ l2) ->
       sorted l1.
-  Proof.
+  Proof using. 
     intros. induction l1; simpl in *; intuition;
     eapply H0; intuition.
   Qed.
@@ -2042,7 +2042,7 @@ Section CommonTheorems.
       Prefix l l' ->
       In e l ->
       eIndex e <= maxIndex l'.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition;
     break_match; intuition; repeat subst; simpl in *; auto.
     intuition.
@@ -2066,7 +2066,7 @@ Section CommonTheorems.
       In e (l ++ l') ->
       maxIndex l' < eIndex e ->
       In e l.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     - destruct l'; simpl in *; intuition; subst; intuition.
       find_apply_hyp_hyp. intuition.
@@ -2081,7 +2081,7 @@ Section CommonTheorems.
       contiguous_range_exact_lo (l1 ++ l2) i ->
       (l2 <> [] \/ i = maxIndex l2') ->
       contiguous_range_exact_lo l1 (maxIndex l2').
-  Proof.
+  Proof using. 
     intros.
     destruct l2.
     - intuition. subst. rewrite app_nil_r in *. auto.
@@ -2095,7 +2095,7 @@ Section CommonTheorems.
       Prefix l l' ->
       In x l ->
       In x l'.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition;
     subst; break_match; intuition; subst; intuition.
   Qed.
@@ -2107,7 +2107,7 @@ Section CommonTheorems.
       In e' l ->
       eIndex e < eIndex e' ->
       eTerm e <= eTerm e'.
-  Proof.
+  Proof using. 
     intros.
     induction l; simpl in *; intuition; repeat subst; auto;
     find_apply_hyp_hyp; intuition.
@@ -2120,7 +2120,7 @@ Section CommonTheorems.
       Prefix l' l'' ->
       maxIndex l'' < i <= maxIndex l ->
       exists e, eIndex e = i /\ In e l.
-  Proof.
+  Proof using. 
     destruct l'.
     - intros. simpl in *. rewrite app_nil_r in *.
       eapply_prop (contiguous_range_exact_lo l). omega.
@@ -2134,7 +2134,7 @@ Section CommonTheorems.
       contiguous_range_exact_lo (l1 ++ l2) 0 ->
       In e l1 ->
       eIndex e > maxIndex l2.
-  Proof.
+  Proof using. 
     induction l1; intros.
     - simpl in *. intuition.
     - rewrite <- app_comm_cons in *.
@@ -2156,7 +2156,7 @@ Section CommonTheorems.
     forall e l ks,
       In e (deduplicate_log' l ks) ->
       In e l.
-  Proof.
+  Proof using. 
     induction l; intros; simpl in *; intuition.
     repeat break_match; simpl in *; intuition; find_apply_hyp_hyp; auto.
   Qed.
@@ -2172,7 +2172,7 @@ Section CommonTheorems.
          (findGtIndex l i))
         ++ removeAfterIndex l i =
       removeAfterIndex l i'.
-  Proof.
+  Proof using. 
     induction l; intros; intuition.
     simpl in *.
     repeat break_if; simpl in *; repeat break_if;
@@ -2194,7 +2194,7 @@ Section CommonTheorems.
          (findGtIndex l i))
         ++ removeAfterIndex l i =
       removeAfterIndex l i.
-  Proof.
+  Proof using. 
     induction l; intros; intuition.
     simpl in *.
     repeat break_if; simpl in *; repeat break_if;
@@ -2206,7 +2206,7 @@ Section CommonTheorems.
     forall e l,
       sorted (e :: l) ->
       sorted l.
-  Proof.
+  Proof using. 
     eauto using sorted_subseq, subseq_skip, subseq_refl.
   Qed.
 
@@ -2215,7 +2215,7 @@ Section CommonTheorems.
       sorted (l ++ [x]) ->
       contiguous_range_exact_lo (l ++ [x]) i ->
       eIndex x = S i /\ contiguous_range_exact_lo l (S i).
-  Proof.
+  Proof using. 
     Opaque sorted.
     induction l; intros.
     - split.
@@ -2241,7 +2241,7 @@ Section CommonTheorems.
       In e1 l1 ->
       In e2 l2 ->
       eIndex e1 > eIndex e2.
-  Proof.
+  Proof using. 
     induction l1; intros.
     - contradiction.
     - simpl in *. intuition.
@@ -2257,7 +2257,7 @@ Section CommonTheorems.
       eIndex e1 = eIndex e2 ->
       (forall e, In e (l1 ++ [e1]) -> In e (l2 ++ [e2])) ->
       (forall e, In e l1 -> In e l2).
-  Proof.
+  Proof using. 
     intros.
     find_copy_eapply_lem_hyp (sorted_app_gt l1 [e1]); simpl; eauto.
     assert (In e (l1 ++ [e1])). apply in_or_app. intuition.
@@ -2273,7 +2273,7 @@ Section CommonTheorems.
       sorted l2 ->
       (forall e, In e l1 -> In e l2) ->
       Prefix (rev l1) (rev l2).
-  Proof.
+  Proof using. 
     intros l1.
     induction l1 using rev_ind; intuition.
     induction l2 using rev_ind.
@@ -2291,7 +2291,7 @@ Section CommonTheorems.
       Prefix (A := A) l1 l2 ->
       exists rest,
         l2 = l1 ++ rest.
-  Proof.
+  Proof using. 
     induction l1; intros; simpl in *; eauto.
     break_match; intuition. subst.
     find_apply_hyp_hyp.
@@ -2302,14 +2302,14 @@ Section CommonTheorems.
     forall A (l : list A),
       not_empty l = false ->
       l  = [].
-  Proof.
+  Proof using. 
     destruct l; [auto|discriminate].
   Qed.
 
   Lemma moreUpToDate_refl :
     forall x y,
       moreUpToDate x y x y = true.
-  Proof.
+  Proof using. 
     intros.
     unfold moreUpToDate in *.
     apply Bool.orb_true_intro.
@@ -2324,7 +2324,7 @@ Section CommonTheorems.
         NoDup quorum /\
         length quorum > div2 (length nodes) /\
         (forall h, In h quorum -> In h l).
-  Proof.
+  Proof using. 
     intros.
     exists (dedup name_eq_dec l). intuition; eauto using NoDup_dedup, in_dedup_was_in.
     unfold wonElection in *.
@@ -2338,7 +2338,7 @@ Section CommonTheorems.
       contiguous_range_exact_lo l s ->
       s < i <= maxIndex l ->
       exists e, findAtIndex l i = Some e.
-  Proof.
+  Proof using. 
     unfold contiguous_range_exact_lo.
     intros.
     intuition.

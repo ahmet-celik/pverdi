@@ -153,23 +153,23 @@ Module PTree <: TREE.
 
   Theorem gempty:
     forall (A: Type) (i: positive), get i (empty A) = None.
-  Proof.
+  Proof using. 
     induction i; simpl; auto.
   Qed.
 
   Theorem gss:
     forall (A: Type) (i: positive) (x: A) (m: t A), get i (set i x m) = Some x.
-  Proof.
+  Proof using. 
     induction i; destruct m; simpl; auto.
   Qed.
 
     Lemma gleaf : forall (A : Type) (i : positive), get i (Leaf : t A) = None.
-    Proof. exact gempty. Qed.
+    Proof using.  exact gempty. Qed.
 
   Theorem gso:
     forall (A: Type) (i j: positive) (x: A) (m: t A),
     i <> j -> get i (set j x m) = get i m.
-  Proof.
+  Proof using. 
     induction i; intros; destruct j; destruct m; simpl;
        try rewrite <- (gleaf A i); auto; try apply IHi; congruence.
   Qed.
@@ -177,7 +177,7 @@ Module PTree <: TREE.
   Theorem gsspec:
     forall (A: Type) (i j: positive) (x: A) (m: t A),
     get i (set j x m) = if peq i j then Some x else get i m.
-  Proof.
+  Proof using. 
     intros.
     destruct (peq i j); [ rewrite e; apply gss | apply gso; auto ].
   Qed.
@@ -186,16 +186,16 @@ Module PTree <: TREE.
   Theorem set2:
     forall (A: Type) (i: elt) (m: t A) (v1 v2: A),
     set i v2 (set i v1 m) = set i v2 m.
-  Proof.
+  Proof using. 
     induction i; intros; destruct m; simpl; try (rewrite IHi); auto.
   Qed.
 
   Lemma rleaf : forall (A : Type) (i : positive), remove i (Leaf : t A) = Leaf.
-  Proof. destruct i; simpl; auto. Qed.
+  Proof using.  destruct i; simpl; auto. Qed.
 
   Theorem grs:
     forall (A: Type) (i: positive) (m: t A), get i (remove i m) = None.
-  Proof.
+  Proof using. 
     induction i; destruct m.
      simpl; auto.
      destruct m1; destruct o; destruct m2 as [ | ll oo rr]; simpl; auto.
@@ -216,7 +216,7 @@ Module PTree <: TREE.
   Theorem gro:
     forall (A: Type) (i j: positive) (m: t A),
     i <> j -> get i (remove j m) = get i m.
-  Proof.
+  Proof using. 
     induction i; intros; destruct j; destruct m;
         try rewrite (rleaf A (xI j));
         try rewrite (rleaf A (xO j));
@@ -245,7 +245,7 @@ Module PTree <: TREE.
   Theorem grspec:
     forall (A: Type) (i j: elt) (m: t A),
     get i (remove j m) = if elt_eq i j then None else get i m.
-  Proof.
+  Proof using. 
     intros. destruct (elt_eq i j). subst j. apply grs. apply gro; auto.
   Qed.
 End PTree.
@@ -267,7 +267,7 @@ Module ZIndexed.
     | Zneg p => xI p
     end.
   Lemma index_inj: forall (x y: Z), index x = index y -> x = y.
-  Proof.
+  Proof using. 
     unfold index; destruct x; destruct y; intros;
     try discriminate; try reflexivity.
     congruence.
@@ -284,13 +284,13 @@ Module NIndexed.
     | Npos p => xO p
     end.
   Lemma index_inj: forall (x y: N), index x = index y -> x = y.
-  Proof.
+  Proof using. 
     unfold index; destruct x; destruct y; intros;
     try discriminate; try reflexivity.
     congruence.
   Qed.
   Lemma eq: forall (x y: N), {x = y} + {x <> y}.
-  Proof.
+  Proof using. 
     decide equality. apply peq.
   Qed.
 End NIndexed.
@@ -314,7 +314,7 @@ Module ETree(X: EQUALITY_TYPE) <: TREE.
     assoc_del X.eq m x.
   Lemma gss:
     forall (A: Type) (i: elt) (x: A) (m: t A), get i (set i x m) = Some x.
-  Proof.
+  Proof using. 
     unfold get, set.
     intros.
     apply get_set_same.
@@ -322,7 +322,7 @@ Module ETree(X: EQUALITY_TYPE) <: TREE.
   Lemma gso:
     forall (A: Type) (i j: elt) (x: A) (m: t A),
     i <> j -> get i (set j x m) = get i m.
-  Proof.
+  Proof using. 
     unfold get, set.
     intros.
     apply get_set_diff; auto.
@@ -330,13 +330,13 @@ Module ETree(X: EQUALITY_TYPE) <: TREE.
   Lemma gsspec:
     forall (A: Type) (i j: elt) (x: A) (m: t A),
     get i (set j x m) = if elt_eq i j then Some x else get i m.
-  Proof.
+  Proof using. 
     intros.
     break_if; subst; auto using gss, gso.
   Qed.
   Lemma grs:
     forall (A: Type) (i: elt) (m: t A), get i (remove i m) = None.
-  Proof.
+  Proof using. 
     unfold get, remove.
     intros.
     apply get_del_same.
@@ -344,7 +344,7 @@ Module ETree(X: EQUALITY_TYPE) <: TREE.
   Lemma gro:
     forall (A: Type) (i j: elt) (m: t A),
       i <> j -> get i (remove j m) = get i m.
-  Proof.
+  Proof using. 
     unfold get, remove.
     intros.
     apply get_del_diff; auto.
@@ -353,14 +353,14 @@ Module ETree(X: EQUALITY_TYPE) <: TREE.
   Lemma grspec:
     forall (A: Type) (i j: elt) (m: t A),
     get i (remove j m) = if elt_eq i j then None else get i m.
-  Proof.
+  Proof using. 
     intros.
     break_if; subst; auto using grs, gro.
   Qed.
 
   Lemma gempty:
     forall (A: Type) (i: elt), get i (empty A) = None.
-  Proof.
+  Proof using. 
     auto.
   Qed.
 End ETree.

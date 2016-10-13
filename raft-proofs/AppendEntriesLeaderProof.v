@@ -37,7 +37,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_init :
     refined_raft_net_invariant_init appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_init, appendEntries_leader.
     simpl. intuition.
   Qed.
@@ -62,7 +62,7 @@ Section AppendEntriesLeader.
       appendEntries_leader_predicate ps st ->
       type_term_log_monotonic st st' ->
       appendEntries_leader_predicate ps st'.
-  Proof.
+  Proof using. 
     unfold type_term_log_monotonic.
     intuition.
     repeat find_rewrite.
@@ -73,7 +73,7 @@ Section AppendEntriesLeader.
     forall h st client id c out st' l,
       handleClientRequest h st client id c = (out, st', l) ->
       type_term_log_monotonic st st'.
-  Proof.
+  Proof using. 
     unfold type_term_log_monotonic.
     intros.
     find_copy_apply_lem_hyp handleClientRequest_type.
@@ -85,7 +85,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_client_request :
     refined_raft_net_invariant_client_request appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_client_request, appendEntries_leader.
     simpl.
     intros.
@@ -103,7 +103,7 @@ Section AppendEntriesLeader.
     forall h st out st' l,
       handleTimeout h st = (out, st', l) ->
       type_term_log_monotonic st st'.
-  Proof.
+  Proof using. 
     unfold type_term_log_monotonic.
     intros.
     find_copy_apply_lem_hyp handleTimeout_type.
@@ -113,7 +113,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_timeout :
     refined_raft_net_invariant_timeout appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_timeout, appendEntries_leader.
     simpl.
     intros.
@@ -133,7 +133,7 @@ Section AppendEntriesLeader.
     forall h st t n pli plt es ci st' ps,
       handleAppendEntries h st t n pli plt es ci = (st', ps) ->
       type_term_log_monotonic st st'.
-  Proof.
+  Proof using. 
     unfold type_term_log_monotonic, handleAppendEntries.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; auto; try congruence.
@@ -141,7 +141,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_append_entries :
     refined_raft_net_invariant_append_entries appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_append_entries, appendEntries_leader.
     simpl.
     intros.
@@ -160,7 +160,7 @@ Section AppendEntriesLeader.
     forall h st h' t es r st' ms,
       handleAppendEntriesReply h st h' t es r = (st', ms) ->
       type_term_log_monotonic st st'.
-  Proof.
+  Proof using. 
     unfold type_term_log_monotonic, handleAppendEntriesReply, advanceCurrentTerm.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; auto; try congruence.
@@ -168,7 +168,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_append_entries_reply, appendEntries_leader.
     simpl.
     intros.
@@ -187,7 +187,7 @@ Section AppendEntriesLeader.
     forall st h h' t lli llt st' m,
       handleRequestVote h st t h' lli llt = (st', m) ->
       type_term_log_monotonic st st'.
-  Proof.
+  Proof using. 
     unfold type_term_log_monotonic, handleRequestVote, advanceCurrentTerm.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; auto; try congruence.
@@ -195,7 +195,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_request_vote :
     refined_raft_net_invariant_request_vote appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_request_vote, appendEntries_leader.
     simpl.
     intros.
@@ -233,7 +233,7 @@ Section AppendEntriesLeader.
        t = currentTerm st /\
        wonElection (dedup name_eq_dec (h' :: votesReceived st)) = true /\
        currentTerm st' = currentTerm st).
-  Proof.
+  Proof using. 
     unfold handleRequestVoteReply.
     intros.
     repeat break_match; repeat find_inversion; do_bool; subst; simpl; intuition.
@@ -245,7 +245,7 @@ Section AppendEntriesLeader.
       type (handleRequestVoteReply h (snd st) src t1 v) = Leader ->
       exists ll,
         In (currentTerm (snd st), ll) (leaderLogs (update_elections_data_requestVoteReply h src t1 v st)).
-  Proof.
+  Proof using. 
     unfold update_elections_data_requestVoteReply, handleRequestVoteReply.
     intros.
     repeat find_rewrite. simpl in *.
@@ -254,7 +254,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply' appendEntries_leader.
-  Proof.
+  Proof using lltsi ollpti aecfli. 
     unfold refined_raft_net_invariant_request_vote_reply', appendEntries_leader.
     simpl.
     intros.
@@ -301,7 +301,7 @@ Section AppendEntriesLeader.
     forall st h os st' ms,
       doLeader st h = (os, st', ms) ->
       type_term_log_monotonic st st'.
-  Proof.
+  Proof using. 
     unfold doLeader, type_term_log_monotonic.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; auto; try congruence.
@@ -316,7 +316,7 @@ Section AppendEntriesLeader.
       currentTerm st = t /\
       type st = Leader /\
       In e (log st).
-  Proof.
+  Proof using. 
     intros. unfold doLeader, advanceCommitIndex in *.
     break_match; try solve [find_inversion; simpl in *; intuition].
     break_if; try solve [find_inversion; simpl in *; intuition].
@@ -332,7 +332,7 @@ Section AppendEntriesLeader.
       type (snd (nwState net h)) = Leader ->
       type (snd (nwState net h')) = Leader ->
       h = h'.
-  Proof.
+  Proof using olpti rri. 
     intros.
     eapply (lift_prop _ one_leader_per_term_invariant _ ltac:(eauto));
       simpl in *; repeat break_match; repeat (find_rewrite; simpl in *);
@@ -342,7 +342,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_do_leader :
     refined_raft_net_invariant_do_leader appendEntries_leader.
-  Proof.
+  Proof using olpti rri. 
     unfold refined_raft_net_invariant_do_leader, appendEntries_leader.
     simpl.
     intros.
@@ -373,7 +373,7 @@ Section AppendEntriesLeader.
     forall h st os st' ps,
       doGenericServer h st = (os, st', ps) ->
       type_term_log_monotonic st st'.
-  Proof.
+  Proof using. 
     unfold type_term_log_monotonic, doGenericServer.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; auto; try congruence;
@@ -382,7 +382,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_do_generic_server :
     refined_raft_net_invariant_do_generic_server appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_do_generic_server, appendEntries_leader.
     simpl.
     intros.
@@ -402,7 +402,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_state_same_packet_subset, appendEntries_leader.
     simpl. intros.
     repeat find_reverse_higher_order_rewrite.
@@ -411,7 +411,7 @@ Section AppendEntriesLeader.
 
   Lemma appendEntries_leader_reboot :
     refined_raft_net_invariant_reboot appendEntries_leader.
-  Proof.
+  Proof using. 
     unfold refined_raft_net_invariant_reboot, appendEntries_leader, reboot.
     simpl.
     intros.
@@ -425,7 +425,7 @@ Section AppendEntriesLeader.
     forall net,
       refined_raft_intermediate_reachable net ->
       appendEntries_leader net.
-  Proof.
+  Proof using olpti lltsi ollpti aecfli rri. 
     intros.
     apply refined_raft_net_invariant'; auto.
     - apply appendEntries_leader_init.

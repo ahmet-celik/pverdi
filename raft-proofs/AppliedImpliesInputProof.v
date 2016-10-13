@@ -23,7 +23,7 @@ Section AppliedImpliesInputProof.
     forall c id i tr1 tr2,
       in_input_trace c id i tr1 \/ in_input_trace c id i tr2 ->
       in_input_trace c id i (tr1 ++ tr2).
-  Proof.
+  Proof using. 
     unfold in_input_trace.
     intuition; break_exists_exists; intuition.
   Qed.
@@ -40,7 +40,7 @@ Section AppliedImpliesInputProof.
           (In e (log d) \/
            (exists h, In e (log (nwState net h))) \/
            (exists p es, In p ps /\ mEntries (pBody p) = Some es /\ In e es)).
-    Proof.
+    Proof using. 
       unfold applied_implies_input_state.
       intros.
       break_exists_exists.
@@ -55,7 +55,7 @@ Section AppliedImpliesInputProof.
         In e (log (nwState net h)) ->
         correct_entry client id i e ->
         applied_implies_input_state client id i net.
-    Proof.
+    Proof using. 
       unfold applied_implies_input_state.
       eauto 10.
     Qed.
@@ -67,7 +67,7 @@ Section AppliedImpliesInputProof.
         correct_entry client id i e ->
         In e es ->
         applied_implies_input_state client id i net.
-    Proof.
+    Proof using. 
       unfold applied_implies_input_state.
       eauto 10.
     Qed.
@@ -76,7 +76,7 @@ Section AppliedImpliesInputProof.
       forall h st os st' ps,
         doGenericServer h st = (os, st', ps) ->
         log st' = log st.
-    Proof.
+    Proof using. 
       intros. unfold doGenericServer in *.
       repeat break_match; find_inversion;
       use_applyEntries_spec; simpl in *;
@@ -87,7 +87,7 @@ Section AppliedImpliesInputProof.
       forall h st out st' ps,
         handleTimeout h st = (out, st', ps) ->
         log st' = log st.
-    Proof.
+    Proof using. 
       intros. unfold handleTimeout, tryToBecomeLeader in *.
       break_match; find_inversion; subst; auto.
     Qed.
@@ -96,7 +96,7 @@ Section AppliedImpliesInputProof.
       forall h st client id c out st' ps p,
         handleClientRequest h st client id c = (out, st', ps) ->
         In p ps -> False.
-    Proof.
+    Proof using. 
       unfold handleClientRequest.
       intros.
       break_match; find_inversion; simpl in *; intuition.
@@ -106,7 +106,7 @@ Section AppliedImpliesInputProof.
       forall m es,
         mEntries m = Some es ->
         is_append_entries m.
-    Proof.
+    Proof using. 
       unfold mEntries.
       intros.
       break_match; try discriminate.
@@ -118,7 +118,7 @@ Section AppliedImpliesInputProof.
       forall h st os st' ps p,
         doGenericServer h st = (os, st', ps) ->
         In p ps -> False.
-    Proof.
+    Proof using. 
       intros. unfold doGenericServer in *.
       repeat break_match; find_inversion; subst; auto.
     Qed.
@@ -130,7 +130,7 @@ Section AppliedImpliesInputProof.
         mEntries (snd m) = Some es ->
         In e es ->
         In e (log d).
-    Proof.
+    Proof using. 
       unfold doLeader.
       intros.
       repeat break_match; repeat find_inversion; simpl in *; intuition.
@@ -145,7 +145,7 @@ Section AppliedImpliesInputProof.
         correct_entry client id i e ->
         In e (log d') ->
         in_input_trace client id i [(h, inl inp); o].
-    Proof.
+    Proof using. 
       intros.
       destruct inp; simpl in *.
       - find_erewrite_lem handleTimeout_log.
@@ -163,7 +163,7 @@ Section AppliedImpliesInputProof.
       forall m t n l t' es l',
         m = AppendEntries t n l t' es l' ->
         mEntries m = Some es.
-    Proof.
+    Proof using. 
       unfold mEntries. intros. subst. auto.
     Qed.
 
@@ -175,7 +175,7 @@ Section AppliedImpliesInputProof.
         correct_entry client id i e ->
         In e (log d') ->
         False.
-    Proof.
+    Proof using. 
       intros.
       destruct (pBody p) eqn:?; simpl in *; repeat break_let; repeat find_inversion.
       - find_erewrite_lem handleRequestVote_same_log. eauto using aiis_intro_state.
@@ -194,7 +194,7 @@ Section AppliedImpliesInputProof.
       forall h st t n lli llt d m,
         handleRequestVote h st t n lli llt = (d, m) ->
         ~ is_append_entries m.
-    Proof.
+    Proof using. 
       intros.
       unfold handleRequestVote in *.
       repeat (break_match; repeat (find_inversion; simpl in *));
@@ -207,7 +207,7 @@ Section AppliedImpliesInputProof.
         forall x,
           In x l ->
           ~ is_append_entries (snd x).
-    Proof.
+    Proof using. 
       intros.
       unfold handleAppendEntriesReply in *.
       repeat (break_match; repeat (find_inversion; simpl in *)); intuition.
@@ -217,7 +217,7 @@ Section AppliedImpliesInputProof.
       forall n st t i l t' l' l'' st' m,
         handleAppendEntries n st t i l t' l' l'' = (st', m) ->
         ~ is_append_entries m.
-    Proof.
+    Proof using. 
       unfold handleAppendEntries.
       intros.
       repeat break_match; find_inversion; intro; break_exists; discriminate.
@@ -232,7 +232,7 @@ Section AppliedImpliesInputProof.
         mEntries (snd m) = Some es ->
         In e es ->
         In e (log (nwState net (pDst p))).
-    Proof.
+    Proof using. 
       intros.
       destruct (pBody p) eqn:?; simpl in *; repeat break_let; repeat find_inversion;
       simpl in *; intuition; subst; simpl in *.
@@ -250,7 +250,7 @@ Section AppliedImpliesInputProof.
         ~ applied_implies_input_state client id i net ->
         applied_implies_input_state client id i net' ->
         in_input_trace client id i tr.
-    Proof.
+    Proof using. 
       intros.
       match goal with
         | [ H : context [step_f _ _ _ ] |- _ ] => invcs H
@@ -424,7 +424,7 @@ Section AppliedImpliesInputProof.
       eId e = id ->
       applied_implies_input_state client id (eInput e) net ->
       in_input_trace client id (eInput e) tr.
-  Proof.
+  Proof using. 
     intros.
     pose proof @inverse_trace_relations_work _ _ step_f (ITR client id (eInput e)) (failed, net) tr.
     unfold step_f_star in *. simpl in *.

@@ -42,6 +42,26 @@ Ltac break_match_goal :=
 
 Ltac break_match := break_match_goal || break_match_hyp.
 
+Ltac break_inner_match' t :=
+ match t with
+   | context[match ?X with _ => _ end] =>
+     break_inner_match' X || destruct X eqn:?
+   | _ => destruct t eqn:?
+ end.
+
+Ltac break_inner_match_goal :=
+ match goal with
+   | [ |- context[match ?X with _ => _ end] ] =>
+     break_inner_match' X
+ end.
+
+Ltac break_inner_match_hyp :=
+ match goal with
+   | [ H : context[match ?X with _ => _ end] |- _ ] =>
+     break_inner_match' X
+ end.
+
+Ltac break_inner_match := break_inner_match_goal || break_inner_match_hyp.
 
 Ltac break_exists :=
   repeat match goal with
@@ -365,7 +385,7 @@ Ltac find_false :=
   end.
 
 Ltac injc H :=
-  injection H; clear H; intro; subst_max.
+  injection H; clear H; intros; subst_max.
 
 Ltac find_injection :=
   match goal with
@@ -377,7 +397,7 @@ Ltac find_injection :=
     | [ H : ?X _ = ?X _ |- _ ] => injc H
   end.
 
-Ltac aggresive_rewrite_goal :=
+Ltac aggressive_rewrite_goal :=
   match goal with H : _ |- _ => rewrite H end.
 
 Ltac break_exists_name x :=

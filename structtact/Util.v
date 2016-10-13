@@ -1193,6 +1193,15 @@ Proof using.
   induction xs; simpl; repeat break_match; simpl; intuition (auto; try congruence).
 Qed.
 
+Lemma In_notIn_implies_neq :
+  forall A x y l,
+    In(A:=A) x l ->
+    ~ In(A:=A) y l ->
+    x <> y.
+Proof using. 
+  intuition congruence.
+Qed.
+
 Lemma In_cons_neq :
   forall A a x xs,
     In(A:=A) a (x :: xs) ->

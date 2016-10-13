@@ -74,12 +74,12 @@ Section Counter.
   Definition Nodes : list Name := [primary; backup].
 
   Lemma all_Names_Nodes : forall n, In n Nodes.
-  Proof using. 
+  Proof.
     destruct n; simpl; auto.
   Qed.
 
   Lemma NoDup_Nodes : NoDup Nodes.
-  Proof using. 
+  Proof.
     repeat constructor; simpl; intuition discriminate.
   Qed.
 
@@ -104,7 +104,7 @@ Section Counter.
     forall h src m d os d' ms,
       net_handlers h src m d = (os, d', ms) ->
       NetHandler h m d = (tt, os, d', ms).
-  Proof using. 
+  Proof.
     intros.
     simpl in *.
     monad_unfold.
@@ -117,7 +117,7 @@ Section Counter.
     forall h i d os d' ms,
       input_handlers h i d = (os, d', ms) ->
       InputHandler h i d = (tt, os, d', ms).
-  Proof using. 
+  Proof.
     intros.
     simpl in *.
     monad_unfold.
@@ -130,7 +130,7 @@ Section Counter.
     forall m d ms d' o u,
       PrimaryNetHandler m d = (u, o, d', ms) ->
       ms = [].
-  Proof using. 
+  Proof.
     unfold PrimaryNetHandler.
     intros. monad_unfold.
     break_match; find_inversion; auto.
@@ -147,7 +147,7 @@ Section Counter.
   Lemma inc_in_flight_to_backup_app :
     forall xs ys,
       inc_in_flight_to_backup (xs ++ ys) = inc_in_flight_to_backup xs + inc_in_flight_to_backup ys.
-  Proof using. 
+  Proof.
     intros.
     unfold inc_in_flight_to_backup.
     rewrite filterMap_app.
@@ -159,7 +159,7 @@ Section Counter.
     forall p,
       pDst p = primary ->
       inc_in_flight_to_backup [p] = 0.
-  Proof using. 
+  Proof.
     intros.
     unfold inc_in_flight_to_backup.
     simpl.
@@ -168,7 +168,7 @@ Section Counter.
 
   Lemma inc_in_flight_to_backup_nil :
     inc_in_flight_to_backup [] = 0.
-  Proof using. 
+  Proof.
     reflexivity.
   Qed.
 
@@ -176,7 +176,7 @@ Section Counter.
     forall h i d u o d' l,
       InputHandler h i d = (u, o, d', l) ->
       d' = d + inc_in_flight_to_backup (send_packets h l).
-  Proof using. 
+  Proof.
     unfold InputHandler, PrimaryInputHandler, BackupInputHandler.
     simpl.
     intros.
@@ -189,7 +189,7 @@ Section Counter.
     forall p d u o d' l,
       NetHandler (pDst p) (pBody p) d = (u, o, d', l) ->
       d' + inc_in_flight_to_backup (send_packets (pDst p) l) = d + inc_in_flight_to_backup [p].
-  Proof using. 
+  Proof.
     unfold NetHandler, PrimaryNetHandler, BackupNetHandler.
     intros.
     monad_unfold.
@@ -203,7 +203,7 @@ Section Counter.
     forall i d u o d' l,
       InputHandler backup i d = (u, o, d', l) ->
       l = [].
-  Proof using. 
+  Proof.
     simpl. unfold BackupInputHandler.
     intros.
     monad_unfold.
@@ -214,7 +214,7 @@ Section Counter.
   Lemma cons_is_app :
     forall A (x : A) xs,
       x :: xs = [x] ++ xs.
-  Proof using. 
+  Proof.
     auto.
   Qed.
 
@@ -222,7 +222,7 @@ Section Counter.
     forall net tr,
       step_m_star (params := Counter_MultiParams) step_m_init net tr ->
       nwState net backup + inc_in_flight_to_backup (nwPackets net) = nwState net primary.
-  Proof using. 
+  Proof.
     intros.
     remember step_m_init as y in *.
     revert Heqy.
@@ -261,7 +261,7 @@ Section Counter.
     forall net tr,
       step_m_star (params := Counter_MultiParams) step_m_init net tr ->
       nwState net backup <= nwState net primary.
-  Proof using. 
+  Proof.
     intros.
     apply backup_plus_network_eq_primary in H.
     auto with *.
@@ -275,7 +275,7 @@ Section Counter.
   Lemma trace_inputs_app :
     forall tr1 tr2,
       trace_inputs (tr1 ++ tr2) = trace_inputs tr1 + trace_inputs tr2.
-  Proof using. 
+  Proof.
     unfold trace_inputs.
     intros.
     rewrite filterMap_app.
@@ -291,7 +291,7 @@ Section Counter.
   Lemma trace_outputs_app :
     forall tr1 tr2,
       trace_outputs (tr1 ++ tr2) = trace_outputs tr1 + trace_outputs tr2.
-  Proof using. 
+  Proof.
     unfold trace_outputs.
     intros.
     rewrite filterMap_app.
@@ -309,7 +309,7 @@ Section Counter.
   Lemma ack_in_flight_to_primary_app :
     forall xs ys,
       ack_in_flight_to_primary (xs ++ ys) = ack_in_flight_to_primary xs + ack_in_flight_to_primary ys.
-  Proof using. 
+  Proof.
     unfold ack_in_flight_to_primary.
     intros.
     rewrite filterMap_app.
@@ -320,7 +320,7 @@ Section Counter.
     forall p,
       pDst p = backup ->
       ack_in_flight_to_primary [p] = 0.
-  Proof using. 
+  Proof.
     intros.
     unfold ack_in_flight_to_primary.
     simpl.
@@ -335,7 +335,7 @@ Section Counter.
       trace_outputs [(h, inr o)] +
       inc_in_flight_to_backup (send_packets h l) +
       ack_in_flight_to_primary (send_packets h l).
-  Proof using. 
+  Proof.
     unfold InputHandler, PrimaryInputHandler, BackupInputHandler.
     simpl.
     intros.
@@ -351,7 +351,7 @@ Section Counter.
       trace_outputs [((pDst p), inr o)] +
       inc_in_flight_to_backup (send_packets (pDst p) l) +
       ack_in_flight_to_primary (send_packets (pDst p) l).
-  Proof using. 
+  Proof.
     unfold NetHandler, PrimaryNetHandler, BackupNetHandler.
     intros.
     monad_unfold.
@@ -364,7 +364,7 @@ Section Counter.
   Lemma trace_inputs_output :
     forall h os,
       trace_inputs [(h, inr os)] = 0.
-  Proof using. 
+  Proof.
     intros.
     unfold trace_inputs.
     simpl. repeat break_match; simpl; congruence.
@@ -373,7 +373,7 @@ Section Counter.
   Lemma trace_outputs_input :
     forall h i,
       trace_outputs [(h, inl i)] = 0.
-  Proof using. 
+  Proof.
     intros.
     unfold trace_outputs.
     simpl. repeat break_match; simpl; congruence.
@@ -382,7 +382,7 @@ Section Counter.
   Lemma trace_outputs_backup :
     forall e,
       trace_outputs [(backup, e)] = 0.
-  Proof using. 
+  Proof.
     auto.
   Qed.
 
@@ -392,7 +392,7 @@ Section Counter.
       trace_inputs tr = trace_outputs tr +
                         inc_in_flight_to_backup (nwPackets net) +
                         ack_in_flight_to_primary (nwPackets net).
-  Proof using. 
+  Proof.
     intros.
     remember step_m_init as y in *.
     revert Heqy.
@@ -432,7 +432,7 @@ Section Counter.
     forall net tr,
       step_m_star (params := Counter_MultiParams) step_m_init net tr ->
       trace_outputs tr <= trace_inputs tr.
-  Proof using. 
+  Proof.
     intros.
     apply inputs_eq_outputs_plus_inc_plus_ack in H.
     omega.

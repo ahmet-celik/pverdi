@@ -51,7 +51,7 @@ Section InputBeforeOutput.
     forall net,
       client_id_in (applied_entries (nwState net)) = true ->
       in_applied_entries client id net.
-  Proof using. 
+  Proof.
     intros. unfold in_applied_entries.
     induction (applied_entries (nwState net)); simpl in *; try congruence.
     break_if; do_bool; intuition; do_bool; eauto;
@@ -62,7 +62,7 @@ Section InputBeforeOutput.
     forall net,
       client_id_in (applied_entries (nwState net)) = false ->
       ~ in_applied_entries client id net.
-  Proof using. 
+  Proof.
     intros. unfold in_applied_entries.
     induction (applied_entries (nwState net)); simpl in *; try congruence; intuition.
     - break_exists; intuition.
@@ -82,7 +82,7 @@ Section InputBeforeOutput.
       doGenericServer h (sigma h) = (os, st', ms) ->
       exists es, applied_entries (update sigma h st') = (applied_entries sigma) ++ es /\
             (forall e, In e es -> exists h, In e (log (sigma h)) /\ eIndex e <= commitIndex (sigma h)).
-  Proof using lacimi si. 
+  Proof.
     intros.
     unfold doGenericServer in *. break_let. find_inversion.
     find_copy_apply_lem_hyp logs_sorted_invariant. unfold logs_sorted, logs_sorted_host in *.
@@ -154,7 +154,7 @@ Section InputBeforeOutput.
       1 <= i ->
       exists e',
         findAtIndex (log (nwState net h)) i = Some e'.
-  Proof using lmi si. 
+  Proof.
     intros.
     find_copy_apply_lem_hyp logs_sorted_invariant.
     pose proof log_matching_invariant.
@@ -176,7 +176,7 @@ Section InputBeforeOutput.
       mEntries (pBody p) = Some es ->
       es <> nil ->
       1 <= maxIndex es.
-  Proof using lmi. 
+  Proof.
     intros.
     find_apply_lem_hyp maxIndex_non_empty.
     break_exists; intuition; find_rewrite.
@@ -191,7 +191,7 @@ Section InputBeforeOutput.
     forall net h,
       raft_intermediate_reachable net ->
       contiguous_range_exact_lo (log (nwState net h)) 0.
-  Proof using lmi. 
+  Proof.
     intros.
     find_apply_lem_hyp log_matching_invariant.
     unfold log_matching, log_matching_hosts in *.
@@ -208,7 +208,7 @@ Section InputBeforeOutput.
       mEntries (pBody p) = Some es ->
       In e es ->
       0 < eIndex e.
-  Proof using lmi. 
+  Proof.
     intros.
     find_apply_lem_hyp log_matching_invariant.
     unfold log_matching, log_matching_nw in *.
@@ -225,7 +225,7 @@ Section InputBeforeOutput.
       pBody p = AppendEntries t n pli plt es ci ->
       In e es ->
       pli < eIndex e.
-  Proof using lmi. 
+  Proof.
     intros.
     find_apply_lem_hyp log_matching_invariant.
     unfold log_matching, log_matching_nw in *.
@@ -238,7 +238,7 @@ Section InputBeforeOutput.
     forall l l',
       sorted (l ++ l') ->
       sorted l.
-  Proof using. 
+  Proof.
     induction l; simpl in *; intros; intuition eauto.
     - apply H0. intuition.
     - apply H0. intuition.
@@ -250,7 +250,7 @@ Section InputBeforeOutput.
       In {| pBody := m; pDst := h; pSrc := h' |} (nwPackets net) ->
       handleMessage h' h m (nwState net h) = (st', ms) ->
       applied_entries (nwState net) = applied_entries (update (nwState net) h st').
-  Proof using uii misi smsi lmi si. 
+  Proof.
     intros. symmetry.
     unfold handleMessage in *. break_match; repeat break_let; repeat find_inversion.
     - apply applied_entries_log_lastApplied_update_same;
@@ -406,7 +406,7 @@ Section InputBeforeOutput.
       handleMessage h' h m (nwState net h) = (st', ms) ->
       In e (log (update (nwState net) h st' h'')) ->
       applied_implies_input_state (eClient e) (eId e) (eInput e) net.
-  Proof using. 
+  Proof.
     intros.
     unfold handleMessage in *. break_match; repeat break_let; repeat find_inversion.
     - find_apply_lem_hyp handleRequestVote_same_log.
@@ -437,7 +437,7 @@ Section InputBeforeOutput.
       raft_intermediate_reachable net ->
       handleInput h inp (nwState net h) = (os, st', ms) ->
       applied_entries (nwState net) = applied_entries (update (nwState net) h st').
-  Proof using misi. 
+  Proof.
     intros. symmetry.
     unfold handleInput in *. break_match; repeat break_let; repeat find_inversion.
     - apply applied_entries_log_lastApplied_update_same;
@@ -464,7 +464,7 @@ Section InputBeforeOutput.
       In e (log (update (nwState net) h st' h')) ->
       (applied_implies_input_state (eClient e) (eId e) (eInput e) net \/
        inp = ClientRequest (eClient e) (eId e) (eInput e)).
-  Proof using. 
+  Proof.
     intros.
     unfold handleInput in *. break_match; repeat break_let; repeat find_inversion.
     - left.
@@ -494,7 +494,7 @@ Section InputBeforeOutput.
          applied_implies_input_state client id (eInput e) net) \/
       exists h o' inp,
         o = (h, inl (ClientRequest client id inp)) :: o'.
-  Proof using uii misi smsi lmi lacimi si. 
+  Proof.
     intros. match goal with H : step_f _ _ _ |- _ => invcs H end; intuition.
     - left. unfold RaftNetHandler in *. repeat break_let. subst.
       unfold in_applied_entries in *.
@@ -585,7 +585,7 @@ Section InputBeforeOutput.
         applied_implies_input_state client id (eInput e) (snd s)) \/
       exists h o' inp,
         o = (h, inl (ClientRequest client id inp)) :: o'.
-  Proof using uii misi smsi lmi lacimi si. 
+  Proof.
     intros.
     destruct s as (failed, net).
     destruct s' as (failed', net'). simpl in *.
@@ -598,7 +598,7 @@ Section InputBeforeOutput.
       in_input_trace client id i tr ->
       ~ key_in_output_trace client id tr ->
       input_before_output client id tr.
-  Proof using. 
+  Proof.
     intros. induction tr; simpl in *; intuition.
     - unfold in_input_trace in *. break_exists; simpl in *; intuition.
     - unfold in_input_trace in *.
@@ -623,7 +623,7 @@ Section InputBeforeOutput.
       ~ key_in_output_trace client id tr ->
       input_before_output client id
                           (tr ++ (h, inl (ClientRequest client id inp)) :: tr').
-  Proof using. 
+  Proof.
     intros. induction tr; simpl in *.
     -unfold input_before_output. simpl in *.
      left. repeat (do_bool; intuition).
@@ -678,7 +678,7 @@ Section InputBeforeOutput.
       step_f_star step_f_init (failed, net) tr ->
       key_in_output_trace client id tr ->
       input_before_output client id tr.
-  Proof using uii misi smsi lmi lacimi si aiii oiai. 
+  Proof.
     intros. pose proof (inverse_trace_relations_work (failed, net) tr).
     concludes.
     find_eapply_lem_hyp output_implies_applied; eauto.

@@ -21,13 +21,13 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_init :
     raft_net_invariant_init candidate_term_gt_log.
-  Proof using. 
+  Proof.
     red. unfold candidate_term_gt_log. simpl. discriminate.
   Qed.
 
   Lemma candidate_term_gt_log_client_request :
     raft_net_invariant_client_request candidate_term_gt_log.
-  Proof using. 
+  Proof.
     red. unfold candidate_term_gt_log. simpl. intros.
     find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
     find_copy_apply_lem_hyp handleClientRequest_type.
@@ -38,7 +38,7 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_timeout :
     raft_net_invariant_timeout candidate_term_gt_log.
-  Proof using tsi. 
+  Proof.
     red. unfold candidate_term_gt_log. simpl. intros.
     find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
     find_copy_apply_lem_hyp handleTimeout_log_same.
@@ -52,7 +52,7 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_append_entries :
     raft_net_invariant_append_entries candidate_term_gt_log.
-  Proof using. 
+  Proof.
     red. unfold candidate_term_gt_log. simpl. intros.
     find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
     unfold handleAppendEntries in *. repeat break_match; tuple_inversion; eauto; discriminate.
@@ -63,7 +63,7 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_append_entries_reply :
     raft_net_invariant_append_entries_reply candidate_term_gt_log.
-  Proof using. 
+  Proof.
     start.
     find_copy_apply_lem_hyp handleAppendEntriesReply_type.
     find_copy_apply_lem_hyp handleAppendEntriesReply_log.
@@ -72,7 +72,7 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_request_vote :
     raft_net_invariant_request_vote candidate_term_gt_log.
-  Proof using. 
+  Proof.
     start.
     find_copy_apply_lem_hyp handleRequestVote_type.
     find_copy_apply_lem_hyp handleRequestVote_log.
@@ -81,7 +81,7 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_request_vote_reply :
     raft_net_invariant_request_vote_reply candidate_term_gt_log.
-  Proof using. 
+  Proof.
     red; unfold candidate_term_gt_log; simpl; intros;
       find_higher_order_rewrite; update_destruct; rewrite_update; auto.
     find_copy_apply_lem_hyp handleRequestVoteReply_type.
@@ -91,7 +91,7 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_do_leader :
     raft_net_invariant_do_leader candidate_term_gt_log.
-  Proof using. 
+  Proof.
     start.
     find_copy_apply_lem_hyp doLeader_type.
     find_copy_apply_lem_hyp doLeader_log.
@@ -100,7 +100,7 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_do_generic_server :
     raft_net_invariant_do_generic_server candidate_term_gt_log.
-  Proof using. 
+  Proof.
     start.
     find_copy_apply_lem_hyp doGenericServer_type.
     find_copy_apply_lem_hyp doGenericServer_log.
@@ -109,14 +109,14 @@ Section CandidateTermGtLog.
 
   Lemma candidate_term_gt_log_state_same_packet_subset :
     raft_net_invariant_state_same_packet_subset candidate_term_gt_log.
-  Proof using. 
+  Proof.
     red. unfold candidate_term_gt_log. simpl. intros.
     repeat find_reverse_higher_order_rewrite. auto.
   Qed.
 
   Lemma candidate_term_gt_log_reboot :
     raft_net_invariant_reboot candidate_term_gt_log.
-  Proof using. 
+  Proof.
     start. unfold reboot in *. simpl in *. discriminate.
   Qed.
 
@@ -124,7 +124,7 @@ Section CandidateTermGtLog.
     forall net,
       raft_intermediate_reachable net ->
       candidate_term_gt_log net.
-  Proof using tsi. 
+  Proof.
     intros.
     apply raft_net_invariant; auto.
     - apply candidate_term_gt_log_init.

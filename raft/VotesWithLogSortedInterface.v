@@ -20,3 +20,4 @@ Section VotesWithLogSorted.
           votesWithLog_sorted net
     }.
 End VotesWithLogSorted.
+      

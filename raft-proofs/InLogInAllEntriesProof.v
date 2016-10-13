@@ -32,7 +32,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_append_entries :
     refined_raft_net_invariant_append_entries in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -65,7 +65,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -74,7 +74,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_request_vote :
     refined_raft_net_invariant_request_vote in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -84,7 +84,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -94,7 +94,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_timeout :
     refined_raft_net_invariant_timeout in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -104,7 +104,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_client_request :
     refined_raft_net_invariant_client_request in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -117,7 +117,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_do_leader :
     refined_raft_net_invariant_do_leader in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -132,7 +132,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_do_generic_server :
     refined_raft_net_invariant_do_generic_server in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -147,7 +147,7 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_reboot :
     refined_raft_net_invariant_reboot in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -161,14 +161,14 @@ Section InLogInAllEntries.
 
   Lemma in_log_in_all_entries_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     repeat find_reverse_higher_order_rewrite. eauto.
   Qed.
 
   Lemma in_log_in_all_entries_init :
     refined_raft_net_invariant_init in_log_in_all_entries.
-  Proof using. 
+  Proof.
     red. unfold in_log_in_all_entries. intros. simpl in *.
     intuition.
   Qed.

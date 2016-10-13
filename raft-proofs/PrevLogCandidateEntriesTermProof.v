@@ -27,7 +27,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_init :
     refined_raft_net_invariant_init prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_init, prevLog_candidateEntriesTerm.
     simpl. intuition.
   Qed.
@@ -36,7 +36,7 @@ Section PrevLogCandidateEntriesTerm.
       (forall h, sigma' h = sigma h) ->
       candidateEntriesTerm t sigma ->
       candidateEntriesTerm t sigma'.
-  Proof using. 
+  Proof.
     unfold candidateEntriesTerm.
     intros. break_exists_exists.
     repeat find_higher_order_rewrite. intuition.
@@ -48,7 +48,7 @@ Section PrevLogCandidateEntriesTerm.
        (forall h, currentTerm (snd (st' h)) = currentTerm (snd (st h))) ->
        (forall h, type (snd (st' h)) = type (snd (st h))) ->
        candidateEntriesTerm t st'.
-  Proof using. 
+  Proof.
     unfold candidateEntriesTerm.
     intros. break_exists_exists.
     repeat find_higher_order_rewrite.
@@ -65,7 +65,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_client_request :
     refined_raft_net_invariant_client_request prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_client_request, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp. break_or_hyp.
@@ -86,7 +86,7 @@ Section PrevLogCandidateEntriesTerm.
       cronies (update_elections_data_timeout h d) t = cronies (fst d) t \/
       (t = currentTerm d' /\ type d' = Candidate /\
        cronies (update_elections_data_timeout h d) t = votesReceived d').
-  Proof using. 
+  Proof.
     unfold update_elections_data_timeout.
     intros.
     repeat break_match; repeat find_inversion; simpl; auto.
@@ -101,7 +101,7 @@ Section PrevLogCandidateEntriesTerm.
       candidateEntriesTerm t
                            (update (nwState net) h
                                    (update_elections_data_timeout h (nwState net h), d)).
-  Proof using cti. 
+  Proof.
     unfold candidateEntriesTerm.
     intros.
     break_exists_exists. break_and.
@@ -131,7 +131,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_timeout :
     refined_raft_net_invariant_timeout prevLog_candidateEntriesTerm.
-  Proof using cti. 
+  Proof.
     unfold refined_raft_net_invariant_timeout, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp. break_or_hyp.
@@ -152,7 +152,7 @@ Section PrevLogCandidateEntriesTerm.
                                  (update_elections_data_appendEntries
                                     h
                                     (nwState net h) t n pli plt es ci, d)).
-  Proof using. 
+  Proof.
     unfold candidateEntriesTerm.
     intros.
     break_exists_exists. break_and.
@@ -166,7 +166,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_append_entries :
     refined_raft_net_invariant_append_entries prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_append_entries, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp. break_or_hyp.
@@ -183,7 +183,7 @@ Section PrevLogCandidateEntriesTerm.
     refined_raft_intermediate_reachable net ->
     candidateEntriesTerm t' (nwState net) ->
     candidateEntriesTerm t' (update (nwState net) h (fst (nwState net h), st')).
-  Proof using. 
+  Proof.
     unfold candidateEntriesTerm.
     intros. break_exists_exists.
     find_apply_lem_hyp handleAppendEntriesReply_type.
@@ -194,7 +194,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_append_entries_reply, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp. break_or_hyp.
@@ -210,7 +210,7 @@ Section PrevLogCandidateEntriesTerm.
     forall h h' t lli llt st,
       cronies (update_elections_data_requestVote h h' t h' lli llt st) =
       cronies (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVote.
     intros.
     repeat break_match; auto.
@@ -220,7 +220,7 @@ Section PrevLogCandidateEntriesTerm.
     forall st t,
       advanceCurrentTerm st t = st \/
       type (advanceCurrentTerm st t) = Follower.
-  Proof using. 
+  Proof.
     unfold advanceCurrentTerm.
     intros. repeat break_match; auto.
   Qed.
@@ -232,7 +232,7 @@ Section PrevLogCandidateEntriesTerm.
                        (update (nwState net) h
                                (update_elections_data_requestVote h h' t h' lli llt (nwState net h),
                                 advanceCurrentTerm (snd (nwState net h)) t)).
-  Proof using. 
+  Proof.
     unfold candidateEntriesTerm.
     intros.
     break_exists_exists.
@@ -255,7 +255,7 @@ Section PrevLogCandidateEntriesTerm.
       candidateEntriesTerm t' (update (nwState net) h
                                  (update_elections_data_requestVote
                                     h h' t h' lli llt (nwState net h), d)).
-  Proof using. 
+  Proof.
     unfold candidateEntriesTerm.
     intros.
     break_exists_exists.
@@ -267,7 +267,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_request_vote :
     refined_raft_net_invariant_request_vote prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_request_vote, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp. break_or_hyp.
@@ -286,7 +286,7 @@ Section PrevLogCandidateEntriesTerm.
       candidateEntriesTerm t' (update (nwState net) h
                                  (update_elections_data_requestVoteReply h h' t r (nwState net h),
                                   st')).
-  Proof using cci. 
+  Proof.
     unfold candidateEntriesTerm.
     intros.
     break_exists_exists.
@@ -317,7 +317,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply prevLog_candidateEntriesTerm.
-  Proof using cci. 
+  Proof.
     unfold refined_raft_net_invariant_request_vote_reply, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp.
@@ -333,7 +333,7 @@ Section PrevLogCandidateEntriesTerm.
       doLeader d h = (os, d', ms) ->
       candidateEntriesTerm t' (nwState net) ->
       candidateEntriesTerm t' (update (nwState net) h (gd, d')).
-  Proof using. 
+  Proof.
     unfold candidateEntriesTerm.
     intros. break_exists_exists.
     break_and.
@@ -358,7 +358,7 @@ Section PrevLogCandidateEntriesTerm.
       nextIndex st' = nextIndex st ->
       log st' = log st ->
       getNextIndex st' h = getNextIndex st h.
-  Proof using. 
+  Proof.
     unfold getNextIndex.
     intros.
     repeat find_rewrite.
@@ -372,7 +372,7 @@ Section PrevLogCandidateEntriesTerm.
       currentTerm st' = currentTerm st ->
       commitIndex st' = commitIndex st ->
       replicaMessage st' h h' = replicaMessage st h h'.
-  Proof using. 
+  Proof.
     unfold replicaMessage.
     intros.
     repeat break_match; repeat tuple_inversion; repeat find_rewrite;
@@ -381,7 +381,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_do_leader :
     refined_raft_net_invariant_do_leader prevLog_candidateEntriesTerm.
-  Proof using cei. 
+  Proof.
     unfold refined_raft_net_invariant_do_leader, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp. break_or_hyp.
@@ -423,7 +423,7 @@ Section PrevLogCandidateEntriesTerm.
       doGenericServer h d = (os, d', ms) ->
       candidateEntriesTerm t (nwState net) ->
       candidateEntriesTerm t (update (nwState net) h (gd, d')).
-  Proof using. 
+  Proof.
     intros.
     find_apply_lem_hyp doGenericServer_type. break_and.
     eapply candidateEntriesTerm_same; eauto.
@@ -437,7 +437,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_do_generic_server :
     refined_raft_net_invariant_do_generic_server prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_do_generic_server, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp. break_or_hyp.
@@ -450,7 +450,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_state_same_packet_subset, prevLog_candidateEntriesTerm.
     simpl. intros.
     find_apply_hyp_hyp.
@@ -461,7 +461,7 @@ Section PrevLogCandidateEntriesTerm.
 
   Lemma prevLog_candidateEntriesTerm_reboot :
     refined_raft_net_invariant_reboot prevLog_candidateEntriesTerm.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_reboot, prevLog_candidateEntriesTerm, reboot.
     simpl. intros.
     eapply candidateEntriesTerm_ext; eauto.
@@ -479,7 +479,7 @@ Section PrevLogCandidateEntriesTerm.
     forall net,
       refined_raft_intermediate_reachable net ->
       prevLog_candidateEntriesTerm net.
-  Proof using cci cti cei rri. 
+  Proof.
     intros.
     apply refined_raft_net_invariant; auto.
     - apply prevLog_candidateEntriesTerm_init.

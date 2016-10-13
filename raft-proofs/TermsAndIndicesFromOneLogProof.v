@@ -19,7 +19,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_init :
     raft_net_invariant_init terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     split.
     - unfold terms_and_indices_from_one_log, terms_and_indices_from_one. simpl. contradiction.
     - unfold terms_and_indices_from_one_log_nw, terms_and_indices_from_one. simpl. contradiction.
@@ -39,7 +39,7 @@ Section TermsAndIndicesFromOneLog.
       pBody p = AppendEntries t leaderId prevLogIndex prevLogTerm entries leaderCommit ->
       terms_and_indices_from_one_log_nw net ->
       terms_and_indices_from_one entries.
-  Proof using. 
+  Proof.
     intros. find_apply_hyp_hyp. break_or_hyp; eauto. unfold send_packets in *. do_in_map.
     find_apply_hyp_hyp. unfold not in *. find_false.
     subst. simpl in *. repeat find_rewrite. eauto 10.
@@ -47,7 +47,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_client_request :
     raft_net_invariant_client_request terms_and_indices_from_one_log_ind.
-  Proof using ctgzi. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       find_apply_lem_hyp handleClientRequest_log. intuition.
@@ -63,7 +63,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_timeout :
     raft_net_invariant_timeout terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       find_apply_lem_hyp handleTimeout_log_same. find_rewrite. auto.
@@ -75,7 +75,7 @@ Section TermsAndIndicesFromOneLog.
       terms_and_indices_from_one xs ->
       terms_and_indices_from_one ys ->
       terms_and_indices_from_one (xs ++ ys).
-  Proof using. 
+  Proof.
     induction xs.
     - auto.
     - unfold terms_and_indices_from_one in *. simpl. intros. break_or_hyp; eauto.
@@ -86,13 +86,13 @@ Section TermsAndIndicesFromOneLog.
       (forall x, In x xs -> In x ys) ->
       terms_and_indices_from_one ys ->
       terms_and_indices_from_one xs.
-  Proof using. 
+  Proof.
     unfold terms_and_indices_from_one. eauto.
   Qed.
 
   Lemma terms_and_indices_from_one_log_ind_append_entries :
     raft_net_invariant_append_entries terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       find_apply_lem_hyp handleAppendEntries_log. intuition.
@@ -108,7 +108,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_append_entries_reply :
     raft_net_invariant_append_entries_reply terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       find_apply_lem_hyp handleAppendEntriesReply_log. find_rewrite. auto.
@@ -118,7 +118,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_request_vote :
     raft_net_invariant_request_vote terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       find_apply_lem_hyp handleRequestVote_log. find_rewrite. auto.
@@ -128,7 +128,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_request_vote_reply :
     raft_net_invariant_request_vote_reply terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; rewrite_update; auto.
       find_apply_lem_hyp handleRequestVoteReply_log. subst. find_rewrite. auto.
@@ -137,7 +137,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_do_leader :
     raft_net_invariant_do_leader terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       find_apply_lem_hyp doLeader_log. find_rewrite. auto.
@@ -149,7 +149,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_do_generic_server :
     raft_net_invariant_do_generic_server terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       find_apply_lem_hyp doGenericServer_log. find_rewrite. auto.
@@ -159,7 +159,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_state_same_packet_subset :
     raft_net_invariant_state_same_packet_subset terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_reverse_higher_order_rewrite. auto.
     - eauto.
@@ -167,7 +167,7 @@ Section TermsAndIndicesFromOneLog.
 
   Lemma terms_and_indices_from_one_log_ind_reboot :
     raft_net_invariant_reboot terms_and_indices_from_one_log_ind.
-  Proof using. 
+  Proof.
     red. unfold terms_and_indices_from_one_log_ind. split; red; simpl in *; intuition.
     - find_higher_order_rewrite. update_destruct; subst; rewrite_update; auto.
       unfold reboot. eauto.
@@ -178,7 +178,7 @@ Section TermsAndIndicesFromOneLog.
     forall net,
       raft_intermediate_reachable net ->
       terms_and_indices_from_one_log_ind net.
-  Proof using ctgzi. 
+  Proof.
     intros.
     apply raft_net_invariant; auto.
     - apply terms_and_indices_from_one_log_ind_init.

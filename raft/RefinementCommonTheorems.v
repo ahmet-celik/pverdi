@@ -30,7 +30,7 @@ Section CommonTheorems.
       currentTerm (snd (nwState net h)) = eTerm e ->
       wonElection (dedup name_eq_dec (votesReceived (snd (nwState net h)))) = true ->
       type (snd (nwState net h)) <> Candidate.
-  Proof using. 
+  Proof.
     intros.
     unfold candidateEntries in *. break_exists. break_and.
     repeat match goal with
@@ -66,7 +66,7 @@ Section CommonTheorems.
       currentTerm (snd (nwState net (pDst p))) = eTerm e ->
       wonElection (dedup name_eq_dec (pSrc p :: votesReceived (snd (nwState net (pDst p))))) = true ->
       type (snd (nwState net (pDst p))) <> Candidate.
-  Proof using. 
+  Proof.
     unfold votes_correct, cronies_correct.
     intros. break_and.
 
@@ -104,7 +104,7 @@ Section CommonTheorems.
       (forall h, sigma' h = sigma h) ->
       candidateEntries e sigma ->
       candidateEntries e sigma'.
-  Proof using. 
+  Proof.
     unfold candidateEntries.
     intuition.
     break_exists_exists.
@@ -119,7 +119,7 @@ Section CommonTheorems.
       (forall h, currentTerm (snd (st' h)) = currentTerm (snd (st h))) ->
       (forall h, type (snd (st' h)) = type (snd (st h))) ->
       candidateEntries e st'.
-  Proof using. 
+  Proof.
     unfold candidateEntries.
     intuition. break_exists. break_and.
     eexists.
@@ -133,7 +133,7 @@ Section CommonTheorems.
       type (snd (nwState net h)) = Leader ->
       wonElection (dedup name_eq_dec (cronies (fst (nwState net h))
                                               (currentTerm (snd (nwState net h))))) = true.
-  Proof using. 
+  Proof.
     intros.
     unfold cronies_correct in *; intuition.
     eapply wonElection_no_dup_in;
@@ -154,7 +154,7 @@ Section CommonTheorems.
       candidateEntries e (update (nwState net) h
                                (update_elections_data_requestVoteReply h h' t r (nwState net h),
                                 st')).
-  Proof using cci. 
+  Proof.
   unfold candidateEntries.
     intros. break_exists. break_and.
     exists x.
@@ -191,7 +191,7 @@ Section CommonTheorems.
       votesReceived st' = votesReceived st /\
       currentTerm st' = currentTerm st /\
       type st' = type st.
-  Proof using. 
+  Proof.
     intros.
     unfold doLeader, advanceCommitIndex in *.
     repeat break_match; find_inversion; intuition.
@@ -203,7 +203,7 @@ Section CommonTheorems.
       doLeader d h = (os, d', ms) ->
       candidateEntries e (nwState net) ->
       candidateEntries e (update (nwState net) h (gd, d')).
-  Proof using. 
+  Proof.
     intros.
     eapply candidateEntries_same; eauto;
     intros;
@@ -217,7 +217,7 @@ Section CommonTheorems.
     forall (net : network (params := raft_refined_multi_params)) p,
       In p (nwPackets net) ->
       In (deghost_packet p) (nwPackets (deghost net)).
-  Proof using. 
+  Proof.
     unfold deghost.
     simpl. intuition.
     apply in_map_iff.
@@ -227,7 +227,7 @@ Section CommonTheorems.
   Lemma pDst_deghost_packet :
     forall p : packet (params := raft_refined_multi_params),
       pDst (deghost_packet p) = pDst p.
-  Proof using. 
+  Proof.
     unfold deghost_packet. auto.
   Qed.
 End CommonTheorems.

@@ -47,7 +47,7 @@ Section CandidateEntriesProof.
                                      (S (maxIndex (log d)))
                                      (currentTerm d)
                                      c) /\ log d' = e :: log d /\ type d' = Leader))).
-  Proof using. 
+  Proof.
     intros. unfold handleClientRequest in *.
     break_match; find_inversion; intuition.
     simpl in *. intuition. subst. auto.
@@ -55,7 +55,7 @@ Section CandidateEntriesProof.
 
   Lemma candidate_entries_client_request :
     refined_raft_net_invariant_client_request CandidateEntries.
-  Proof using cci. 
+  Proof.
     unfold refined_raft_net_invariant_client_request, CandidateEntries.
     intros. subst.
     intuition.
@@ -105,7 +105,7 @@ Section CandidateEntriesProof.
       type (snd (sigma h)) = Leader ->
       cronies (update_elections_data_timeout h (sigma h)) =
       cronies (fst (sigma h)).
-  Proof using. 
+  Proof.
     unfold update_elections_data_timeout.
     intros.
     repeat break_match; subst; simpl in *; auto.
@@ -126,7 +126,7 @@ Section CandidateEntriesProof.
       In p l ->
       exists t h' maxi maxt,
         snd p = RequestVote t h' maxi maxt.
-  Proof using. 
+  Proof.
     unfold handleTimeout, tryToBecomeLeader.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; intuition;
@@ -138,7 +138,7 @@ Section CandidateEntriesProof.
       handleTimeout h d = (out, d', l) ->
       type d <> Leader ->
       currentTerm d' = S (currentTerm d).
-  Proof using. 
+  Proof.
     unfold handleTimeout, tryToBecomeLeader.
     intros. simpl in *.
     repeat break_match; try congruence; repeat find_inversion; auto.
@@ -150,7 +150,7 @@ Section CandidateEntriesProof.
       cronies (update_elections_data_timeout h d) t = cronies (fst d) t \/
       (t = currentTerm d' /\
        cronies (update_elections_data_timeout h d) t = votesReceived d').
-  Proof using. 
+  Proof.
     unfold update_elections_data_timeout.
     intros.
     repeat break_match; repeat find_inversion; simpl; auto.
@@ -163,7 +163,7 @@ Section CandidateEntriesProof.
       handleTimeout h (snd (nwState net h)) = (out, d, l) ->
       candidateEntries e (nwState net) ->
       candidateEntries e (update (nwState net) h (update_elections_data_timeout h (nwState net h), d)).
-  Proof using cti. 
+  Proof.
     intros.
     destruct (serverType_eq_dec (type (snd (A:=electionsData) (B:=raft_data) (nwState net h))) Leader).
       + (* Leader case *)
@@ -212,7 +212,7 @@ Section CandidateEntriesProof.
 
   Lemma candidate_entries_timeout :
     refined_raft_net_invariant_timeout CandidateEntries.
-  Proof using cti. 
+  Proof.
     unfold refined_raft_net_invariant_timeout, CandidateEntries.
     intros. subst.
     intuition; simpl in *.
@@ -245,7 +245,7 @@ Section CandidateEntriesProof.
     forall h d t n pli plt es ci,
       cronies (update_elections_data_appendEntries h d t n pli plt es ci) =
       cronies (fst d).
-  Proof using. 
+  Proof.
     unfold update_elections_data_appendEntries.
     intros.
     repeat break_match; auto.
@@ -260,7 +260,7 @@ Section CandidateEntriesProof.
           In e (log st) \/
           In e es /\ currentTerm st' = t) /\
        ~ is_append_entries m).
-  Proof using. 
+  Proof.
     intros.
     unfold handleAppendEntries, advanceCurrentTerm in *.
     repeat break_match; try find_inversion; subst; simpl in *; intuition;
@@ -273,7 +273,7 @@ Section CandidateEntriesProof.
     forall h t n pli plt es ci d m st,
       handleAppendEntries h st t n pli plt es ci = (d, m) ->
       (currentTerm d = currentTerm st /\ type d = type st) \/ type d = Follower.
-  Proof using. 
+  Proof.
     unfold handleAppendEntries in *.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; auto; try congruence.
@@ -288,7 +288,7 @@ Section CandidateEntriesProof.
                                  (update_elections_data_appendEntries
                                     h
                                     (nwState net h) t n pli plt es ci, d)).
-  Proof using. 
+  Proof.
     unfold candidateEntries.
     intros. break_exists. break_and.
     exists x.
@@ -310,13 +310,13 @@ Section CandidateEntriesProof.
   Lemma is_append_entries_intro :
     forall t n plt pli es ci,
       is_append_entries (AppendEntries t n pli plt es ci).
-  Proof using. 
+  Proof.
     eauto 20.
   Qed.
 
   Lemma candidate_entries_append_entries :
     refined_raft_net_invariant_append_entries CandidateEntries.
-  Proof using. 
+  Proof.
     red. unfold CandidateEntries.
     intros. subst.
     intuition; simpl in *.
@@ -349,7 +349,7 @@ Section CandidateEntriesProof.
       ((currentTerm st' = currentTerm st /\ type st' = type st)
        \/ type st' = Follower) /\
       (forall m, In m ms -> ~ is_append_entries (snd m)).
-  Proof using. 
+  Proof.
     intros.
     unfold handleAppendEntriesReply, advanceCurrentTerm in *.
     repeat break_match; try find_inversion; subst; simpl in *; intuition;
@@ -363,7 +363,7 @@ Section CandidateEntriesProof.
       refined_raft_intermediate_reachable net ->
       candidateEntries e (nwState net) ->
       candidateEntries e (update (nwState net) h (fst (nwState net h), st')).
-  Proof using. 
+  Proof.
     unfold candidateEntries.
     intros. break_exists. break_and.
     exists x.
@@ -391,7 +391,7 @@ Section CandidateEntriesProof.
 
   Lemma candidate_entries_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply CandidateEntries.
-  Proof using. 
+  Proof.
     red. unfold CandidateEntries. intros. intuition.
     - unfold candidateEntries_host_invariant in *.
       intros. simpl in *. eapply candidateEntries_ext; eauto.
@@ -429,7 +429,7 @@ Section CandidateEntriesProof.
     forall h h' t lli llt st,
       cronies (update_elections_data_requestVote h h' t h' lli llt st) =
       cronies (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVote.
     intros.
     repeat break_match; auto.
@@ -439,7 +439,7 @@ Section CandidateEntriesProof.
     forall st t,
       advanceCurrentTerm st t = st \/
       type (advanceCurrentTerm st t) = Follower.
-  Proof using. 
+  Proof.
     unfold advanceCurrentTerm.
     intros. repeat break_match; auto.
   Qed.
@@ -451,7 +451,7 @@ Section CandidateEntriesProof.
                        (update (nwState net) h
                                (update_elections_data_requestVote h h' t h' lli llt (nwState net h),
                                 advanceCurrentTerm (snd (nwState net h)) t)).
-  Proof using. 
+  Proof.
     intros.
     unfold candidateEntries in *.
     break_exists.  break_and.
@@ -474,7 +474,7 @@ Section CandidateEntriesProof.
       candidateEntries e (update (nwState net) h
                                  (update_elections_data_requestVote
                                     h h' t h' lli llt (nwState net h), d)).
-  Proof using. 
+  Proof.
     unfold handleRequestVote.
     intros.
     repeat break_match; repeat find_inversion;
@@ -508,7 +508,7 @@ Section CandidateEntriesProof.
     forall d h h' t lli llt d' m,
       handleRequestVote h d t h' lli llt = (d', m) ->
       is_request_vote_reply m.
-  Proof using. 
+  Proof.
     unfold handleRequestVote.
     intros.
     repeat break_match; repeat find_inversion; eauto.
@@ -516,7 +516,7 @@ Section CandidateEntriesProof.
 
   Lemma candidate_entries_request_vote :
     refined_raft_net_invariant_request_vote CandidateEntries.
-  Proof using. 
+  Proof.
     red. unfold CandidateEntries.
     intros. subst.
     intuition; simpl in *.
@@ -540,7 +540,6 @@ Section CandidateEntriesProof.
 
   Lemma candidate_entries_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply CandidateEntries.
-Proof using cci. 
     red. unfold CandidateEntries. intros. intuition.
     - unfold candidateEntries_host_invariant in *.
       intros. simpl in *. eapply candidateEntries_ext; eauto.
@@ -573,7 +572,7 @@ Proof using cci.
       In m ms ->
       In e es ->
       In e (log d).
-  Proof using. 
+  Proof.
     unfold doLeader.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; intuition.
@@ -586,7 +585,7 @@ Proof using cci.
 
   Lemma candidate_entries_do_leader :
     refined_raft_net_invariant_do_leader CandidateEntries.
-  Proof using. 
+  Proof.
     red. unfold CandidateEntries.
     intros.
     intuition; simpl in *.
@@ -623,7 +622,7 @@ Proof using cci.
     forall h d os d' ms,
       doGenericServer h d = (os, d', ms) ->
       type d' = type d.
-  Proof using. 
+  Proof.
     unfold doGenericServer.
     intros.
     repeat break_match; repeat find_inversion;
@@ -636,7 +635,7 @@ Proof using cci.
       doGenericServer h d = (os, d', ms) ->
       (log d' = log d /\ currentTerm d' = currentTerm d /\
        (forall m, In m ms -> ~ is_append_entries (snd m))).
-  Proof using. 
+  Proof.
     intros. unfold doGenericServer in *.
     repeat break_match; find_inversion; subst; intuition;
     use_applyEntries_spec; subst; simpl in *; auto.
@@ -648,7 +647,7 @@ Proof using cci.
       doGenericServer h d = (os, d', ms) ->
       candidateEntries e (nwState net) ->
       candidateEntries e (update (nwState net) h (gd, d')).
-  Proof using. 
+  Proof.
     intros.
     eapply candidateEntries_same; eauto;
     intros;
@@ -661,7 +660,7 @@ Proof using cci.
 
   Lemma candidate_entries_do_generic_server :
     refined_raft_net_invariant_do_generic_server CandidateEntries.
-  Proof using. 
+  Proof.
     red. unfold CandidateEntries.
     intros.
     intuition; simpl in *.
@@ -695,7 +694,7 @@ Proof using cci.
 
   Lemma candidate_entries_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset CandidateEntries.
-  Proof using. 
+  Proof.
     red. unfold CandidateEntries.
     intros.
     intuition.
@@ -713,7 +712,7 @@ Proof using cci.
   Lemma reboot_log_same :
     forall d,
       log (reboot d) = log d.
-  Proof using. 
+  Proof.
     unfold reboot.
     auto.
   Qed.
@@ -723,7 +722,7 @@ Proof using cci.
       nwState net h = (gd, d) ->
       candidateEntries e (nwState net) ->
       candidateEntries e (update (nwState net) h (gd, reboot d)).
-  Proof using. 
+  Proof.
     unfold reboot, candidateEntries.
     intros.
     break_exists.
@@ -736,7 +735,7 @@ Proof using cci.
 
   Lemma candidate_entries_reboot :
     refined_raft_net_invariant_reboot CandidateEntries.
-  Proof using. 
+  Proof.
     red. unfold CandidateEntries.
     intros.
     intuition.
@@ -765,7 +764,7 @@ Proof using cci.
 
   Lemma candidate_entries_init :
     refined_raft_net_invariant_init CandidateEntries.
-  Proof using. 
+  Proof.
     red.
     unfold CandidateEntries.
     unfold candidateEntries_host_invariant, candidateEntries_nw_invariant.
@@ -780,7 +779,7 @@ Proof using cci.
     forall (net : network),
       refined_raft_intermediate_reachable net ->
       CandidateEntries net.
-  Proof using cci cti rri. 
+  Proof.
     intros.
     eapply refined_raft_net_invariant; eauto.
     - apply candidate_entries_init.

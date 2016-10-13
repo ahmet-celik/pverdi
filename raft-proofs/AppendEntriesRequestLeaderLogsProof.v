@@ -28,7 +28,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       logs_sorted (deghost net).
-  Proof using si rri. 
+  Proof.
     intros.
     eapply lift_prop; eauto using logs_sorted_invariant.
   Qed.
@@ -37,7 +37,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall net h,
       refined_raft_intermediate_reachable net ->
       sorted (log (snd (nwState net h))).
-  Proof using si rri. 
+  Proof.
     intros.
     find_apply_lem_hyp lift_sorted.
     unfold logs_sorted, logs_sorted_host in *.
@@ -49,7 +49,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       log_matching (deghost net).
-  Proof using lmi rri. 
+  Proof.
     intros.
     eapply lift_prop; eauto using log_matching_invariant.
   Qed.
@@ -58,7 +58,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall h st client id c,
       leaderLogs (update_elections_data_client_request h st client id c) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_client_request in *.
     intros. repeat break_match; repeat find_inversion; auto.
   Qed.
@@ -67,7 +67,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall h st,
       leaderLogs (update_elections_data_timeout h st) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_timeout.
     intros.
     repeat break_match; simpl in *; auto.
@@ -77,7 +77,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall h st t h' pli plt es ci,
       leaderLogs (update_elections_data_appendEntries h st t h' pli plt es ci) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     intros.
     unfold update_elections_data_appendEntries.
     repeat break_match; subst; simpl in *; auto.
@@ -87,7 +87,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall h h' t lli llt st,
       leaderLogs (update_elections_data_requestVote h h' t h' lli llt st) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVote.
     intros.
     repeat break_match; auto.
@@ -97,7 +97,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall h h' t  st t' ll' r,
       In (t', ll') (leaderLogs (fst st)) ->
       In (t', ll') (leaderLogs (update_elections_data_requestVoteReply h h' t r st)).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVoteReply.
     intros.
     repeat break_match; auto.
@@ -132,7 +132,7 @@ Section AppendEntriesRequestLeaderLogs.
   
   Lemma append_entries_leaderLogs_appendEntries :
     refined_raft_net_invariant_append_entries append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -160,7 +160,7 @@ Section AppendEntriesRequestLeaderLogs.
   
   Lemma append_entries_leaderLogs_appendEntriesReply :
     refined_raft_net_invariant_append_entries_reply append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -186,7 +186,7 @@ Section AppendEntriesRequestLeaderLogs.
 
   Lemma append_entries_leaderLogs_requestVote :
     refined_raft_net_invariant_request_vote append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -214,7 +214,7 @@ Section AppendEntriesRequestLeaderLogs.
   
   Lemma append_entries_leaderLogs_requestVoteReply :
     refined_raft_net_invariant_request_vote_reply append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -236,7 +236,7 @@ Section AppendEntriesRequestLeaderLogs.
 
   Lemma append_entries_leaderLogs_clientRequest :
     refined_raft_net_invariant_client_request append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -264,7 +264,7 @@ Section AppendEntriesRequestLeaderLogs.
   
   Lemma append_entries_leaderLogs_timeout :
     refined_raft_net_invariant_timeout append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -293,7 +293,7 @@ Section AppendEntriesRequestLeaderLogs.
 
   Lemma append_entries_leaderLogs_doGenericServer :
     refined_raft_net_invariant_do_generic_server append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -329,7 +329,7 @@ Section AppendEntriesRequestLeaderLogs.
               eTerm e = plt) /\
         es = findGtIndex (log st) pli) \/
        exists h', pred (getNextIndex st h') <> 0 /\ findAtIndex (log st) (pred (getNextIndex st h')) = None).
-  Proof using. 
+  Proof.
     intros. unfold doLeader, advanceCommitIndex in *.
     break_match; try solve [find_inversion; simpl in *; intuition].
     break_if; try solve [find_inversion; simpl in *; intuition].
@@ -353,7 +353,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       nextIndex_safety (deghost net).
-  Proof using nisi rri. 
+  Proof.
     intros.
     eapply lift_prop; eauto using nextIndex_safety_invariant.
   Qed.
@@ -365,7 +365,7 @@ Section AppendEntriesRequestLeaderLogs.
       pred (getNextIndex (snd (nwState net h)) h') <> 0 ->
       exists e,
         findAtIndex (log (snd (nwState net h))) (pred (getNextIndex (snd (nwState net h)) h')) = Some e.
-  Proof using nisi lmi si rri. 
+  Proof.
     intros.
     find_copy_apply_lem_hyp lift_log_matching.
     find_copy_apply_lem_hyp lift_nextIndex_safety.
@@ -391,7 +391,7 @@ Section AppendEntriesRequestLeaderLogs.
       (forall e, In e l -> eIndex e > 0) ->
       sorted l ->
       findGtIndex l 0 = l.
-  Proof using. 
+  Proof.
     induction l; intros; simpl in *; intuition.
     break_if; intuition.
     - f_equal. auto.
@@ -403,7 +403,7 @@ Section AppendEntriesRequestLeaderLogs.
       refined_raft_intermediate_reachable net ->
       In e (log (snd (nwState net h))) ->
       eIndex e > 0.
-  Proof using lmi rri. 
+  Proof.
     intros.
     find_apply_lem_hyp lift_log_matching.
     unfold log_matching, log_matching_hosts in *. intuition.
@@ -417,7 +417,7 @@ Section AppendEntriesRequestLeaderLogs.
   Lemma Prefix_refl :
     forall A (l : list A),
       Prefix l l.
-  Proof using. 
+  Proof.
     intros. induction l; simpl in *; auto.
   Qed.
 
@@ -429,7 +429,7 @@ Section AppendEntriesRequestLeaderLogs.
         findGtIndex (l1 ++ l2) (eIndex e) = l' /\
         forall x,
           In x l' -> In x l1.
-  Proof using. 
+  Proof.
     induction l1; intros; simpl in *; intuition.
     - subst. break_if; do_bool; try omega.
       eexists; repeat (simpl in *; intuition).
@@ -446,7 +446,7 @@ Section AppendEntriesRequestLeaderLogs.
       eIndex e > 0 ->
       In e l1 ->
       eIndex e > maxIndex l2.
-  Proof using. 
+  Proof.
     induction l1; intros; simpl in *; intuition.
     subst. destruct l2; simpl in *; auto.
     specialize (H2 e0); concludes; intuition.
@@ -455,7 +455,7 @@ Section AppendEntriesRequestLeaderLogs.
   Lemma findGtIndex_Prefix :
     forall l i,
       Prefix (findGtIndex l i) l.
-  Proof using. 
+  Proof.
     induction l; intros; simpl in *; intuition.
     break_if; simpl in *; intuition.
   Qed.
@@ -467,7 +467,7 @@ Section AppendEntriesRequestLeaderLogs.
       exists l',
         findGtIndex (l1 ++ l2) (eIndex e) = l1 ++ l' /\
         Prefix l' l2.
-  Proof using. 
+  Proof.
     induction l1; intros; simpl in *; intuition.
     - eexists; intuition eauto using findGtIndex_Prefix.
     - break_if; simpl in *; intuition.
@@ -483,7 +483,7 @@ Section AppendEntriesRequestLeaderLogs.
       In e l2 ->
       findGtIndex (l1 ++ l2) (eIndex e) = l1 ->
       eIndex e = maxIndex l2.
-  Proof using. 
+  Proof.
     induction l1; intros; simpl in *.
     - destruct l2; simpl in *; intuition; subst; auto.
       break_if; try congruence. do_bool.
@@ -495,7 +495,7 @@ Section AppendEntriesRequestLeaderLogs.
   
   Lemma append_entries_leaderLogs_doLeader :
     refined_raft_net_invariant_do_leader append_entries_leaderLogs.
-  Proof using nisi lmi si rri lhllsi. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -581,14 +581,14 @@ Section AppendEntriesRequestLeaderLogs.
 
   Lemma append_entries_leaderLogs_init :
     refined_raft_net_invariant_init append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs, step_m_init.
     intros. simpl in *. intuition.
   Qed.
 
   Lemma append_entries_leaderLogs_state_same_packets_subset :
     refined_raft_net_invariant_state_same_packet_subset append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     find_apply_hyp_hyp. eapply_prop_hyp In In; eauto.
     break_exists_exists; intuition; eauto;
@@ -597,7 +597,7 @@ Section AppendEntriesRequestLeaderLogs.
 
   Lemma append_entries_leaderLogs_reboot :
     refined_raft_net_invariant_reboot append_entries_leaderLogs.
-  Proof using. 
+  Proof.
     red. unfold append_entries_leaderLogs. intros.
     repeat find_rewrite.
     eapply_prop_hyp In In; eauto.
@@ -612,7 +612,7 @@ Section AppendEntriesRequestLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       append_entries_leaderLogs net.
-  Proof using nisi lmi si rri lhllsi. 
+  Proof.
     intros.
     apply refined_raft_net_invariant; auto.
     - apply append_entries_leaderLogs_init.

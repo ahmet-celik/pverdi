@@ -36,7 +36,7 @@ Section AllEntriesLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       leader_without_missing_entry net.
-  Proof using aeli. 
+  Proof.
     intros. unfold leader_without_missing_entry.
     find_apply_lem_hyp allEntries_log_invariant.
     unfold allEntries_log in *.
@@ -48,7 +48,7 @@ Section AllEntriesLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       appendEntriesRequest_exists_leaderLog net.
-  Proof using aercfli. 
+  Proof.
     intros. unfold appendEntriesRequest_exists_leaderLog.
     apply append_entries_came_from_leaders_invariant; auto.
   Qed.
@@ -57,7 +57,7 @@ Section AllEntriesLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       appendEntriesRequest_leaderLog_not_in net.
-  Proof using rlmli llsi ollpti aerlli. 
+  Proof.
     unfold appendEntriesRequest_leaderLog_not_in.
     intros.
     find_copy_apply_lem_hyp append_entries_leaderLogs_invariant.
@@ -93,7 +93,7 @@ Section AllEntriesLeaderLogs.
     forall net,
       refined_raft_intermediate_reachable net ->
       leaderLogs_leader net.
-  Proof using lhsi. 
+  Proof.
     unfold leaderLogs_leader. intros.
     find_apply_lem_hyp leaders_have_leaderLogs_strong_invariant; auto.
     break_exists_exists. intuition.

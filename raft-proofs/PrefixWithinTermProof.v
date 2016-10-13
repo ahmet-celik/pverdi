@@ -47,7 +47,7 @@ Section PrefixWithinTerm.
       In e (log (snd (nwState net h))) ->
       eTerm e = currentTerm (snd (nwState net leader)) ->
       In e (log (snd (nwState net leader))).
-  Proof using lsli rri. 
+  Proof.
     intros. pose proof lift_prop leader_sublog_host_invariant.
     conclude_using ltac:(apply leader_sublog_invariant_invariant).
     find_apply_hyp_hyp.
@@ -63,7 +63,7 @@ Section PrefixWithinTerm.
       In p (nwPackets net) ->
       exists q,
         In q (nwPackets (deghost net)) /\ q = deghost_packet p.
-  Proof using. 
+  Proof.
     unfold deghost.
     simpl.
     intros.
@@ -81,7 +81,7 @@ Section PrefixWithinTerm.
       In e entries ->
       eTerm e = currentTerm (snd (nwState net leader)) ->
       In e (log (snd (nwState net leader))).
-  Proof using lsli rri. 
+  Proof.
     intros.
     pose proof lift_prop leader_sublog_nw_invariant.
     conclude_using ltac:(apply leader_sublog_invariant_invariant).
@@ -114,7 +114,7 @@ Section PrefixWithinTerm.
     forall net,
       refined_raft_intermediate_reachable net ->
       log_log_prefix_within_term net.
-  Proof using ollpti rlmli llli. 
+  Proof.
     red. red. intros.
     match goal with
       | H : In ?e _,
@@ -161,7 +161,7 @@ Section PrefixWithinTerm.
     forall net,
       refined_raft_intermediate_reachable net ->
       append_entries_append_entries_prefix_within_term_nw net.
-  Proof using llsi ollpti rlmli llli. 
+  Proof.
     red. intros.
     match goal with
       | H : context [pBody],
@@ -776,7 +776,7 @@ Section PrefixWithinTerm.
     forall l1 l2 i,
       prefix_within_term l1 l2 ->
       prefix_within_term (findGtIndex l1 i) l2.
-  Proof using. 
+  Proof.
     unfold prefix_within_term. intros.
     find_apply_lem_hyp findGtIndex_in. eauto.
   Qed.
@@ -785,7 +785,7 @@ Section PrefixWithinTerm.
     forall h st client id c,
       leaderLogs (update_elections_data_client_request h st client id c) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_client_request in *.
     intros. repeat break_match; repeat find_inversion; auto.
   Qed.
@@ -794,7 +794,7 @@ Section PrefixWithinTerm.
     forall h st,
       leaderLogs (update_elections_data_timeout h st) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_timeout.
     intros.
     repeat break_match; simpl in *; auto.
@@ -804,7 +804,7 @@ Section PrefixWithinTerm.
     forall h st t h' pli plt es ci,
       leaderLogs (update_elections_data_appendEntries h st t h' pli plt es ci) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     intros.
     unfold update_elections_data_appendEntries.
     repeat break_match; subst; simpl in *; auto.
@@ -814,7 +814,7 @@ Section PrefixWithinTerm.
     forall h h' t lli llt st,
       leaderLogs (update_elections_data_requestVote h h' t h' lli llt st) =
       leaderLogs (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVote.
     intros.
     repeat break_match; auto.
@@ -824,7 +824,7 @@ Section PrefixWithinTerm.
     forall h h' t  st t' ll' r,
       In (t', ll') (leaderLogs (fst st)) ->
       In (t', ll') (leaderLogs (update_elections_data_requestVoteReply h h' t r st)).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVoteReply.
     intros.
     repeat break_match; auto.
@@ -837,7 +837,7 @@ Section PrefixWithinTerm.
       handleAppendEntries h st t h' pli plt es ci =
       (st', AppendEntriesReply t' es' true) ->
       es' = es.
-  Proof using. 
+  Proof.
     intros. unfold handleAppendEntries in *.
     repeat break_match; find_inversion; congruence.
   Qed.
@@ -846,7 +846,7 @@ Section PrefixWithinTerm.
     forall h st t h' pli plt es ci e,
       In e (map snd (allEntries (update_elections_data_appendEntries h st t h' pli plt es ci))) ->
       In e (map snd (allEntries (fst st))) \/ In e es.
-  Proof using. 
+  Proof.
     intros.
     unfold update_elections_data_appendEntries in *.
     repeat break_match; subst; simpl in *; auto.
@@ -863,7 +863,7 @@ Section PrefixWithinTerm.
       (eIndex e = S (maxIndex (log (snd st)))
        /\ eTerm e = currentTerm (snd st)
        /\ type (snd st) = Leader).
-  Proof using. 
+  Proof.
     intros.
     unfold update_elections_data_client_request in *.
     repeat break_match; subst; simpl in *; auto. intuition. subst.
@@ -880,7 +880,7 @@ Section PrefixWithinTerm.
     forall h st client id c e,
       In e (map snd (allEntries (fst st))) ->
       In e (map snd (allEntries (update_elections_data_client_request h st client id c))).
-  Proof using. 
+  Proof.
     intros.
     unfold update_elections_data_client_request in *.
     repeat break_match; subst; simpl in *; auto. 
@@ -905,7 +905,7 @@ Section PrefixWithinTerm.
       prefix_within_term l1'' l2 ->
       (forall e, In e l1 -> In e l1' \/ In e l1'') ->
       prefix_within_term l1 l2.
-  Proof using. 
+  Proof.
     intros.
     unfold prefix_within_term in *.
     intros.
@@ -917,7 +917,7 @@ Section PrefixWithinTerm.
       sorted l ->
       In e l ->
       maxTerm (removeAfterIndex l (eIndex e)) = eTerm e.
-  Proof using. 
+  Proof.
     induction l; intros; simpl in *; intuition.
     - subst. break_if; eauto.
       do_bool; omega.
@@ -927,7 +927,7 @@ Section PrefixWithinTerm.
   
   Lemma prefix_within_term_inductive_append_entries :
     refined_raft_net_invariant_append_entries prefix_within_term_inductive.
-  Proof using aertsi aelmi llsi ollpti rlmli llli. 
+  Proof.
     red. unfold prefix_within_term_inductive. intuition.
     - unfold allEntries_leaderLogs_prefix_within_term. intros.
       simpl in *. subst. repeat find_higher_order_rewrite.
@@ -1140,7 +1140,7 @@ Section PrefixWithinTerm.
       eIndex e = S (maxIndex (log st))
       /\ eTerm e = currentTerm st
       /\ type st = Leader.
-  Proof using. 
+  Proof.
     intros. find_apply_lem_hyp handleClientRequest_log.
     intuition; repeat find_rewrite; intuition.
     break_exists; intuition; repeat find_rewrite; simpl in *; intuition.
@@ -1149,7 +1149,7 @@ Section PrefixWithinTerm.
 
   Lemma prefix_within_term_inductive_client_request :
     refined_raft_net_invariant_client_request prefix_within_term_inductive.
-  Proof using aelsi lsli llsli rlmli rri. 
+  Proof.
     red. unfold prefix_within_term_inductive. intuition.
     - unfold allEntries_leaderLogs_prefix_within_term. intros.
       simpl in *. subst. repeat find_higher_order_rewrite.
@@ -1301,7 +1301,7 @@ Section PrefixWithinTerm.
               eTerm e = plt) /\
         es = findGtIndex (log st) pli) \/
        exists h', pred (getNextIndex st h') <> 0 /\ findAtIndex (log st) (pred (getNextIndex st h')) = None).
-  Proof using. 
+  Proof.
     intros. unfold doLeader, advanceCommitIndex in *.
     break_match; try solve [find_inversion; simpl in *; intuition].
     break_if; try solve [find_inversion; simpl in *; intuition].
@@ -1327,7 +1327,7 @@ Section PrefixWithinTerm.
       In m ms ->
       snd m = AppendEntries t n pli plt es ci ->
       In e es -> In e (log st).
-  Proof using. 
+  Proof.
   intros. unfold doLeader, advanceCommitIndex in *.
     break_match; try solve [find_inversion; simpl in *; intuition].
     break_if; try solve [find_inversion; simpl in *; intuition].
@@ -1339,7 +1339,7 @@ Section PrefixWithinTerm.
     forall net,
       refined_raft_intermediate_reachable net ->
       nextIndex_safety (deghost net).
-  Proof using nisi rri. 
+  Proof.
     intros.
     eapply lift_prop; eauto using nextIndex_safety_invariant.
   Qed.
@@ -1351,7 +1351,7 @@ Section PrefixWithinTerm.
       pred (getNextIndex (snd (nwState net h)) h') <> 0 ->
       exists e,
         findAtIndex (log (snd (nwState net h))) (pred (getNextIndex (snd (nwState net h)) h')) = Some e.
-  Proof using nisi rlmli rri. 
+  Proof.
     intros.
     find_copy_apply_lem_hyp entries_contiguous_invariant.
     find_copy_apply_lem_hyp lift_nextIndex_safety.
@@ -1379,13 +1379,13 @@ Section PrefixWithinTerm.
       prefix_within_term l1' l2 ->
       (forall e, In e l1 -> In e l1') ->
       prefix_within_term l1 l2.
-  Proof using. 
+  Proof.
     eauto using prefix_within_term_union.
   Qed.
   
   Lemma prefix_within_term_inductive_do_leader :
     refined_raft_net_invariant_do_leader prefix_within_term_inductive.
-  Proof using nisi ollpti rlmli llli rri. 
+  Proof.
     red. unfold prefix_within_term_inductive. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -1510,7 +1510,7 @@ Section PrefixWithinTerm.
     forall h h' t  st t' ll' r,
       In (t', ll') (leaderLogs (update_elections_data_requestVoteReply h h' t r st)) ->
       In (t', ll') (leaderLogs (fst st)) \/ ll' = log (snd st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVoteReply.
     intros.
     repeat break_match; auto.
@@ -1522,7 +1522,7 @@ Section PrefixWithinTerm.
   Lemma update_elections_data_requestVoteReply_allEntries :
     forall h h' t  st r,
       allEntries (update_elections_data_requestVoteReply h h' t r st) = allEntries (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVoteReply.
     intros.
     repeat break_match; auto.
@@ -1530,7 +1530,7 @@ Section PrefixWithinTerm.
 
   Lemma prefix_within_term_inductive_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply prefix_within_term_inductive.
-  Proof using ollpti rlmli llli. 
+  Proof.
     red. unfold prefix_within_term_inductive. intros.
     find_eapply_lem_hyp handleRequestVoteReply_log.
     intuition.
@@ -1579,7 +1579,7 @@ Section PrefixWithinTerm.
 
   Lemma prefix_within_term_inductive_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply prefix_within_term_inductive.
-  Proof using. 
+  Proof.
     red. unfold prefix_within_term_inductive. intros. subst.
     find_copy_apply_lem_hyp handleAppendEntriesReply_log.
     find_apply_lem_hyp handleAppendEntriesReply_packets. subst. simpl in *.
@@ -1628,14 +1628,14 @@ Section PrefixWithinTerm.
   Lemma update_elections_data_timeout_allEntries :
     forall h st,
       allEntries (update_elections_data_timeout h st) = allEntries (fst st).
-  Proof using. 
+  Proof.
     intros.
     unfold update_elections_data_timeout. repeat break_match; simpl; auto.
   Qed.
   
   Lemma prefix_within_term_inductive_timeout :
     refined_raft_net_invariant_timeout prefix_within_term_inductive.
-  Proof using. 
+  Proof.
     red. unfold prefix_within_term_inductive. intros. subst.
     find_copy_apply_lem_hyp handleTimeout_log_same.
     intuition.
@@ -1703,7 +1703,7 @@ Section PrefixWithinTerm.
     forall h h' t lli llt st,
       allEntries (update_elections_data_requestVote h h' t h' lli llt st) =
       allEntries (fst st).
-  Proof using. 
+  Proof.
     unfold update_elections_data_requestVote.
     intros.
     repeat break_match; auto.
@@ -1711,7 +1711,7 @@ Section PrefixWithinTerm.
 
   Lemma prefix_within_term_inductive_request_vote :
     refined_raft_net_invariant_request_vote prefix_within_term_inductive.
-  Proof using. 
+  Proof.
     red. unfold prefix_within_term_inductive. intros. subst.
     find_copy_apply_lem_hyp handleRequestVote_log.
     intuition.
@@ -1780,7 +1780,7 @@ Section PrefixWithinTerm.
 
   Lemma prefix_within_term_inductive_do_generic_server :
     refined_raft_net_invariant_do_generic_server prefix_within_term_inductive.
-  Proof using. 
+  Proof.
     red. unfold prefix_within_term_inductive. intros. subst.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -1835,7 +1835,7 @@ intuition.
 
   Lemma prefix_within_term_inductive_init :
     refined_raft_net_invariant_init prefix_within_term_inductive.
-  Proof using. 
+  Proof.
     red. unfold prefix_within_term_inductive in *.
     intuition;
     red; intros; simpl in *; intuition.
@@ -1845,7 +1845,7 @@ intuition.
 
   Lemma prefix_within_term_inductive_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset prefix_within_term_inductive.
-  Proof using. 
+  Proof.
     red. unfold prefix_within_term_inductive in *.
     intros.
     intuition; red;
@@ -1854,7 +1854,7 @@ intuition.
 
   Lemma prefix_within_term_inductive_reboot :
     refined_raft_net_invariant_reboot prefix_within_term_inductive.
-  Proof using. 
+  Proof.
     red. intros. subst.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -1883,7 +1883,7 @@ intuition.
     forall net,
       refined_raft_intermediate_reachable net ->
       prefix_within_term_inductive net.
-  Proof using aelsi aertsi aelmi nisi lsli llsli llsi ollpti rlmli llli rri. 
+  Proof.
     intros. apply refined_raft_net_invariant; auto.
     - apply prefix_within_term_inductive_init.
     - apply prefix_within_term_inductive_client_request.

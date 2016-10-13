@@ -31,7 +31,7 @@ Section MatchIndexLeader.
   
   Lemma match_index_leader_append_entries_reply :
     raft_net_invariant_append_entries_reply match_index_leader.
-  Proof using naertsi. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -50,7 +50,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_client_request :
     raft_net_invariant_client_request match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -61,7 +61,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_request_vote_reply :
     raft_net_invariant_request_vote_reply match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -72,7 +72,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_append_entries :
     raft_net_invariant_append_entries match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -83,7 +83,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_request_vote :
     raft_net_invariant_request_vote match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -94,7 +94,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_timeout :
     raft_net_invariant_timeout match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -105,7 +105,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_do_leader :
     raft_net_invariant_do_leader match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -116,7 +116,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_do_generic_server :
     raft_net_invariant_do_generic_server match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -127,7 +127,7 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_reboot :
     raft_net_invariant_reboot match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto. congruence.
@@ -135,14 +135,14 @@ Section MatchIndexLeader.
 
   Lemma match_index_leader_state_same_packet_subset :
     raft_net_invariant_state_same_packet_subset match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. intros.
     repeat find_reverse_higher_order_rewrite; eauto.
   Qed.
 
   Lemma match_index_leader_init :
     raft_net_invariant_init match_index_leader.
-  Proof using. 
+  Proof.
     red. unfold match_index_leader in *. simpl in *. congruence.
   Qed.
   

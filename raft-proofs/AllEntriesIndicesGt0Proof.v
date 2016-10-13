@@ -30,14 +30,14 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_init :
     refined_raft_net_invariant_init allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_init, allEntries_indices_gt_0.
     simpl. intuition.
   Qed.
 
   Lemma allEntries_indices_gt_0_client_request :
     refined_raft_net_invariant_client_request allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_client_request, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -52,7 +52,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_timeout :
     refined_raft_net_invariant_timeout allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_timeout, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -65,7 +65,7 @@ Section AllEntriesIndicesGt0.
     forall (net : network (params := raft_refined_multi_params)) p,
       In p (nwPackets net) ->
       In (deghost_packet p) (nwPackets (deghost net)).
-  Proof using. 
+  Proof.
     unfold deghost.
     simpl. intuition.
     apply in_map_iff.
@@ -79,7 +79,7 @@ Section AllEntriesIndicesGt0.
         In p (nwPackets net) ->
         pBody p = AppendEntries t leaderId prevLogIndex prevLogTerm entries leaderCommit ->
         terms_and_indices_from_one entries.
-  Proof using taifoli rri. 
+  Proof.
     intros.
     pose proof (lift_prop _ terms_and_indices_from_one_log_nw_invariant).
     match goal with
@@ -89,7 +89,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_append_entries :
     refined_raft_net_invariant_append_entries allEntries_indices_gt_0.
-  Proof using taifoli rri. 
+  Proof.
     unfold refined_raft_net_invariant_append_entries, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -101,7 +101,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_append_entries_reply, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -110,7 +110,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_request_vote :
     refined_raft_net_invariant_request_vote allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_request_vote, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -121,7 +121,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_request_vote_reply, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -132,7 +132,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_do_leader :
     refined_raft_net_invariant_do_leader allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_do_leader, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -146,7 +146,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_do_generic_server :
     refined_raft_net_invariant_do_generic_server allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_do_generic_server, allEntries_indices_gt_0.
     intros. simpl in *.
     repeat find_higher_order_rewrite.
@@ -160,7 +160,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_state_same_packet_subset, allEntries_indices_gt_0.
     intros.
     repeat find_reverse_higher_order_rewrite.
@@ -169,7 +169,7 @@ Section AllEntriesIndicesGt0.
 
   Lemma allEntries_indices_gt_0_reboot :
     refined_raft_net_invariant_reboot allEntries_indices_gt_0.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_reboot, allEntries_indices_gt_0.
     intros.
     repeat find_higher_order_rewrite.
@@ -185,7 +185,7 @@ Section AllEntriesIndicesGt0.
     forall net,
       refined_raft_intermediate_reachable net ->
       allEntries_indices_gt_0 net.
-  Proof using taifoli rri. 
+  Proof.
     intros.
     apply refined_raft_net_invariant; auto.
     - apply allEntries_indices_gt_0_init.

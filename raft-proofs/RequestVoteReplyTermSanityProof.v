@@ -32,7 +32,7 @@ Section RequestVoteReplyTermSanity.
   
   Lemma requestVoteReply_term_sanity_append_entries :
     refined_raft_net_invariant_append_entries requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     assert (In p0 (nwPackets net)) by
@@ -49,7 +49,7 @@ Section RequestVoteReplyTermSanity.
 
   Lemma requestVoteReply_term_sanity_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     assert (In p0 (nwPackets net)) by
         (repeat find_rewrite;
@@ -66,7 +66,7 @@ Section RequestVoteReplyTermSanity.
   
   Lemma requestVoteReply_term_sanity_request_vote :
     refined_raft_net_invariant_request_vote requestVoteReply_term_sanity.
-  Proof using rvtsi. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     find_copy_apply_lem_hyp handleRequestVote_votesReceived.
     subst. repeat find_higher_order_rewrite.
@@ -95,7 +95,7 @@ Section RequestVoteReplyTermSanity.
   
   Lemma requestVoteReply_term_sanity_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -107,7 +107,7 @@ Section RequestVoteReplyTermSanity.
 
   Lemma requestVoteReply_term_sanity_timeout :
     refined_raft_net_invariant_timeout requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     assert (In p (nwPackets net)) by
         (find_apply_hyp_hyp; intuition; exfalso; do_in_map; subst; simpl in *;
@@ -122,7 +122,7 @@ Section RequestVoteReplyTermSanity.
   
   Lemma requestVoteReply_term_sanity_client_request :
     refined_raft_net_invariant_client_request requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     find_copy_apply_lem_hyp handleClientRequest_packets.
     subst. simpl in *.
@@ -135,7 +135,7 @@ Section RequestVoteReplyTermSanity.
 
   Lemma requestVoteReply_term_sanity_do_leader :
     refined_raft_net_invariant_do_leader requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     assert (In p (nwPackets net)) by
         (find_apply_hyp_hyp; intuition;
@@ -156,7 +156,7 @@ Section RequestVoteReplyTermSanity.
   
   Lemma requestVoteReply_term_sanity_do_generic_server :
     refined_raft_net_invariant_do_generic_server requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     find_copy_apply_lem_hyp doGenericServer_packets. subst. simpl in *.
     find_apply_hyp_hyp. intuition.
@@ -174,7 +174,7 @@ Section RequestVoteReplyTermSanity.
 
   Lemma requestVoteReply_term_sanity_reboot :
     refined_raft_net_invariant_reboot requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -188,7 +188,7 @@ Section RequestVoteReplyTermSanity.
 
   Lemma requestVoteReply_term_sanity_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     subst. repeat find_reverse_higher_order_rewrite.
     eauto.
@@ -196,7 +196,7 @@ Section RequestVoteReplyTermSanity.
 
   Lemma requestVoteReply_term_sanity_init :
     refined_raft_net_invariant_init requestVoteReply_term_sanity.
-  Proof using. 
+  Proof.
     red. unfold requestVoteReply_term_sanity. intros. simpl in *.
     intuition.
   Qed.

@@ -22,7 +22,6 @@ Section LockServ.
   Definition list_Clients := map Client (all_fin num_Clients).
 
   Definition Name_eq_dec : forall a b : Name, {a = b} + {a <> b}.
-Proof using. 
     decide equality. apply fin_eq_dec.
   Qed.
 
@@ -34,7 +33,6 @@ Proof using.
   | Locked : Msg.
 
   Definition Msg_eq_dec : forall a b : Msg, {a = b} + {a <> b}.
-Proof using. 
     decide equality.
   Qed.
     
@@ -106,7 +104,7 @@ Proof using.
 
   Theorem In_n_Nodes :
     forall n : Name, In n Nodes.
-  Proof using. 
+  Proof.
     intros.
     unfold Nodes, list_Clients.
     simpl.
@@ -120,7 +118,7 @@ Proof using.
 
   Theorem nodup :
     NoDup Nodes.
-  Proof using. 
+  Proof.
     unfold Nodes, list_Clients.
     apply NoDup_cons.
     - in_crush. discriminate.
@@ -178,7 +176,7 @@ Proof using.
     forall sigma,
       locks_correct sigma ->
       mutual_exclusion sigma.
-  Proof using. 
+  Proof.
     unfold locks_correct, mutual_exclusion.
     intros.
     repeat find_apply_hyp_hyp.
@@ -220,14 +218,14 @@ Proof using.
     forall p q,
       LockServ_network_network_invariant p q ->
       LockServ_network_network_invariant q p.
-  Proof using. 
+  Proof.
     unfold LockServ_network_network_invariant.
     intuition.
   Qed.
 
   Lemma locks_correct_init :
     locks_correct init_handlers.
-  Proof using. 
+  Proof.
     unfold locks_correct. simpl. discriminate.
   Qed.
 
@@ -240,7 +238,7 @@ Proof using.
                    ((held st = true /\ ms = [(Server, Unlock)]) \/
                     (st' = st /\ ms = []))))) \/
       (out = [] /\ st' = st /\ ms = []).
-  Proof using. 
+  Proof.
     handler_unfold.
     intros.
     repeat break_match; repeat tuple_inversion;
@@ -257,7 +255,7 @@ Proof using.
       locks_correct sigma ->
       held st' = false ->
       locks_correct (update sigma (Client x) st').
-  Proof using. 
+  Proof.
     unfold locks_correct.
     intuition.
     destruct (Name_eq_dec (Client x) (Client n)).
@@ -281,7 +279,7 @@ Proof using.
       InputHandler h i (sigma h) = (u, out, st', ms) ->
       locks_correct sigma ->
       locks_correct (update sigma h st').
-  Proof using. 
+  Proof.
     set_up_input_handlers;
     auto using locks_correct_update_false.
   Qed.
@@ -292,7 +290,7 @@ Proof using.
       ms = [] /\
       ((st' = st /\ out = [] ) \/
        (m = Locked /\ out = [Locked] /\ held st' = true)).
-  Proof using. 
+  Proof.
     handler_unfold.
     intros.
     repeat break_match; repeat tuple_inversion; subst; auto.
@@ -312,7 +310,7 @@ Proof using.
                    ((queue st' = [] /\ ms = []) \/
                     (exists next t, queue st' = next :: t /\ ms = [(Client next, Locked)])))) \/
        ms = [] /\ st' = st).
-  Proof using. 
+  Proof.
     handler_unfold.
     intros.
     repeat break_match; repeat tuple_inversion; subst.
@@ -333,7 +331,7 @@ Proof using.
     forall sigma c t,
       queue (sigma Server) = c :: t ->
       at_head_of_queue sigma c.
-  Proof using. 
+  Proof.
     unfold at_head_of_queue.
     firstorder.
   Qed.
@@ -344,7 +342,7 @@ Proof using.
       at_head_of_queue sigma c ->
       locks_correct sigma ->
       locks_correct (update sigma (Client c) st').
-  Proof using. 
+  Proof.
     unfold locks_correct.
     intros.
     destruct (Name_eq_dec (Client c) (Client n)); rewrite_update; try find_inversion; auto.
@@ -356,7 +354,7 @@ Proof using.
       pBody p = Locked ->
       locks_correct_locked sigma p ->
       at_head_of_queue sigma c.
-  Proof using. 
+  Proof.
     unfold locks_correct_locked.
     firstorder.
     repeat find_rewrite. find_inversion.
@@ -367,7 +365,7 @@ Proof using.
     forall sigma st,
       (forall c, held (sigma (Client c)) = false) ->
       locks_correct (update sigma Server st).
-  Proof using. 
+  Proof.
     unfold locks_correct.
     intros.
     rewrite_update.
@@ -379,7 +377,7 @@ Proof using.
       locks_correct sigma ->
       held (sigma (Client x)) = true ->
       at_head_of_queue sigma x.
-  Proof using. 
+  Proof.
     unfold locks_correct.
     intros.
     find_apply_hyp_hyp. break_exists.
@@ -391,7 +389,7 @@ Proof using.
       at_head_of_queue sigma c ->
       queue (sigma Server) = [] ->
       False.
-  Proof using. 
+  Proof.
     unfold at_head_of_queue.
     firstorder.
     congruence.
@@ -402,7 +400,7 @@ Proof using.
       locks_correct sigma ->
       queue (sigma Server) = [] ->
       (forall c, held (sigma (Client c)) = false).
-  Proof using. 
+  Proof.
     intuition.
     destruct (held (sigma (Client c))) eqn:?; auto.
     exfalso. eauto using at_head_of_nil, locks_correct_true_at_head_of_queue.
@@ -414,7 +412,7 @@ Proof using.
       locks_correct_unlock sigma p ->
       locks_correct sigma ->
       (forall c, held (sigma (Client c)) = false).
-  Proof using. 
+  Proof.
     intros.
     destruct (held (sigma (Client c))) eqn:?; auto.
     firstorder.
@@ -428,7 +426,7 @@ Proof using.
       locks_correct sigma ->
       (forall c, at_head_of_queue sigma c -> at_head_of_queue (update sigma Server st') c) ->
       locks_correct (update sigma Server st').
-  Proof using. 
+  Proof.
     unfold locks_correct, at_head_of_queue.
     firstorder.
     rewrite_update.
@@ -439,7 +437,7 @@ Proof using.
     forall sigma st' x,
       queue st' = queue (sigma Server) ++ [x] ->
       (forall c, at_head_of_queue sigma c -> at_head_of_queue (update sigma Server st') c).
-  Proof using. 
+  Proof.
     unfold at_head_of_queue.
     intuition. break_exists.
     rewrite_update.
@@ -470,7 +468,7 @@ Proof using.
       locks_correct_unlock sigma p ->
       locks_correct_locked sigma p ->
       locks_correct (update sigma (pDst p) st').
-  Proof using. 
+  Proof.
     set_up_net_handlers;
     eauto using
           locks_correct_update_true, locks_correct_locked_at_head,
@@ -483,7 +481,7 @@ Proof using.
     forall sigma p,
       pBody p = Lock ->
       locks_correct_unlock sigma p.
-  Proof using. 
+  Proof.
     unfold locks_correct_unlock.
     intuition. congruence.
   Qed.
@@ -492,7 +490,7 @@ Proof using.
     forall sigma p,
       pBody p = Locked ->
       locks_correct_unlock sigma p.
-  Proof using. 
+  Proof.
     unfold locks_correct_unlock.
     intuition. congruence.
   Qed.
@@ -503,7 +501,7 @@ Proof using.
       locks_correct sigma ->
       locks_correct_unlock sigma p ->
       locks_correct_unlock (update sigma h st') p.
-  Proof using. 
+  Proof.
     set_up_input_handlers.
     destruct (pBody p) eqn:?.
     - auto using locks_correct_unlock_sent_lock.
@@ -517,7 +515,7 @@ Proof using.
       locks_correct_locked sigma p ->
       locks_correct sigma ->
       (forall c, held (sigma (Client c)) = false).
-  Proof using. 
+  Proof.
     intros.
     destruct (held (sigma (Client c))) eqn:?; auto.
     firstorder.
@@ -530,7 +528,7 @@ Proof using.
     forall sigma p,
       pBody p = Lock ->
       locks_correct_locked sigma p.
-  Proof using. 
+  Proof.
     unfold locks_correct_locked.
     intuition. congruence.
   Qed.
@@ -539,7 +537,7 @@ Proof using.
     forall sigma p,
       pBody p = Unlock ->
       locks_correct_locked sigma p.
-  Proof using. 
+  Proof.
     unfold locks_correct_locked.
     intuition. congruence.
   Qed.
@@ -550,7 +548,7 @@ Proof using.
       locks_correct sigma ->
       locks_correct_locked sigma p ->
       locks_correct_locked (update sigma h st') p.
-  Proof using. 
+  Proof.
     set_up_input_handlers.
     destruct (pBody p) eqn:?.
     - auto using locks_correct_locked_sent_lock.
@@ -564,7 +562,7 @@ Proof using.
       held st' = false ->
       pSrc p = Client x ->
       locks_correct_unlock (update sigma (Client x) st') p.
-  Proof using. 
+  Proof.
     unfold locks_correct_unlock, valid_unlock.
     intros.
     exists x.
@@ -578,7 +576,7 @@ Proof using.
       In (pDst p, pBody p) ms ->
       pSrc p = h ->
       locks_correct_unlock (update sigma h st') p.
-  Proof using. 
+  Proof.
     set_up_input_handlers;
 
     auto using locks_correct_unlock_sent_lock,
@@ -591,7 +589,7 @@ Proof using.
       InputHandler h i (sigma h) = (u, out, st', ms) ->
       In (pDst p, pBody p) ms ->
       locks_correct_locked (update sigma h st') p.
-  Proof using. 
+  Proof.
     set_up_input_handlers;
     auto using locks_correct_locked_sent_lock, locks_correct_locked_sent_unlock.
   Qed.
@@ -601,7 +599,7 @@ Proof using.
       LockServ_network_network_invariant p q ->
       pBody p = Locked ->
       pBody q = Lock.
-  Proof using. 
+  Proof.
     unfold LockServ_network_network_invariant.
     intros.
     destruct (pBody q); intuition; try discriminate.
@@ -612,7 +610,7 @@ Proof using.
       LockServ_network_network_invariant p q ->
       pBody p = Unlock ->
       pBody q = Lock.
-  Proof using. 
+  Proof.
     unfold LockServ_network_network_invariant.
     intros.
     destruct (pBody q); intuition; try discriminate.
@@ -624,7 +622,7 @@ Proof using.
       pBody p = Unlock ->
       locks_correct_unlock sigma p ->
       at_head_of_queue sigma c.
-  Proof using. 
+  Proof.
     unfold locks_correct_unlock.
     intros.
     find_apply_hyp_hyp. clear H1.
@@ -640,7 +638,7 @@ Proof using.
       locks_correct_unlock sigma p ->
       (forall c, at_head_of_queue sigma c -> at_head_of_queue (update sigma Server st') c) ->
       locks_correct_unlock (update sigma Server st') p.
-  Proof using. 
+  Proof.
     unfold locks_correct_unlock, valid_unlock.
     intuition.
     break_exists.
@@ -655,7 +653,7 @@ Proof using.
       queue (sigma Server) = [] ->
       at_head_of_queue sigma c ->
       at_head_of_queue sigma' c.
-  Proof using. 
+  Proof.
     unfold at_head_of_queue.
     firstorder.
     congruence.
@@ -668,7 +666,7 @@ Proof using.
       locks_correct_unlock sigma q ->
       LockServ_network_network_invariant p q ->
       locks_correct_unlock (update sigma (pDst p) st') q.
-  Proof using. 
+  Proof.
     set_up_net_handlers;
     eauto using locks_correct_unlock_sent_lock, nwnw_locked_lock,
                 locks_correct_unlock_at_head_preserved, snoc_at_head_of_queue_preserved,
@@ -680,7 +678,7 @@ Proof using.
       locks_correct_locked sigma p ->
       (forall c, at_head_of_queue sigma c -> at_head_of_queue (update sigma Server st') c) ->
       locks_correct_locked (update sigma Server st') p.
-  Proof using. 
+  Proof.
     unfold locks_correct_locked, valid_locked.
     intuition.
     break_exists.
@@ -697,7 +695,7 @@ Proof using.
       locks_correct_locked sigma q ->
       LockServ_network_network_invariant p q ->
       locks_correct_locked (update sigma (pDst p) st') q.
-  Proof using. 
+  Proof.
     set_up_net_handlers;
     eauto using locks_correct_locked_sent_lock, nwnw_locked_lock,
       locks_correct_locked_at_head_preserved, snoc_at_head_of_queue_preserved,
@@ -710,7 +708,7 @@ Proof using.
       locks_correct sigma ->
       In (pDst q, pBody q) ms ->
       locks_correct_unlock (update sigma (pDst p) st') q.
-  Proof using. 
+  Proof.
     set_up_net_handlers;
     auto using locks_correct_unlock_sent_locked.
   Qed.
@@ -721,7 +719,7 @@ Proof using.
       held (sigma (Client c)) = false ->
       queue st' = c :: t ->
       locks_correct_locked (update sigma Server st') p.
-  Proof using. 
+  Proof.
     unfold locks_correct_locked, valid_locked.
     intros.
     exists c.
@@ -737,7 +735,7 @@ Proof using.
       locks_correct_unlock sigma p ->
       In (pDst q, pBody q) ms ->
       locks_correct_locked (update sigma (pDst p) st') q.
-  Proof using. 
+  Proof.
     set_up_net_handlers;
     eauto using locks_correct_locked_intro,
                 empty_queue_all_clients_false,
@@ -748,7 +746,7 @@ Proof using.
     forall p p',
       pBody p = Lock ->
       LockServ_network_network_invariant p p'.
-  Proof using. 
+  Proof.
     unfold LockServ_network_network_invariant.
     intuition; simpl in *; congruence.
   Qed.
@@ -761,7 +759,7 @@ Proof using.
       In (pDst p', pBody p') ms ->
       pSrc p' = h ->
       LockServ_network_network_invariant p p'.
-  Proof using. 
+  Proof.
     unfold LockServ_network_invariant.
     set_up_input_handlers.
     - auto using nwnw_sym, nwnw_lock.
@@ -776,7 +774,7 @@ Proof using.
       InputHandler h i (sigma h) = (u, out, st', ms) ->
       distinct_pairs_and LockServ_network_network_invariant
                          (map (fun m => mkPacket h (fst m) (snd m)) ms).
-  Proof using. 
+  Proof.
     set_up_input_handlers.
   Qed.
 
@@ -785,7 +783,7 @@ Proof using.
       LockServ_network_invariant sigma p ->
       queue (sigma Server) = [] ->
       pBody p = Lock.
-  Proof using. 
+  Proof.
     unfold LockServ_network_invariant,
     locks_correct_unlock, locks_correct_locked,
     valid_unlock, valid_locked.
@@ -803,7 +801,7 @@ Proof using.
       LockServ_network_network_invariant p q ->
       In (pDst p', pBody p') ms ->
       LockServ_network_network_invariant p' q.
-  Proof using. 
+  Proof.
     set_up_net_handlers;
     eauto using nwnw_sym, nwnw_lock, nw_empty_queue_lock, nwnw_unlock_lock.
   Qed.
@@ -815,7 +813,7 @@ Proof using.
       LockServ_network_invariant sigma p ->
       distinct_pairs_and LockServ_network_network_invariant
                          (map (fun m => mkPacket (pDst p) (fst m) (snd m)) ms).
-  Proof using. 
+  Proof.
     set_up_net_handlers.
   Qed.
 
@@ -849,7 +847,7 @@ Proof using.
 
   Theorem true_in_reachable_mutual_exclusion :
     true_in_reachable step_m step_m_init (fun net => mutual_exclusion (nwState net)).
-  Proof using. 
+  Proof.
     pose proof decomposition_invariant.
     find_apply_lem_hyp inductive_invariant_true_in_reachable.
     unfold true_in_reachable in *.
@@ -910,7 +908,7 @@ Proof using.
       forall st tr,
         step_m_star step_m_init st tr ->
         P st tr.
-  Proof using. 
+  Proof.
     intros.
     find_apply_lem_hyp refl_trans_1n_n1_trace.
     prep_induction H1.
@@ -924,7 +922,7 @@ Proof using.
     forall tr n h,
       trace_mutual_exclusion' h tr ->
       trace_mutual_exclusion' h (tr ++ [(n, inr [])]).
-  Proof using. 
+  Proof.
     induction tr; intuition; unfold trace_mutual_exclusion in *; simpl in *;
     repeat break_match; subst; intuition.
   Qed.
@@ -933,7 +931,7 @@ Proof using.
     forall tr h c n,
       last_holder' h (tr ++ [(c, inr [])]) = Some n ->
       last_holder' h tr = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; subst; intuition; eauto.
   Qed.
 
@@ -941,7 +939,7 @@ Proof using.
     forall tr h c n,
       last_holder' h tr = Some n ->
       last_holder' h (tr ++ [(c, inr [])]) = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; subst; intuition.
   Qed.
 
@@ -950,7 +948,7 @@ Proof using.
       step_m_star step_m_init st tr ->
       In p (nwPackets st) ->
       network_invariant (nwState st) p.
-  Proof using. 
+  Proof.
     pose proof decomposition_invariant.
     find_apply_lem_hyp inductive_invariant_true_in_reachable.
     unfold true_in_reachable, reachable in *.
@@ -964,7 +962,7 @@ Proof using.
       trace_mutual_exclusion' h tr ->
       last_holder' h tr = None ->
       trace_mutual_exclusion' h (tr ++ [(Client n, inr [Locked])]).
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *.
     - subst. auto.
     - simpl in *. repeat break_match; subst; intuition.
@@ -974,7 +972,7 @@ Proof using.
     forall a tr,
       step_m_star step_m_init a tr ->
       reachable step_m step_m_init a.
-  Proof using. 
+  Proof.
     unfold reachable.
     intros. eauto.
   Qed.
@@ -984,7 +982,7 @@ Proof using.
       reachable step_m step_m_init st ->
       In p (nwPackets st) ->
       locks_correct_locked (nwState st) p.
-  Proof using. 
+  Proof.
     intros.
     pose proof decomposition_invariant.
     find_apply_lem_hyp inductive_invariant_true_in_reachable.
@@ -995,7 +993,7 @@ Proof using.
     forall st,
       reachable step_m step_m_init st ->
       locks_correct (nwState st).
-  Proof using. 
+  Proof.
     intros.
     pose proof decomposition_invariant.
     find_apply_lem_hyp inductive_invariant_true_in_reachable.
@@ -1006,7 +1004,7 @@ Proof using.
     forall st,
       reachable step_m step_m_init st ->
       mutual_exclusion (nwState st).
-  Proof using. 
+  Proof.
     intros.
     apply locks_correct_implies_mutex.
     auto using locks_correct_invariant.
@@ -1016,7 +1014,7 @@ Proof using.
     forall tr h c n,
       last_holder' h (tr ++ [(Client c, inr [Locked])]) = Some n ->
       c = n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; subst; eauto.
     congruence.
   Qed.
@@ -1030,14 +1028,14 @@ Proof using.
   Lemma last_holder'_server_extend :
     forall tr h i,
       last_holder' h (tr ++ [(Server, inl i)]) = last_holder' h tr.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; auto.
   Qed.
 
   Lemma last_holder'_locked_extend :
     forall tr h n,
       last_holder' h (tr ++ [(Client n, inr [Locked])]) = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; auto.
   Qed.
 
@@ -1046,7 +1044,7 @@ Proof using.
       i <> Unlock ->
       trace_mutual_exclusion' h tr ->
       trace_mutual_exclusion' h (tr ++ [(Client c, inl i)]).
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; intuition.
   Qed.
 
@@ -1054,7 +1052,7 @@ Proof using.
     forall tr h i,
       trace_mutual_exclusion' h tr ->
       trace_mutual_exclusion' h (tr ++ [(Server, inl i)]).
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; intuition.
   Qed.
 
@@ -1063,7 +1061,7 @@ Proof using.
       i <> Unlock ->
       last_holder' h (tr ++ [(Client c, inl i)]) = Some n ->
       last_holder' h tr = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; auto; try congruence; subst; eauto.
   Qed.
 
@@ -1071,7 +1069,7 @@ Proof using.
     forall tr h i n,
       last_holder' h (tr ++ [(Server, inl i)]) = Some n ->
       last_holder' h tr = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; auto; try congruence; subst; eauto.
   Qed.
 
@@ -1080,7 +1078,7 @@ Proof using.
       i <> Unlock ->
       last_holder' h tr = Some n ->
       last_holder' h (tr ++ [(Client c, inl i)]) = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; auto.
     congruence.
   Qed.
@@ -1089,7 +1087,7 @@ Proof using.
     forall tr h c,
       trace_mutual_exclusion' h tr ->
       trace_mutual_exclusion' h (tr ++ [(Client c, inl Unlock)]).
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; intuition (auto; try congruence).
   Qed.
 
@@ -1097,7 +1095,7 @@ Proof using.
     forall tr h c,
       last_holder' h tr = Some c ->
       last_holder' h (tr ++ [(Client c, inl Unlock)]) = None.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; intuition.
     congruence.
   Qed.
@@ -1106,7 +1104,7 @@ Proof using.
     forall tr c,
       last_holder tr = Some c ->
       last_holder (tr ++ [(Client c, inl Unlock)]) = None.
-  Proof using. 
+  Proof.
     intros.
     apply last_holder'_unlock_none. auto.
   Qed.
@@ -1115,7 +1113,7 @@ Proof using.
     forall tr h c n,
       last_holder' h (tr ++ [(Client c, inl Unlock)]) = Some n ->
       last_holder' h tr = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; subst;
     intuition; try congruence; eauto.
   Qed.
@@ -1125,7 +1123,7 @@ Proof using.
       last_holder' h tr = Some n ->
       n <> c ->
       last_holder' h (tr ++ [(Client c, inl Unlock)]) = Some n.
-  Proof using. 
+  Proof.
     induction tr; intros; simpl in *; repeat break_match; subst; try congruence; intuition.
   Qed.
 
@@ -1135,7 +1133,7 @@ Proof using.
       trace_mutual_exclusion tr /\
       (forall n, last_holder tr = Some n -> held (nwState st (Client n)) = true) /\
       (forall n, held (nwState st (Client n)) = true -> last_holder tr = Some n).
-  Proof using. 
+  Proof.
     apply cross_relation; intros.
     - intuition.
       + red. red. auto.

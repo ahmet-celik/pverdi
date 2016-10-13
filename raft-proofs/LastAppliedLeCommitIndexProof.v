@@ -28,7 +28,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_appendEntries :
     raft_net_invariant_append_entries lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     simpl in *. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -41,7 +41,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_appendEntriesReply :
     raft_net_invariant_append_entries_reply lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     simpl in *. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -54,7 +54,7 @@ Section LastAppliedLeCommitIndex.
   
   Lemma lastApplied_le_commitIndex_requestVote :
     raft_net_invariant_request_vote lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     simpl in *. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -66,7 +66,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_requestVoteReply :
     raft_net_invariant_request_vote_reply lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     simpl in *. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto.
@@ -80,7 +80,7 @@ Section LastAppliedLeCommitIndex.
       (ms : list (name * msg)) (h0 : name),
       doLeader st h0 = (os, d', ms) ->
       lastApplied d' = lastApplied st.
-  Proof using. 
+  Proof.
     intros.
     unfold doLeader, advanceCommitIndex in *.
     repeat break_match; simpl in *; find_inversion; auto.
@@ -92,7 +92,7 @@ Section LastAppliedLeCommitIndex.
             y <= x) ->
       y <= z ->
       y <= fold_left max l z.
-  Proof using. 
+  Proof.
     induction l; simpl in *; auto.
     intros.
     specialize (IHl y (max z a)).
@@ -104,7 +104,7 @@ Section LastAppliedLeCommitIndex.
   Lemma advanceCommitIndex_commitIndex :
     forall st h,
       commitIndex st <= commitIndex (advanceCommitIndex st h).
-  Proof using. 
+  Proof.
     intros. unfold advanceCommitIndex. simpl in *.
     apply fold_left_max; auto.
     intros.
@@ -118,7 +118,7 @@ Section LastAppliedLeCommitIndex.
       (ms : list (name * msg)) (h0 : name),
       doLeader st h0 = (os, d', ms) ->
       commitIndex st <= commitIndex d'.
-  Proof using. 
+  Proof.
     intros.
     unfold doLeader in *.
     repeat break_match; tuple_inversion; auto; eauto using advanceCommitIndex_commitIndex.
@@ -127,7 +127,7 @@ Section LastAppliedLeCommitIndex.
   
   Lemma lastApplied_le_commitIndex_doLeader :
     raft_net_invariant_do_leader lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     subst.
     simpl in *. repeat find_higher_order_rewrite.
@@ -143,7 +143,7 @@ Section LastAppliedLeCommitIndex.
       (ms : list (name * msg)),
       doGenericServer h st = (out, st', ms) ->
       lastApplied st' <= max (lastApplied st) (commitIndex st).
-  Proof using. 
+  Proof.
     intros. unfold doGenericServer in *. break_let. find_inversion.
     simpl in *.
     break_if; simpl in *; do_bool; auto.
@@ -155,7 +155,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_doGenericServer :
     raft_net_invariant_do_generic_server lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     subst.
     simpl in *. repeat find_higher_order_rewrite.
@@ -168,7 +168,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_clientRequest :
     raft_net_invariant_client_request lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     subst.
     simpl in *. repeat find_higher_order_rewrite.
@@ -181,7 +181,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_timeout :
     raft_net_invariant_timeout lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     subst.
     simpl in *. repeat find_higher_order_rewrite.
@@ -193,7 +193,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_reboot :
     raft_net_invariant_reboot lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     subst.
     simpl in *. repeat find_higher_order_rewrite.
@@ -202,7 +202,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_state_same_packet_subset :
     raft_net_invariant_state_same_packet_subset lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     subst.
     simpl in *. repeat find_reverse_higher_order_rewrite. auto.
@@ -210,7 +210,7 @@ Section LastAppliedLeCommitIndex.
 
   Lemma lastApplied_le_commitIndex_init :
     raft_net_invariant_init lastApplied_le_commitIndex.
-  Proof using. 
+  Proof.
     red. unfold lastApplied_le_commitIndex. intros.
     simpl in *. auto.
   Qed.
@@ -219,7 +219,7 @@ Section LastAppliedLeCommitIndex.
     forall net,
       raft_intermediate_reachable net ->
       lastApplied_le_commitIndex net.
-  Proof using. 
+  Proof.
     intros. apply raft_net_invariant; auto.
     - apply lastApplied_le_commitIndex_init.
     - apply lastApplied_le_commitIndex_clientRequest.
@@ -239,3 +239,4 @@ Section LastAppliedLeCommitIndex.
   Qed.
 
 End LastAppliedLeCommitIndex.
+

@@ -42,7 +42,7 @@ Section AllEntriesLeaderSublog.
       eTerm e = currentTerm (snd (nwState net h)) ->
       In e es ->
       In e (log (snd (nwState net h))).
-  Proof using lsi rri. 
+  Proof.
     intros.
     pose proof (lift_prop _ leader_sublog_invariant_invariant _ ltac:(eauto)) as Hinv.
     unfold leader_sublog_invariant, leader_sublog_nw_invariant in *.
@@ -58,7 +58,7 @@ Section AllEntriesLeaderSublog.
       type (snd (nwState net h)) = Leader ->
       type (snd (nwState net h')) = Leader ->
       h = h'.
-  Proof using olpti rri. 
+  Proof.
     intros.
     eapply (lift_prop _ one_leader_per_term_invariant _ ltac:(eauto));
       simpl in *; repeat break_match; repeat (find_rewrite; simpl in *);
@@ -83,7 +83,7 @@ Section AllEntriesLeaderSublog.
     forall {A B} (a : A) (b : B) l,
       In (a, b) l ->
       In b (map snd l).
-  Proof using. 
+  Proof.
     intros.
     apply in_map_iff.
     eexists; intuition; eauto; reflexivity.
@@ -93,7 +93,7 @@ Section AllEntriesLeaderSublog.
   
   Lemma allEntries_leader_sublog_client_request :
     refined_raft_net_invariant_client_request allEntries_leader_sublog.
-  Proof using olpti rri. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     find_copy_apply_lem_hyp handleClientRequest_type. intuition.
@@ -131,7 +131,7 @@ Section AllEntriesLeaderSublog.
           allEntries
             (update_elections_data_appendEntries h st t n pli plt es ci) =
           allEntries (fst st)).
-  Proof using. 
+  Proof.
     intros.
     unfold update_elections_data_appendEntries in *.
     unfold handleAppendEntries, advanceCurrentTerm in *.
@@ -141,7 +141,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_append_entries :
     refined_raft_net_invariant_append_entries allEntries_leader_sublog.
-  Proof using lsi rri. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -160,7 +160,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -173,7 +173,7 @@ Section AllEntriesLeaderSublog.
   
   Lemma allEntries_leader_sublog_request_vote :
     refined_raft_net_invariant_request_vote allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -196,7 +196,7 @@ Section AllEntriesLeaderSublog.
        log st' = log st /\
        ((type st = Candidate /\ type st' = Leader /\ r = true /\ currentTerm st = t /\
          wonElection (dedup name_eq_dec (h' :: votesReceived st)) = true) \/ type st' = type st)).
-  Proof using. 
+  Proof.
     intros.
     unfold handleRequestVoteReply, advanceCurrentTerm in *.
     repeat break_match; try find_inversion; subst; simpl in *; intuition;
@@ -205,7 +205,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply allEntries_leader_sublog.
-  Proof using cci vci aecei. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     match goal with
@@ -270,7 +270,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_timeout :
     refined_raft_net_invariant_timeout allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     subst. repeat find_higher_order_rewrite.
     destruct_update; simpl in *; eauto;
@@ -285,7 +285,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_do_leader :
     refined_raft_net_invariant_do_leader allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -305,7 +305,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_do_generic_server :
     refined_raft_net_invariant_do_generic_server allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -326,7 +326,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_reboot :
     refined_raft_net_invariant_reboot allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -341,7 +341,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     repeat find_reverse_higher_order_rewrite.
     eauto.
@@ -349,7 +349,7 @@ Section AllEntriesLeaderSublog.
 
   Lemma allEntries_leader_sublog_init :
     refined_raft_net_invariant_init allEntries_leader_sublog.
-  Proof using. 
+  Proof.
     red. unfold allEntries_leader_sublog. intros. simpl in *.
     congruence.
   Qed.

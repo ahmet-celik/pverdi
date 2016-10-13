@@ -34,7 +34,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_client_request :
     refined_raft_net_invariant_client_request votes_correct.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_client_request, votes_correct.
     split_votes_correct; start_proof;
     rewrite @votes_update_elections_data_client_request in *;
@@ -50,7 +50,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_timeout :
     refined_raft_net_invariant_timeout votes_correct.
-  Proof using vlcti. 
+  Proof.
     unfold refined_raft_net_invariant_timeout, votes_correct.
     split_votes_correct; start_proof.
     - find_eapply_lem_hyp votes_update_elections_data_timeout_votedFor; eauto.
@@ -72,7 +72,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_append_entries :
     refined_raft_net_invariant_append_entries votes_correct.
-  Proof using vlcti. 
+  Proof.
     unfold refined_raft_net_invariant_append_entries, votes_correct.
     split_votes_correct; start_proof; rewrite @votes_same_append_entries in *.
     - eauto.
@@ -89,7 +89,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply votes_correct.
-  Proof using vlcti. 
+  Proof.
     unfold refined_raft_net_invariant_append_entries_reply, votes_correct.
     split_votes_correct; start_proof.
     - find_copy_apply_lem_hyp votes_le_current_term_invariant; auto.
@@ -105,7 +105,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_request_vote :
     refined_raft_net_invariant_request_vote votes_correct.
-  Proof using vlcti. 
+  Proof.
     unfold refined_raft_net_invariant_request_vote, votes_correct.
     split_votes_correct; start_proof.
     - find_eapply_lem_hyp votes_update_elections_data_request_vote; eauto.
@@ -140,7 +140,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply votes_correct.
-  Proof using vlcti. 
+  Proof.
     unfold refined_raft_net_invariant_request_vote_reply, votes_correct.
     split_votes_correct; start_proof.
     - erewrite @votes_update_elections_data_request_vote_reply_eq in * by auto.
@@ -164,7 +164,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_do_leader :
     refined_raft_net_invariant_do_leader votes_correct.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_do_leader, votes_correct.
     intros.
     match goal with H : nwState _ _ = _ |- _ =>
@@ -182,7 +182,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_do_generic_server :
     refined_raft_net_invariant_do_generic_server votes_correct.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_do_generic_server, votes_correct.
     intros.
     match goal with H : nwState _ _ = _ |- _ =>
@@ -200,7 +200,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset votes_correct.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_state_same_packet_subset, votes_correct.
     split_votes_correct;
       intros; repeat find_reverse_higher_order_rewrite; eauto.
@@ -208,7 +208,7 @@ Section VotesCorrect.
 
   Lemma votes_correct_reboot :
     refined_raft_net_invariant_reboot votes_correct.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_reboot, votes_correct, reboot.
     intros.
     match goal with H : nwState _ _ = _ |- _ =>
@@ -222,7 +222,7 @@ Section VotesCorrect.
 
   Theorem votes_correct_init :
     refined_raft_net_invariant_init votes_correct.
-  Proof using. 
+  Proof.
     unfold refined_raft_net_invariant_init, votes_correct.
     split_votes_correct; simpl in *; intuition; discriminate.
   Qed.
@@ -231,7 +231,7 @@ Section VotesCorrect.
     forall net,
       refined_raft_intermediate_reachable net ->
       votes_correct net.
-  Proof using vlcti rri. 
+  Proof.
     intros.
     eapply refined_raft_net_invariant; eauto.
     - apply votes_correct_init.

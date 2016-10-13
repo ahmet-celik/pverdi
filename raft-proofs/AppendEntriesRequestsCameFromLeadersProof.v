@@ -48,7 +48,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_appendEntries :
     refined_raft_net_invariant_append_entries append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -66,7 +66,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_appendEntriesReply :
     refined_raft_net_invariant_append_entries_reply append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -83,7 +83,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_requestVote :
     refined_raft_net_invariant_request_vote append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -101,7 +101,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_requestVoteReply :
     refined_raft_net_invariant_request_vote_reply append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -116,7 +116,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_clientRequest :
     refined_raft_net_invariant_client_request append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -133,7 +133,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_timeout :
     refined_raft_net_invariant_timeout append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     subst. simpl in *.
     find_apply_hyp_hyp. intuition eauto.
@@ -150,7 +150,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_doLeader :
     refined_raft_net_invariant_do_leader append_entries_came_from_leaders.
-  Proof using lhlli. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -176,7 +176,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_doGenericServer :
     refined_raft_net_invariant_do_generic_server append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -196,7 +196,7 @@ Section AppendEntriesRequestsCameFromLeaders.
   
   Lemma append_entries_came_from_leaders_reboot :
     refined_raft_net_invariant_reboot append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -212,7 +212,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros.
     find_apply_hyp_hyp.
     find_apply_hyp_hyp. repeat find_higher_order_rewrite. eauto.
@@ -220,7 +220,7 @@ Section AppendEntriesRequestsCameFromLeaders.
 
   Lemma append_entries_came_from_leaders_init :
     refined_raft_net_invariant_init append_entries_came_from_leaders.
-  Proof using. 
+  Proof.
     red. unfold append_entries_came_from_leaders. intros. simpl in *.
     intuition.
   Qed.
@@ -229,7 +229,7 @@ Section AppendEntriesRequestsCameFromLeaders.
     forall net,
       refined_raft_intermediate_reachable net ->
       append_entries_came_from_leaders net.
-  Proof using rri lhlli. 
+  Proof.
     intros.
     apply refined_raft_net_invariant; auto.
     - apply append_entries_came_from_leaders_init.

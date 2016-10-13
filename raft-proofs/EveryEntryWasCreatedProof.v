@@ -41,7 +41,7 @@ Section EveryEntryWasCreated.
          In (t, ll) (leaderLogs (fst (nwState net h))) ->
          In (t, ll) (leaderLogs (fst (nwState net' h)))) ->
       term_was_created net' t.
-  Proof using. 
+  Proof.
     intros. unfold term_was_created in *.
     break_exists_exists. eauto.
   Qed.
@@ -65,7 +65,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_append_entries :
     refined_raft_net_invariant_append_entries in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     eapply term_was_created_preserved; [eapply_prop in_any_log_term_was_created|];
     [|
@@ -97,7 +97,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_request_vote :
     refined_raft_net_invariant_request_vote in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     eapply term_was_created_preserved; [eapply_prop in_any_log_term_was_created|];
     [|
@@ -127,7 +127,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_append_entries_reply :
     refined_raft_net_invariant_append_entries_reply in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     eapply term_was_created_preserved; [eapply_prop in_any_log_term_was_created|];
     [|
@@ -151,7 +151,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_request_vote_reply :
     refined_raft_net_invariant_request_vote_reply in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     eapply term_was_created_preserved; [eapply_prop in_any_log_term_was_created|];
     [|intros; simpl in *;
@@ -200,7 +200,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_client_request :
     refined_raft_net_invariant_client_request in_any_log_term_was_created.
-  Proof using lhlli. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     iae_case.
     - unfold term_was_created. simpl in *.
@@ -240,7 +240,7 @@ Section EveryEntryWasCreated.
   
   Lemma in_any_log_term_was_created_timeout :
     refined_raft_net_invariant_timeout in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     eapply term_was_created_preserved; [eapply_prop in_any_log_term_was_created|];
     [|intros; simpl in *;
@@ -265,7 +265,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_do_leader :
     refined_raft_net_invariant_do_leader in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -294,7 +294,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_do_generic_server :
     refined_raft_net_invariant_do_generic_server in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -322,7 +322,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_state_same_packet_subset :
     refined_raft_net_invariant_state_same_packet_subset in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. intros. unfold in_any_log_term_was_created. intros.
     unfold in_any_log_term_was_created, term_was_created in *.
     iae_case.
@@ -343,7 +343,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_reboot :
     refined_raft_net_invariant_reboot in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. unfold in_any_log_term_was_created, term_was_created. intros.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -376,7 +376,7 @@ Section EveryEntryWasCreated.
 
   Lemma in_any_log_term_was_created_init :
     refined_raft_net_invariant_init in_any_log_term_was_created.
-  Proof using. 
+  Proof.
     red. unfold in_any_log_term_was_created. intros.
     iae_case; intuition.
   Qed.
@@ -386,7 +386,7 @@ Section EveryEntryWasCreated.
     forall net,
       refined_raft_intermediate_reachable net ->
       in_any_log_term_was_created net.
-  Proof using lhlli rri. 
+  Proof.
     intros.
     eapply refined_raft_net_invariant; eauto.
     - exact in_any_log_term_was_created_init.

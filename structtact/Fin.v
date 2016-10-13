@@ -13,7 +13,7 @@ Fixpoint fin (n : nat) : Type :=
   end.
 
 Lemma fin_eq_dec : forall n (a b : fin n), {a = b} + {a <> b}.
-Proof using. 
+Proof.
   induction n.
   - auto.
   - intros. destruct a, b; intuition (auto; try discriminate).
@@ -29,7 +29,7 @@ Fixpoint all_fin (n : nat) : list (fin n) :=
 Lemma all_fin_all :
   forall n (x : fin n),
     In x (all_fin n).
-Proof using. 
+Proof.
   induction n; intros.
   - solve_by_inversion.
   - simpl in *. destruct x; auto using in_map.
@@ -37,7 +37,7 @@ Qed.
 
 Lemma all_fin_NoDup :
   forall n, NoDup (all_fin n).
-Proof using. 
+Proof.
   induction n; intros; simpl; constructor.
   - intro. apply in_map_iff in H. firstorder. discriminate.
   - apply NoDup_map_injective; auto. congruence.
@@ -58,7 +58,7 @@ Definition fin_lt {n : nat} (a b : fin n) : Prop := lt (fin_to_nat a) (fin_to_na
 Lemma fin_lt_Some_elim :
   forall n (a b : fin n), 
     @fin_lt (S n) (Some a) (Some b) -> fin_lt a b.
-Proof using. 
+Proof.
   intros.
   unfold fin_lt. simpl.
   intuition.
@@ -67,7 +67,7 @@ Qed.
 Lemma fin_lt_Some_intro :
   forall n (a b : fin n), 
     fin_lt a b -> @fin_lt (S n) (Some a) (Some b).
-Proof using. 
+Proof.
   intros.
   unfold fin_lt. simpl.
   intuition.
@@ -76,14 +76,14 @@ Qed.
 Lemma None_lt_Some :
   forall n (x : fin n),
     @fin_lt (S n) None (Some x).
-Proof using. 
+Proof.
   unfold fin_lt. simpl. auto with *.
 Qed.
 
 Lemma fin_lt_trans : 
   forall n (x y z : fin n),
     fin_lt x y -> fin_lt y z -> fin_lt x z.
-Proof using. 
+Proof.
   induction n; intros.
   - destruct x.
   - destruct x, y, z; simpl in *;
@@ -96,7 +96,7 @@ Qed.
 Lemma fin_lt_not_eq : 
   forall n (x y : fin n), 
     fin_lt x y -> x <> y.
-Proof using. 
+Proof.
   induction n; intros.
   - destruct x.
   - destruct x, y;
@@ -146,7 +146,7 @@ Require Import Orders.
 
 Lemma fin_lt_irrefl : 
   forall n, Irreflexive (@fin_lt n).
-Proof using. 
+Proof.
   intros.
   unfold Irreflexive.
   unfold complement.
@@ -158,14 +158,14 @@ Proof using.
 Qed.
 
 Lemma fin_lt_strorder : forall n, StrictOrder (@fin_lt n).
-Proof using. 
+Proof.
   intros.
   apply (Build_StrictOrder _ (@fin_lt_irrefl n) (@fin_lt_trans n)).
 Qed.
 
 Lemma fin_lt_lt_compat : 
   forall n, Proper (eq ==> eq ==> iff) (@fin_lt n).
-Proof using. 
+Proof.
   intros.
   split.
   - intros.
@@ -182,7 +182,7 @@ Lemma CompSpec_Eq_Some :
   forall n' (x' y' : fin n'),
     CompSpec eq fin_lt x' y' Eq ->
     Some x' = Some y'.
-Proof using. 
+Proof.
   intros.
   apply f_equal.
   inversion H.
@@ -193,7 +193,7 @@ Lemma CompSpec_Lt :
   forall n' (x' y' : fin n'),
     CompSpec eq fin_lt x' y' Lt ->
     fin_lt x' y'.
-Proof using. 
+Proof.
   intros.
   inversion H.
   trivial.
@@ -203,7 +203,7 @@ Lemma CompSpec_Gt :
   forall n' (x' y' : fin n'),
     CompSpec eq fin_lt x' y' Gt ->
     fin_lt y' x'.
-Proof using. 
+Proof.
   intros.
   inversion H.
   trivial.
@@ -231,7 +231,7 @@ match fin_comparison_dec n x y with exist _ cmp _ => cmp end.
 
 Lemma fin_compare_spec : forall (n : nat) (x y : fin n), 
     CompSpec eq fin_lt x y (fin_comparison n x y).
-Proof using. 
+Proof.
   intros.
   unfold fin_comparison.
   case fin_comparison_dec.

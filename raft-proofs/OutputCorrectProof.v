@@ -32,7 +32,7 @@ Section OutputCorrect.
   Theorem in_output_trace_dec :
     forall tr : list (name * (raft_input + list raft_output)),
       {in_output_trace client id out tr} + {~ in_output_trace client id out tr}.
-  Proof using. 
+  Proof.
     unfold in_output_trace.
     intros.
     destruct (find (fun p => match snd p with
@@ -68,7 +68,7 @@ Section OutputCorrect.
       ~ in_output_trace client id out tr ->
       in_output_trace client id out (tr ++ o) ->
       in_output_trace client id out o.
-  Proof using. 
+  Proof.
     intros. unfold in_output_trace in *.
     break_exists_exists.
     intuition. do_in_app; intuition.
@@ -79,7 +79,7 @@ Section OutputCorrect.
     forall l l',
       in_output_list client id out (l ++ l') ->
       in_output_list client id out l \/ in_output_list client id out l'.
-  Proof using. 
+  Proof.
     intros.
     unfold in_output_list in *.
     break_exists; do_in_app; intuition eauto.
@@ -87,7 +87,7 @@ Section OutputCorrect.
 
   Lemma in_output_list_empty :
     ~ in_output_list client id out [].
-  Proof using. 
+  Proof.
     intuition.
   Qed.
 
@@ -95,7 +95,7 @@ Section OutputCorrect.
     forall st h os st' m,
       doLeader st h = (os, st', m) ->
       ~ in_output_list client id out os.
-  Proof using. 
+  Proof.
     intros. unfold doLeader, advanceCommitIndex in *.
     repeat break_match; find_inversion; intuition eauto using key_in_output_list_empty.
   Qed.
@@ -104,7 +104,7 @@ Section OutputCorrect.
     forall st h i os st' m,
       handleInput h i st = (os, st', m) ->
       ~ in_output_list client id out os.
-  Proof using. 
+  Proof.
     intros. unfold handleInput, handleTimeout, handleClientRequest, tryToBecomeLeader in *.
     repeat break_match; find_inversion; intuition eauto using in_output_list_empty;
     unfold in_output_list in *; break_exists; simpl in *; intuition; congruence.
@@ -119,7 +119,7 @@ Section OutputCorrect.
     forall l l' ks,
       exists l'',
         deduplicate_log' (l ++ l') ks = deduplicate_log' l ks ++ l''.
-  Proof using. 
+  Proof.
     induction l; intros; simpl in *; intuition; eauto.
     repeat break_match; simpl in *; eauto;
     repeat find_insterU; break_exists; eexists; f_equal; eauto.
@@ -130,14 +130,14 @@ Section OutputCorrect.
     forall l l',
       exists l'',
         deduplicate_log (l ++ l') = deduplicate_log l ++ l''.
-  Proof using. 
+  Proof.
     eauto using deduplicate_log'_app.
   Qed.
 
 
   Lemma in_output_trace_not_nil :
       in_output_trace client id out [] -> False.
-  Proof using. 
+  Proof.
     unfold in_output_trace.
     simpl. intros. break_exists. intuition.
   Qed.
@@ -146,7 +146,7 @@ Section OutputCorrect.
     forall h l,
       in_output_trace client id out [(h, inr l)] ->
       in_output_list client id out l.
-  Proof using. 
+  Proof.
     unfold in_output_trace.
     intuition.
     break_exists. simpl in *. intuition.
@@ -158,7 +158,7 @@ Section OutputCorrect.
       in_output_list c i o (l1 ++ l2) ->
       in_output_list c i o l1 \/
       in_output_list c i o l2.
-  Proof using. 
+  Proof.
     unfold in_output_list.
     intuition.
   Qed.
@@ -167,7 +167,7 @@ Section OutputCorrect.
     forall h i tr,
       in_output_trace client id out ((h, inl i) :: tr) ->
       in_output_trace client id out tr.
-  Proof using. 
+  Proof.
     unfold in_output_trace.
     intuition. break_exists_exists. simpl in *. intuition.
     find_inversion.
@@ -176,7 +176,7 @@ Section OutputCorrect.
   Lemma in_output_list_not_leader_singleton :
     forall a b,
       ~ in_output_list client id out [NotLeader a b].
-  Proof using. 
+  Proof.
     unfold in_output_list. simpl. intuition. discriminate.
   Qed.
 
@@ -184,7 +184,7 @@ Section OutputCorrect.
     forall h i st os st' ms,
       handleInput h i st = (os, st', ms) ->
       ~ in_output_list client id out os.
-  Proof using. 
+  Proof.
     unfold handleInput, handleTimeout, handleInput, tryToBecomeLeader, handleClientRequest.
     intuition.
     repeat break_match; repeat find_inversion; eauto using in_output_trace_not_nil.
@@ -197,7 +197,7 @@ Section OutputCorrect.
       in_output_list client id out (ClientResponse a b c :: l) ->
       (a = client /\ b = id /\ c = out) \/
       in_output_list client id out l.
-  Proof using. 
+  Proof.
     unfold in_output_list.
     simpl. intuition.
     find_inversion. auto.
@@ -207,7 +207,7 @@ Section OutputCorrect.
     forall K V (K_eq_dec : forall k k' : K, {k = k'} + {k <> k'}) k v l,
       assoc (V:=V) K_eq_dec l k = Some v ->
       In (k, v) l.
-  Proof using. 
+  Proof.
     induction l; simpl; intros; repeat break_match.
     - discriminate.
     - find_inversion. auto.
@@ -218,7 +218,7 @@ Section OutputCorrect.
     forall st c n o,
       getLastId st c = Some (n, o) ->
       In (c, (n, o)) (clientCache st).
-  Proof using. 
+  Proof.
     unfold getLastId.
     eauto using assoc_Some_In.
   Qed.
@@ -226,7 +226,7 @@ Section OutputCorrect.
   Lemma middle_app_assoc :
     forall A xs (y : A) zs,
       xs ++ y :: zs = (xs ++ [y]) ++ zs.
-  Proof using. 
+  Proof.
     induction xs; intros; simpl; auto using f_equal.
   Qed.
 
@@ -235,7 +235,7 @@ Section OutputCorrect.
       assoc eq_nat_dec ks (eClient e) = Some n ->
       eId e <= n ->
       deduplicate_log' (es ++ [e]) ks = deduplicate_log' es ks.
-  Proof using. 
+  Proof.
     induction es; simpl; intuition; repeat break_match; repeat find_inversion; do_bool.
     - omega.
     - auto.
@@ -259,7 +259,7 @@ Section OutputCorrect.
       eClient e = eClient e' ->
       eId e <= eId e' ->
       deduplicate_log' (es ++ [e]) ks = deduplicate_log' es ks.
-  Proof using. 
+  Proof.
     induction es; simpl; intuition; repeat break_match; eauto using f_equal;
     repeat find_reverse_rewrite.
     - f_equal. subst. eapply deduplicate_log'_snoc_drop_keys; eauto.
@@ -275,7 +275,7 @@ Section OutputCorrect.
       eClient e = eClient e' ->
       eId e <= eId e' ->
       deduplicate_log (es ++ [e]) = deduplicate_log es.
-  Proof using. 
+  Proof.
     intros. eapply deduplicate_log'_snoc_drop_es; eauto.
   Qed.
 
@@ -285,7 +285,7 @@ Section OutputCorrect.
       (forall e', In e' es -> eClient e' = eClient e -> eId e' < eId e) ->
       (forall i, assoc eq_nat_dec ks (eClient e) = Some i -> i < eId e) ->
       deduplicate_log' (es ++ [e]) ks = deduplicate_log' es ks ++ [e].
-  Proof using. 
+  Proof.
     induction es; intros; simpl in *; intuition.
     - break_match; simpl in *; auto.
       break_if; simpl in *; auto.
@@ -318,7 +318,7 @@ Section OutputCorrect.
     forall es e,
       (forall e', In e' es -> eClient e' = eClient e -> eId e' < eId e) ->
       deduplicate_log (es ++ [e]) = deduplicate_log es ++ [e].
-  Proof using. 
+  Proof.
     intros.
     eapply deduplicate_log'_snoc_split; eauto.
     intros. simpl in *. congruence.
@@ -327,7 +327,7 @@ Section OutputCorrect.
   Lemma execute_log_app :
     forall xs ys,
       execute_log (xs ++ ys) = let (tr, st) := execute_log xs in execute_log' ys st tr.
-  Proof using. 
+  Proof.
     unfold execute_log.
     intros.
     rewrite execute_log'_app. auto.
@@ -339,7 +339,7 @@ Section OutputCorrect.
       stateMachine st = snd (execute_log (deduplicate_log es)) ->
       (forall e', In e' es -> eClient e' = eClient e -> eId e' < eId e) ->
       stateMachine st' = snd (execute_log (deduplicate_log es ++ [e])).
-  Proof using. 
+  Proof.
     unfold applyEntry.
     intros.
     repeat break_match; repeat find_inversion. simpl.
@@ -353,7 +353,7 @@ Section OutputCorrect.
        exists e', In e' es /\ eClient e' = eClient e /\ eId e <= eId e') \/
       (deduplicate_log (es ++ [e]) = deduplicate_log es ++ [e] /\
        (forall e', In e' es -> eClient e' = eClient e -> eId e' < eId e)).
-  Proof using. 
+  Proof.
     intros.
     destruct (find (fun e' => andb (eClient e' =? eClient e)
                                   (eId e <=? eId e')) es) eqn:?.
@@ -375,7 +375,7 @@ Section OutputCorrect.
       assoc K_eq_dec l k = None ->
       In (k, v) l ->
       False.
-  Proof using. 
+  Proof.
     intros; induction l; simpl in *; intuition.
     - subst. break_if; congruence.
     - break_match. subst. break_if; try congruence.
@@ -387,7 +387,7 @@ Section OutputCorrect.
       getLastId st c = None ->
       In (c, (i, o)) (clientCache st) ->
       False.
-  Proof using. 
+  Proof.
     intros.
     unfold getLastId in *.
     eauto using assoc_None.
@@ -397,7 +397,7 @@ Section OutputCorrect.
     forall c i o xs ys,
       output_correct c i o xs ->
       output_correct c i o (xs ++ ys).
-  Proof using. 
+  Proof.
     unfold output_correct.
     intros.
     break_exists.
@@ -416,7 +416,7 @@ Section OutputCorrect.
       stateMachine st = snd (execute_log (deduplicate_log es)) ->
       (forall e', In e' es -> eClient e' = eClient e -> eId e' < eId e) ->
       output_correct (eClient e) (eId e) o (es ++ [e]).
-  Proof using. 
+  Proof.
     unfold applyEntry.
     intros.
     repeat break_match; repeat find_inversion.
@@ -449,7 +449,7 @@ Section OutputCorrect.
            getLastId st (eClient e') = Some (i, o) /\
            eId e' <= i) ->
       output_correct (eClient e) (eId e) o (es ++ [e]).
-  Proof using. 
+  Proof.
     unfold cacheApplyEntry.
     intros.
     repeat break_match; repeat find_inversion; simpl in *; intuition.
@@ -485,7 +485,7 @@ Section OutputCorrect.
            getLastId st (eClient e') = Some (i, o) /\
            eId e' <= i) ->
       stateMachine st' = snd (execute_log (deduplicate_log (es ++ [e]))).
-  Proof using. 
+  Proof.
     intros.
     unfold cacheApplyEntry in *.
     repeat break_match; repeat find_inversion.
@@ -511,7 +511,7 @@ Section OutputCorrect.
     forall e l,
       In e (deduplicate_log l) ->
       In e l.
-  Proof using. 
+  Proof.
     unfold deduplicate_log.
     intros. eauto using deduplicate_log'_In_if.
   Qed.
@@ -522,7 +522,7 @@ Section OutputCorrect.
       let (out, _) := handler (eInput e) (stateMachine st)
       in (clientCache st' = assoc_set eq_nat_dec (clientCache st) (eClient e) (eId e, out) /\
           In out l).
-  Proof using. 
+  Proof.
     unfold applyEntry.
     intros.
     repeat break_match; repeat find_inversion. intuition.
@@ -539,7 +539,7 @@ Section OutputCorrect.
           In out l)) /\ (getLastId st (eClient e) = None \/
                        (exists i o, getLastId st (eClient e) = Some (i, o) /\
                                     i < eId e))).
-  Proof using. 
+  Proof.
     unfold cacheApplyEntry.
     intros.
     repeat break_match_hyp; repeat find_inversion; do_bool; intuition eauto with *;
@@ -551,7 +551,7 @@ Section OutputCorrect.
     forall st st' c,
       clientCache st' = clientCache st ->
       getLastId st' c = getLastId st c.
-  Proof using. 
+  Proof.
     unfold getLastId.
     intros.
     congruence.
@@ -564,7 +564,7 @@ Section OutputCorrect.
       exists i' o',
         getLastId st' c = Some (i', o') /\
         i <= i'.
-  Proof using. 
+  Proof.
     intros.
     unfold cacheApplyEntry in *.
     repeat break_match; try find_inversion; simpl in *; repeat find_rewrite; eauto.
@@ -592,7 +592,7 @@ Section OutputCorrect.
       getLastId st c = Some (i, o) ->
       getLastId st' c = Some (i', o') ->
       i <= i'.
-  Proof using. 
+  Proof.
     intros.
     eapply cacheAppliedEntry_clientCache_preserved in H; eauto.
     break_exists. intuition. repeat find_rewrite. find_inversion. auto.
@@ -614,7 +614,7 @@ Section OutputCorrect.
          exists i o,
            getLastId st (eClient e') = Some (i, o) /\ eId e' <= i) ->
       output_correct c i o (es ++ l).
-  Proof using out id client. 
+  Proof.
     induction l; intros; simpl in *.
     - find_inversion. exfalso. eapply in_output_list_empty; eauto.
     - repeat break_let. find_inversion.
@@ -688,7 +688,7 @@ Section OutputCorrect.
       log st' = log st /\
       lastApplied st' = lastApplied st /\
       commitIndex st' = commitIndex st.
-  Proof using. 
+  Proof.
     intros. unfold cacheApplyEntry, applyEntry in *.
     repeat break_match; find_inversion; auto.
   Qed.
@@ -699,7 +699,7 @@ Section OutputCorrect.
       log st' = log st /\
       lastApplied st' = lastApplied st /\
       commitIndex st' = commitIndex st.
-  Proof using. 
+  Proof.
     induction es; intros; simpl in *.
     - find_inversion. auto.
     - repeat break_match; find_inversion;
@@ -713,7 +713,7 @@ Section OutputCorrect.
       Prefix l1 l2 ->
       output_correct client id out l1 ->
       output_correct client id out l2.
-  Proof using. 
+  Proof.
     intros.
     find_apply_lem_hyp Prefix_exists_rest.
     break_exists. subst.
@@ -724,7 +724,7 @@ Section OutputCorrect.
     forall net,
       raft_intermediate_reachable net ->
       (forall h, contiguous_range_exact_lo (log (nwState net h)) 0).
-  Proof using lmi. 
+  Proof.
     intros. find_apply_lem_hyp log_matching_invariant.
     unfold log_matching, log_matching_hosts in *.
     intuition.
@@ -738,7 +738,7 @@ Section OutputCorrect.
       doGenericServer h (sigma h) = (os, st', ms) ->
       in_output_list client id out os ->
       output_correct client id out (applied_entries (update sigma h st')).
-  Proof using lmi lacimi si smci. 
+  Proof.
     intros.
     find_copy_apply_lem_hyp logs_sorted_invariant.
     pose proof entries_contiguous.
@@ -831,7 +831,7 @@ Section OutputCorrect.
       @raft_intermediate_reachable _ _ raft_params net ->
       step_f (failed, net) (failed', net') os ->
       output_correct client id out (applied_entries (nwState net')).
-  Proof using lmi lacimi si smci. 
+  Proof.
     intros.
     match goal with
       | [ H : context [ step_f _ _ _ ] |- _ ] => invcs H
@@ -901,7 +901,7 @@ Section OutputCorrect.
       step_f_star step_f_init (failed, net) tr ->
       in_output_trace client id out tr ->
       output_correct client id out (applied_entries (nwState net)).
-  Proof using lmi lacimi si smci aemi. 
+  Proof.
     intros. pose proof (trace_relations_work (failed, net) tr).
     repeat concludes.
     auto.

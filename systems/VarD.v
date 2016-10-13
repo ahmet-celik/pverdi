@@ -147,7 +147,7 @@ Lemma trace_correct'_trace_correct :
   forall trace,
     trace_correct' init trace ->
     trace_correct trace.
-Proof using. 
+Proof.
   intros.
   remember init as x. induction H.
   - constructor.
@@ -170,7 +170,7 @@ Lemma trace_well_formed :
   forall st st' trace,
     step_1_star st st' trace ->
     (trace = [] \/ exists t i o, trace = t ++ [(i, o)]).
-Proof using. 
+Proof.
   intros.
   find_apply_lem_hyp refl_trans_1n_n1_trace.
   invcs H; intuition.
@@ -184,7 +184,7 @@ Lemma inputs_with_key_plus_key :
     input_key i = k ->
     inputs_with_key (l ++ [(i, o)]) k =
     (inputs_with_key l k) ++ [i].
-Proof using. 
+Proof.
   induction l; intros; simpl in *.
   - unfold inputs_with_key. simpl in *.
     repeat break_match; congruence.
@@ -198,7 +198,7 @@ Lemma inputs_with_key_plus_not_key :
     input_key i <> k ->
     inputs_with_key (l ++ [(i, o)]) k =
     (inputs_with_key l k).
-Proof using. 
+Proof.
   induction l; intros; simpl in *.
   - unfold inputs_with_key. simpl in *.
     repeat break_match; congruence.
@@ -213,7 +213,7 @@ Theorem step_1_star_trace_state_correct :
   forall st st' trace,
     step_1_star st st' trace ->
     trace_state_correct trace st st'.
-Proof using. 
+Proof.
   intros.
   find_apply_lem_hyp refl_trans_1n_n1_trace.
   induction H; auto.
@@ -291,7 +291,7 @@ Lemma trace_state_correct_trace_correct :
     trace_correct' st trace ->
     step_1 st' st'' t ->
     trace_correct' st (trace ++ t).
-Proof using. 
+Proof.
   intros.
   invcs H1; simpl in *.
   unfold VarDHandler, VarDHandler' in *.
@@ -307,7 +307,7 @@ Theorem step_1_star_trace_correct' :
   forall st st' trace,
     step_1_star st st' trace ->
     trace_correct' st trace.
-Proof using. 
+Proof.
   intros.
   find_apply_lem_hyp refl_trans_1n_n1_trace.
   induction H.
@@ -321,7 +321,7 @@ Theorem step_1_star_trace_correct :
   forall st trace,
     step_1_star init st trace ->
     trace_correct trace.
-Proof using. 
+Proof.
   intros.
   find_apply_lem_hyp step_1_star_trace_correct'.
   eauto using trace_correct'_trace_correct.
@@ -330,7 +330,7 @@ Qed.
 Open Scope string_scope.
 Example trace_correct_eg0 :
   trace_correct [(Put "james" "awesome", Response "james" (Some "awesome") None)].
-Proof using. 
+Proof.
   rewrite <- app_nil_l.
   constructor.
   - constructor.

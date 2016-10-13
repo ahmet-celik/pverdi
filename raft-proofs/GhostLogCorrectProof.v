@@ -43,7 +43,7 @@ Section GhostLogCorrectProof.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_nextIndex_safety net.
-  Proof using nisi rmri. 
+  Proof.
     intros.
     enough (nextIndex_safety (deghost (mgv_deghost net))) by
         (unfold nextIndex_safety, lifted_nextIndex_safety, deghost, mgv_deghost in *;
@@ -64,7 +64,7 @@ Section GhostLogCorrectProof.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_contiguous net.
-  Proof using rlmli rmri. 
+  Proof.
     intros.
     enough (entries_contiguous (mgv_deghost net)) by
         (unfold entries_contiguous, lifted_entries_contiguous, mgv_deghost in *;
@@ -77,7 +77,7 @@ Section GhostLogCorrectProof.
     forall (net : @network _ raft_msg_refined_multi_params),
       msg_refined_raft_intermediate_reachable net ->
       lifted_entries_sorted net.
-  Proof using rlmli rmri. 
+  Proof.
     intros.
     enough (entries_sorted (mgv_deghost net)) by
         (unfold entries_sorted, lifted_entries_sorted, mgv_deghost in *;
@@ -88,7 +88,7 @@ Section GhostLogCorrectProof.
   
   Lemma ghost_log_correct_append_entries :
     msg_refined_raft_net_invariant_append_entries ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     find_apply_hyp_hyp; intuition; eauto.
     subst. simpl in *.
@@ -100,7 +100,7 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_append_entries_reply :
     msg_refined_raft_net_invariant_append_entries_reply ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     find_apply_hyp_hyp; intuition; eauto.
     subst. simpl in *.
@@ -111,7 +111,7 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_request_vote :
     msg_refined_raft_net_invariant_request_vote ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     find_apply_hyp_hyp; intuition; eauto.
     subst. simpl in *.
@@ -123,7 +123,7 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_request_vote_reply :
     msg_refined_raft_net_invariant_request_vote_reply ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     find_apply_hyp_hyp; intuition; eauto.
   Qed.
@@ -135,7 +135,7 @@ Section GhostLogCorrectProof.
       type st = Leader /\
       exists h',
         m = replicaMessage st' h h'.
-  Proof using. 
+  Proof.
     unfold doLeader in *.
     intros; repeat break_match; find_inversion; simpl in *; intuition.
     do_in_map. eauto.
@@ -146,7 +146,7 @@ Section GhostLogCorrectProof.
     forall h h' st os st' ms,
       doLeader st h = (os, st', ms) ->
       getNextIndex st' h' = getNextIndex st h'.
-  Proof using. 
+  Proof.
     intros.
     unfold getNextIndex, doLeader, advanceCommitIndex in *.
     repeat break_match; find_inversion; simpl in *; auto.
@@ -154,7 +154,7 @@ Section GhostLogCorrectProof.
   
   Lemma ghost_log_correct_do_leader :
     msg_refined_raft_net_invariant_do_leader ghost_log_correct.
-  Proof using rlmli nisi rmri. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -207,7 +207,7 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_do_generic_server :
     msg_refined_raft_net_invariant_do_generic_server ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -222,7 +222,7 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_reboot :
     msg_refined_raft_net_invariant_reboot ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     match goal with
       | H : nwState ?net ?h = (?gd, ?d) |- _ =>
@@ -235,7 +235,7 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_client_request :
     msg_refined_raft_net_invariant_client_request ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     find_apply_hyp_hyp; intuition; eauto.
     subst. simpl in *.
@@ -246,7 +246,7 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_timeout :
     msg_refined_raft_net_invariant_timeout ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     find_apply_hyp_hyp; intuition; eauto.
     exfalso.
@@ -261,14 +261,14 @@ Section GhostLogCorrectProof.
 
   Lemma ghost_log_correct_state_same_packet_subset :
     msg_refined_raft_net_invariant_state_same_packet_subset ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     eauto.
   Qed.
 
   Lemma ghost_log_correct_init :
     msg_refined_raft_net_invariant_init ghost_log_correct.
-  Proof using. 
+  Proof.
     red. unfold ghost_log_correct. intros. simpl in *.
     intuition.
   Qed.

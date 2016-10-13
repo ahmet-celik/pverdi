@@ -31,7 +31,7 @@ Section OneLeaderPerTermProof.
       votes_correct net ->
       cronies_correct net ->
       one_leader_per_term (deghost net).
-  Proof using rri. 
+  Proof.
     unfold votes_correct, cronies_correct, one_leader_per_term in *.
     intuition.
     repeat match goal with
@@ -60,7 +60,7 @@ Section OneLeaderPerTermProof.
   Theorem one_leader_per_term_invariant :
     forall net,
       raft_intermediate_reachable net -> one_leader_per_term net.
-  Proof using cci vci rri. 
+  Proof.
     intros.
     apply lower_prop; auto.
     intros.
